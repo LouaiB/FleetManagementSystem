@@ -107,13 +107,14 @@ namespace FleetManagementWebApplication.Controllers
             _context.SaveChanges();
             HttpContext.Session.SetInt32("Id",(int)manager.Id);
             HttpContext.Session.SetString("Name",manager.Name);
-            HttpContext.Session.SetString("Company-Name", company.Name);
-
+           
             _context.Add(company);
-     
+            _context.SaveChanges();
+            HttpContext.Session.SetString("CompanyName", company.Name);
+            HttpContext.Session.SetInt32("CompanyId",(int)company.Id);
+            HttpContext.Session.SetInt32("LoggedIn", 1);
 
 
-            
             await _context.SaveChangesAsync();
             //return RedirectToAction(nameof(Index));
 

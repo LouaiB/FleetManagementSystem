@@ -1,9 +1,6 @@
-﻿@model FleetManagementWebApplication.Models.Manager
-@{
-    ViewData["Title"] = "Edit";
-    Layout = "LayoutManager";
+﻿@{
+    ViewData["Title"] = "Log In";
 }
-
 <style>
     html, body, h1, h2, h3, h4, h5 {
         font-family: "Open Sans", sans-serif
@@ -21,8 +18,8 @@
     }
 
     .box {
-        width: 60%;
-        height: 520px;
+        width: 40%;
+        height:400px;
         background: #FFF;
         margin: 40px auto;
     }
@@ -59,36 +56,26 @@
             transform: skew(8deg) rotate(3deg);
         }
 </style>
+<br /><br />
 <div class="box effect6">
-    <h3>Edit Account</h3>
-
+    <h3>Log In</h3>
+    
     <div class="w3-container w3-padding">
-        <form asp-controller="Managers" asp-action="Edit">
+        <form asp-controller="Managers" asp-action="LogIn">
             <!--
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div asp-validation-summary="All" class="text-danger"></div>
-            -->
-            <h6 class="w3-opacity">Full Name :</h6>
-            <input asp-for="Name" style="width:100%" class="w3-border w3-padding" value="Abdullah Haidar">
-            <span asp-validation-for="Name" class="text-danger"></span>
-            <h6 class="w3-opacity"><label asp-for="Email"></label></h6>
-            <input asp-for="Email" style="width:100%" class="w3-border w3-padding" value="theahmaster7@gmail.com">
-            <span asp-validation-for="Email" class="text-danger"></span>
-            <span class="text-danger">@ViewData["EmailError"]</span>
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div asp-validation-summary="All" class="text-danger"></div>
+    -->
+            <h6 class="w3-opacity">Email :</h6>
+            <input type="email" name="Email" style="width:100%" class="w3-border w3-padding" value="theahmaster7@gmail.com">
 
-            <h6 class="w3-opacity"><label asp-for="Password"></label></h6>
-            <input asp-for="Password" style="width:100%" class="w3-border w3-padding" value="Aa123$">
-            <span asp-validation-for="Password" class="text-danger"></span>
-
-            <h6 class="w3-opacity">ConfirmPassword</h6>
-            <input type="password" name="ConfirmPassword" style="width:100%" class="w3-border w3-padding" value="Aa123$">
-            <span class="text-danger">@ViewData["PasswordError"]</span>
-            <br>
-            <br>
-
-
+            <h6 class="w3-opacity">Password</h6>
+            <input type="password" name="Password" style="width:100%" class="w3-border w3-padding" value="Aa123$">
+            <center><span class="text-danger">@ViewData["Error"]<br /></span></center>
+            <br /><br />
+        
             <button type="submit" class="w3-button w3-theme w3-right">
-             Save
+                Log In
                 <!-- <i class='fas fa-angle-double-right'></i> -->
             </button>
         </form>

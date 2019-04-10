@@ -1,39 +1,92 @@
 ﻿@model FleetManagementWebApplication.Models.Manager
-
 @{
     ViewData["Title"] = "Delete";
 }
+<style>
+    html, body, h1, h2, h3, h4, h5 {
+        font-family: "Open Sans", sans-serif
+    }
 
-<h1>Delete</h1>
+    body {
+        background: #ccc
+    }
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Manager</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Email)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Password)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Password)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
+    .box {
+        text-align: left;
+        position: relative;
+        top: 40px;
+        padding: 10px 30px;
+    }
+
+    .box {
+        width: 45%;
+        height: 400px;
+        background: #FFF;
+        margin: 40px auto;
+    }
+
+    .effect6 {
+        position: relative;
+        -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+        -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+        box-shadow: 0 1px 40px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+    }
+
+        .effect6:before, .effect6:after {
+            content: "";
+            position: absolute;
+            z-index: -1;
+            -webkit-box-shadow: 0 0 20px rgba(0,0,0,0.8);
+            -moz-box-shadow: 0 0 20px rgba(0,0,0,0.8);
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            top: 50%;
+            bottom: 0;
+            left: 10px;
+            right: 10px;
+            -moz-border-radius: 100px / 10px;
+            border-radius: 100px / 10px;
+        }
+
+        .effect6:after {
+            right: 10px;
+            left: auto;
+            -webkit-transform: skew(8deg) rotate(3deg);
+            -moz-transform: skew(8deg) rotate(3deg);
+            -ms-transform: skew(8deg) rotate(3deg);
+            -o-transform: skew(8deg) rotate(3deg);
+            transform: skew(8deg) rotate(3deg);
+        }
+</style>
+<br /><br />
+<div class="box effect6">
+    <h3>Delete </h3>
+
+
+
+    <div class="w3-container w3-padding">
+        <form asp-action="Delete">
+
+            <br /><br />
+            <br /><br />
+            <h6 class="w3-opacity">
+                Are you share you want to delete your user
+                and company accounts ?
+            </h6>
+            <br /><br /><br />
+            <center>
+                <button type="submit" class="w3-button w3-theme w3-right">
+                    Delete
+                </button>
+
+        </form>
+    </div>
 </div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+
+
+
