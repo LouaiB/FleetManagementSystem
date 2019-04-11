@@ -1,0 +1,74 @@
+﻿@{
+    ViewData["Title"] = "Details";
+Layout="LayoutManager";
+}
+<style>
+    .box {
+        text-align: left;
+        position: relative;
+        top: 20px;
+        padding: 10px 30px;
+        width: 95%;
+        height: 560px;
+        background: #FFF;
+        margin: 40px auto;
+    }
+.v-btn {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 16px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  -webkit-transition-duration: 0.4s; /* Safari */
+  transition-duration: 0.4s;
+  cursor: pointer;
+}
+
+.v-btn {
+  background-color: white;
+  color: black;
+  border: 2px solid #e7e7e7;
+}
+
+.v-btn:hover {background-color: #e7e7e7;}
+.v-btn-selected{background-color: #e7e7e7;}
+</style>
+<div class="box effect6">
+    <div class="w3-container w3-padding">
+        <table>
+            <tr style="vertical-align:top">
+                <td style="padding-right:20px;">
+                    <table >
+                        <form asp-controller="" asp-action="">
+                            <input type="hidden" name="VehicleId" />
+                            <button class="v-btn v-btn-selected">Properties</button>
+                        </form><br />
+                        <form asp-controller="" asp-action="">
+                            <input type="hidden" name="VehicleId" />
+                            <button class="v-btn">Drivers</button>
+                        </form><br />
+                        <form asp-controller="" asp-action="">
+                            <input type="hidden" name="VehicleId" />
+                            <button class="v-btn">Costs</button>
+                        </form><br />
+                        <form asp-controller="" asp-action="">
+                            <input type="hidden" name="VehicleId" />
+                            <button class="v-btn">Maintenance</button>
+                        </form>    <br />                
+                    </table>
+                </td>
+                <td style="padding-left:40px;border-left: 1px solid grey;height:500px">@RenderBody()</td>
+            </tr>
+        </table>
+
+
+
+
+
+    </div>
+</div>
+

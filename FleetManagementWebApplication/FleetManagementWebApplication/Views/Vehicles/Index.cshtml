@@ -2,94 +2,135 @@
 
 @{
     ViewData["Title"] = "Index";
+    Layout = "LayoutManager";
+    Vehicle[] Vehicles=Model.ToArray();
+    int N = Vehicles.Count();
 }
+    <style>
+        .box {
+            text-align: left;
+            position: relative;
+            top: 1px;
+            padding: 1px 1px;
+            width: 430px;
+            height: 290px;
+            background: #FFF;
+            margin: 6px 5px;
+        }
+    </style>
+<br /><br />
+    <table style="padding-top:3px;padding-left:7px"  >
+        @for (int i = 0; i < N; i += 3)
+        {
+            <tr>
+                <td>
+                    <div class="box effect6 w3-left">
 
-<h1>Index</h1>
+                        <div class="w3-container w3-padding">
+                            <form asp-controller="VehiclesDetails" >
+                                <h3>@Vehicles[i].Make    @Vehicles[i].Model</h3>
+                                <h6 class="w3-opacity"><span style="background-color:silver">LicensePlate :@Vehicles[i].LicensePlate</span></h6>
+                                <table width="100%">
+                                    <tr>
+                                        <td rowspan="3">
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.LicensePlate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Make)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Model)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.purchaseDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Odometer)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PayLoad)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EmissionsCO2)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FuelConsumption)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.fuelType)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FuelLevel)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CurrentLoad)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.LicensePlate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Make)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Model)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.purchaseDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Odometer)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PayLoad)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EmissionsCO2)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FuelConsumption)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.fuelType)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FuelLevel)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CurrentLoad)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+                                            <h6 class="w3-opacity">Odometer : @Vehicles[i].Odometer Km</h6>
+                                            <h6 class="w3-opacity">Current Load : @Vehicles[i].PayLoad Km</h6>
+                                            <h6 class="w3-opacity">Fuel Level : @Vehicles[i].FuelLevel Km</h6>
+                                        </td>
+                                      
+                                        <td>
+                                            <button type="submit" class="w3-button w3-theme w3-large" formaction="/VehiclesDetails/Index"> View details  </button>
+                                            <input type="hidden" name="id" value="@Vehicles[i].Id" />
+                                        </td>
+                                    </tr>
+                                    <tr><td><button type="submit" class="w3-button w3-theme w3-large" formaction="/Vehicles/GetEdit"> Modify or delete</button></td></tr>
+                                    <tr><td><button type="submit" class="w3-button w3-theme w3-large"  >Track on map </button></td></tr>
+                                </table>
+
+                            </form>
+
+                        </div>
+                    </div>
+
+                </td>
+
+                @if (i + 1 < N)
+                {
+                    <td>
+                        <div class="box effect6">
+
+                            <div class="w3-container w3-padding">
+                                <form asp-controller="VehiclesDetails" asp-action="Index" >
+                                    <h3>@Vehicles[i + 1].Make @Vehicles[i + 1].Model</h3>
+                                    <h6 class="w3-opacity"><span style="background-color:silver">LicensePlate : @Vehicles[i + 1].LicensePlate</span></h6>
+                                    <table width="100%">
+                                        <tr>
+                                            <td rowspan="3">
+
+                                                <h6 class="w3-opacity">Odometer : @Vehicles[i + 1].Odometer Km</h6>
+                                                <h6 class="w3-opacity">Current Load :@Vehicles[i + 1].PayLoad Km</h6>
+                                                <h6 class="w3-opacity">Fuel Level : @Vehicles[i + 1].FuelLevel Km</h6>
+                                            </td>
+                                            <td>
+                                                <button type="submit" class="w3-button w3-theme w3-large" formaction="/VehiclesDetails/Index"> View details  </button>
+                                                <input type="hidden" name="id" value="@Vehicles[i+1].Id"  />
+                                            </td>
+                                        </tr>
+                                        <tr><td><button type="submit" class="w3-button w3-theme w3-large"  formaction="/Vehicles/GetEdit"> Modify or delete</button></td></tr>
+                                        <tr><td><button type="submit" class="w3-button w3-theme w3-large">Track on map </button></td></tr>
+                                    </table>
+
+                                </form>
+
+                            </div>
+                        </div>
+
+
+                    </td>
+                }
+
+                @if (i + 2 < N)
+                {
+                    <td>
+                        <div class="box effect6">
+
+                            <div class="w3-container w3-padding">
+                                <form asp-controller="VehiclesDetails" asp-action="Index">
+                                    <h3>@Vehicles[i + 2].Make @Vehicles[i + 2].Model</h3>
+                                    <h6 class="w3-opacity"><span style="background-color:silver">LicensePlate : @Vehicles[i + 2].LicensePlate</span></h6>
+                                    <table width="100%">
+                                        <tr>
+                                            <td rowspan="3">
+
+                                                <h6 class="w3-opacity">Odometer : @Vehicles[i + 2].Odometer Km</h6>
+                                                <h6 class="w3-opacity">Current Load :@Vehicles[i + 2].PayLoad Km</h6>
+                                                <h6 class="w3-opacity">Fuel Level : @Vehicles[i + 2].FuelLevel Km</h6>
+                                            </td>
+                                            <td>
+                                                <button type="submit" class="w3-button w3-theme w3-large" formaction="/VehiclesDetails/Index"> View details  </button>
+                                                <input type="hidden" name="id" value="@Vehicles[i+2].Id" />
+                                            </td>
+                                        </tr>
+                                        <tr><td><button type="submit" class="w3-button w3-theme w3-large" formaction="/Vehicles/GetEdit"> Modify or delete</button></td></tr>
+                                        <tr><td><button type="submit" class="w3-button w3-theme w3-large">Track on map </button></td></tr>
+                                    </table>
+
+                                </form>
+
+                            </div>
+                        </div>
+
+
+                    </td>
+                }
+
+
+            </tr>
+
+
+
+        }
+    </table>
+
+

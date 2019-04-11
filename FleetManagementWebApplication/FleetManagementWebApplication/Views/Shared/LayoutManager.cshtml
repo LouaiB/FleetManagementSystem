@@ -8,9 +8,14 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.0/css/all.css' integrity='sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ' crossorigin='anonymous'>
 <style>
-    html, body, h1, h2, h3, h4, h5 {
+        html, body, h1, h2, h3, h4, h5 {
         font-family: "Open Sans", sans-serif
     }
+
+    body {
+        background: #ccc
+    }
+
 </style>
 
 
@@ -23,8 +28,8 @@
         <div class="w3-dropdown-hover w3-hide-small ">
             <button class="w3-button w3-padding-large">Vehicles</button>
             <div class="w3-dropdown-content w3-card-4 w3-bar-block" style="width:270px">
-                <a asp-controller="Vehicles" asp-action="Create"  class="w3-bar-item w3-button">Add a vehicle</a>
-                <a href="#" class="w3-bar-item w3-button">All vehicles</a>
+                <a asp-controller="Vehicles" asp-action="Create" class="w3-bar-item w3-button">Add a vehicle</a>
+                <a asp-controller="Vehicles" asp-action="Index" class="w3-bar-item w3-button">All vehicles</a>
                 <a href="#" class="w3-bar-item w3-button">Vehicles costs</a>
                 <a href="#" class="w3-bar-item w3-button">Vehicles tracking</a>
                 <a href="#" class="w3-bar-item w3-button">Vehicles fuel consumption</a>
@@ -43,14 +48,24 @@
         </div>
 
         <div class="w3-dropdown-hover w3-hide-small ">
-            <button class="w3-button w3-padding-large">Clients</button>
+            <button class="w3-button w3-padding-large">Trips</button>
             <div class="w3-dropdown-content w3-card-4 w3-bar-block" style="width:300px">
-                <a href="#" class="w3-bar-item w3-button">Add a client</a>
-                <a href="#" class="w3-bar-item w3-button">All clients</a>
-                <a href="#" class="w3-bar-item w3-button">Clients reports</a>
+                <a href="#" class="w3-bar-item w3-button">Add Trip</a>
+                <a href="#" class="w3-bar-item w3-button">Trip History</a>
+                <a href="#" class="w3-bar-item w3-button">Maintenance Report</a>
+                <a href="#" class="w3-bar-item w3-button">CO2 Emission Report</a>
             </div>
         </div>
 
+        <div class="w3-dropdown-hover w3-hide-small ">
+            <button class="w3-button w3-padding-large">Reports</button>
+            <div class="w3-dropdown-content w3-card-4 w3-bar-block" style="width:300px">
+                <a href="#" class="w3-bar-item w3-button">Costs Report</a>
+                <a href="#" class="w3-bar-item w3-button">Fuel Consumption Report</a>
+                <a href="#" class="w3-bar-item w3-button">Maintenance Report</a>
+                <a href="#" class="w3-bar-item w3-button">CO2 Emission Report</a>
+            </div>
+        </div>
 
 
 
@@ -70,7 +85,10 @@
                 <a href="#" class="w3-bar-item w3-button">Jane likes your post</a>
             </div>
         </div>
-
+        <div class="w3-bar-item   w3-right " style="height:53px;padding-bottom:10px;padding-right:40px;">
+            <input type="text" placeholder="Search Vehicles"  style="background-color:silver;height:40px;width:300px;padding-left:10px">
+        </div>
+       
 
     </div>
 

@@ -32,11 +32,20 @@ namespace FleetManagementWebApplication
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-            services.AddSession(options => {
+           /* services.AddSession(options => {
                 options.IdleTimeout = TimeSpan.FromMinutes(60);//You can set Time   
             });
-
-
+            */
+            services.AddSession(options =>
+            {
+                // Set the timeout for session values
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+               // options.Cookie.Name = ".AspNetCore.Session";
+                options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+                options.Cookie.SameSite = SameSiteMode.Lax;
+                options.IdleTimeout = TimeSpan.FromMinutes(1440);
+            });
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
@@ -80,7 +89,15 @@ namespace FleetManagementWebApplication
                          controller = "Managers",
                          action = "Index"
                      } );
-               
+                routes.MapRoute(
+                         name: "Vehicles",
+                        template: "Manager/Vehicles",
+                    defaults: new
+                    {
+                        controller = "Vehicles",
+                        action = "Index"
+                    });
+
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");

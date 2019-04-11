@@ -10,24 +10,19 @@ using Microsoft.AspNetCore.Http;
 
 namespace FleetManagementWebApplication.Controllers
 {
-    public class VehiclesController : Controller
+    public class VehiclesDetailsController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public VehiclesController(ApplicationDbContext context)
+        public VehiclesDetailsController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Vehicles
-        public async Task<IActionResult> Index()
-        {
-           int id= (int)HttpContext.Session.GetInt32("CompanyId");
-            return View(await _context.Vehicles.Where(v => v.Company.Id == id).ToListAsync());
-        }
+      
 
         [HttpPost]
-        public async Task<IActionResult> Details(int id)
+        public async Task<IActionResult> Index(int id=0)
         {
             if (id == 0)
             {
@@ -68,20 +63,20 @@ namespace FleetManagementWebApplication.Controllers
             return View(vehicle);
         }
 
-   
-        public async Task<IActionResult> GetEdit(long?  id)
+        // GET: Vehicles/Edit/5
+        public async Task<IActionResult> Edit(long? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-     
+
             var vehicle = await _context.Vehicles.FindAsync(id);
             if (vehicle == null)
             {
                 return NotFound();
             }
-            return View("/Views/Vehicles/Edit.cshtml",vehicle);
+            return View(vehicle);
         }
 
         // POST: Vehicles/Edit/5
@@ -101,7 +96,7 @@ namespace FleetManagementWebApplication.Controllers
                 try
                 {
                     _context.Update(vehicle);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {

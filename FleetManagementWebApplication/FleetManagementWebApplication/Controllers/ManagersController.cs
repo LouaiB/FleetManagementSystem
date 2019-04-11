@@ -28,7 +28,7 @@ namespace FleetManagementWebApplication.Controllers
             ViewData["CompanyName"] = HttpContext.Session.GetString("CompanyName");
             ViewData["CompanyId"] = HttpContext.Session.GetInt32("CompanyId");
             ViewData["Id"] = HttpContext.Session.GetInt32("Id");
-            return View();
+            return RedirectToRoute("Vehicles");
             //return View(await _context.Managers.ToListAsync());
         }
 
