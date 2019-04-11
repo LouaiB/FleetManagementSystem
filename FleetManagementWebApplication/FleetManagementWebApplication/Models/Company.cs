@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FleetManagementWebAplication.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -26,5 +27,6 @@ namespace FleetManagementWebApplication.Models
         public bool AutomaticResponse { get; set; }
         public List<Driver> Drivers { get; set; }
         public Manager Manager { get; set; }
+    
     }
 }

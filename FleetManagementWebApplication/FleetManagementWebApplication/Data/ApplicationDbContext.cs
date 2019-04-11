@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FleetManagementWebAplication.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,9 @@ namespace FleetManagementWebApplication.Models
      public DbSet<Manager> Managers { get; set; }
         public DbSet<Driver> Drivers { get; set; }
         public DbSet<Company> Companies { get; set; }
+        public DbSet<Client> Clients { get; set; }
+        public DbSet<Vehicle> Vehicles { get; set; }
+
 
     }
 }

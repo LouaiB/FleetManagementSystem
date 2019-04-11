@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace FleetManagementWebApplication.Models
+namespace FleetApi1.Models
 {
     public class Manager
     {
@@ -21,10 +21,10 @@ namespace FleetManagementWebApplication.Models
         [DataType(DataType.Password)]
         [Display(Name = "Password")]
         public string Password { get; set; }
-        public List<Vehicle> Vehicles { get; set; }
 
+        
 
-
+   
 
 
     }

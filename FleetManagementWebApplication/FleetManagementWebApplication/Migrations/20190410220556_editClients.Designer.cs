@@ -4,14 +4,16 @@ using FleetManagementWebApplication.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FleetManagementWebApplication.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190410220556_editClients")]
+    partial class editClients
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -146,62 +148,6 @@ namespace FleetManagementWebApplication.Migrations
                     b.ToTable("Managers");
                 });
 
-            modelBuilder.Entity("FleetManagementWebApplication.Models.Vehicle", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<long?>("CompanyId");
-
-                    b.Property<long?>("CurrentDriverId");
-
-                    b.Property<int>("CurrentLoad");
-
-                    b.Property<long?>("DriverId");
-
-                    b.Property<int>("EmissionsCO2");
-
-                    b.Property<int>("FuelConsumption");
-
-                    b.Property<int>("FuelLevel");
-
-                    b.Property<string>("LicensePlate")
-                        .IsRequired()
-                        .HasMaxLength(50);
-
-                    b.Property<string>("Make")
-                        .IsRequired()
-                        .HasMaxLength(50);
-
-                    b.Property<long?>("ManagerId");
-
-                    b.Property<string>("Model")
-                        .IsRequired()
-                        .HasMaxLength(50);
-
-                    b.Property<decimal>("Odometer");
-
-                    b.Property<int>("PayLoad");
-
-                    b.Property<int>("fuelType");
-
-                    b.Property<DateTime>("purchaseDate")
-                        .HasColumnType("Date");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CompanyId");
-
-                    b.HasIndex("CurrentDriverId");
-
-                    b.HasIndex("DriverId");
-
-                    b.HasIndex("ManagerId");
-
-                    b.ToTable("Vehicles");
-                });
-
             modelBuilder.Entity("FleetManagementWebApplication.Models.Company", b =>
                 {
                     b.HasOne("FleetManagementWebApplication.Models.Manager", "Manager")
@@ -214,25 +160,6 @@ namespace FleetManagementWebApplication.Migrations
                     b.HasOne("FleetManagementWebApplication.Models.Company", "Company")
                         .WithMany("Drivers")
                         .HasForeignKey("CompanyId");
-                });
-
-            modelBuilder.Entity("FleetManagementWebApplication.Models.Vehicle", b =>
-                {
-                    b.HasOne("FleetManagementWebApplication.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId");
-
-                    b.HasOne("FleetManagementWebApplication.Models.Driver", "CurrentDriver")
-                        .WithMany()
-                        .HasForeignKey("CurrentDriverId");
-
-                    b.HasOne("FleetManagementWebApplication.Models.Driver", "Driver")
-                        .WithMany()
-                        .HasForeignKey("DriverId");
-
-                    b.HasOne("FleetManagementWebApplication.Models.Manager")
-                        .WithMany("Vehicles")
-                        .HasForeignKey("ManagerId");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,0 +1,121 @@
+﻿@model FleetManagementWebApplication.Models.Vehicle
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "LayoutManager";
+}
+
+<style>
+    html, body, h1, h2, h3, h4, h5 {
+        font-family: "Open Sans", sans-serif
+    }
+
+    body {
+        background: #ccc
+    }
+
+    .box {
+        text-align: left;
+        position: relative;
+        top: 40px;
+        padding: 10px 30px;
+    }
+
+    .box {
+        width: 60%;
+        height: 970px;
+        background: #FFF;
+        margin: 40px auto;
+    }
+
+    .effect6 {
+        position: relative;
+        -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+        -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+        box-shadow: 0 1px 40px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+    }
+
+        .effect6:before, .effect6:after {
+            content: "";
+            position: absolute;
+            z-index: -1;
+            -webkit-box-shadow: 0 0 20px rgba(0,0,0,0.8);
+            -moz-box-shadow: 0 0 20px rgba(0,0,0,0.8);
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            top: 50%;
+            bottom: 0;
+            left: 10px;
+            right: 10px;
+            -moz-border-radius: 100px / 10px;
+            border-radius: 100px / 10px;
+        }
+
+        .effect6:after {
+            right: 10px;
+            left: auto;
+            -webkit-transform: skew(8deg) rotate(3deg);
+            -moz-transform: skew(8deg) rotate(3deg);
+            -ms-transform: skew(8deg) rotate(3deg);
+            -o-transform: skew(8deg) rotate(3deg);
+            transform: skew(8deg) rotate(3deg);
+        }
+</style>
+<div class="box effect6">
+    <h3>Registeration</h3>
+
+    <div class="w3-container w3-padding">
+        <form asp-controller="Vehicles" asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <h6 class="w3-opacity">LicensePlate :</h6>
+            <input asp-for="LicensePlate" style="width:100%" class="w3-border w3-padding" value="@Model.LicensePlate">
+            <span asp-validation-for="LicensePlate" class="text-danger"></span>
+            <h6 class="w3-opacity"><label asp-for="Make"></label></h6>
+            <input asp-for="Make" style="width:100%" class="w3-border w3-padding" value="@Model.Make">
+            <span asp-validation-for="Make" class="text-danger"></span>
+            <span asp-validation-for="Make" class="text-danger"></span>
+
+            <h6 class="w3-opacity"><label asp-for="Model"></label></h6>
+            <input asp-for="Model" style="width:100%" class="w3-border w3-padding" value="@Model.Model">
+            <span asp-validation-for="Model" class="text-danger"></span>
+
+            <h6 class="w3-opacity">Purchase Date :</h6>
+            <input asp-for="purchaseDate" style="width:100%" class="w3-border w3-padding" value="@Model.purchaseDate">
+            <span asp-validation-for="purchaseDate" class="text-danger"></span>
+            <hr>
+            <h3>Specifications</h3>
+            <h6 class="w3-opacity"><label asp-for="Odometer"></label></h6>
+            <input asp-for="Odometer" style="width:85%" class="w3-border w3-padding" value="@Model.Odometer">&nbsp;&nbsp;&nbsp;&nbsp;Km
+            <span asp-validation-for="Odometer" class="text-danger"></span>
+
+            <h6 class="w3-opacity"><label asp-for="PayLoad"></label></h6>
+            <input asp-for="PayLoad" style="width:85%" class="w3-border w3-padding" value="@Model.PayLoad">&nbsp;&nbsp;&nbsp;&nbsp;Litres
+            <span asp-validation-for="PayLoad" class="text-danger"></span>
+
+            <h6 class="w3-opacity"><label asp-for="EmissionsCO2"></label></h6>
+            <input asp-for="EmissionsCO2" style="width:85%" class="w3-border w3-padding" value="@Model.EmissionsCO2" /> &nbsp;&nbsp;&nbsp;&nbsp;G/Km
+            <span asp-validation-for="EmissionsCO2" class="text-danger"></span>
+
+            <h6 class="w3-opacity"><label asp-for="FuelConsumption"></label></h6>
+            <input asp-for="FuelConsumption" style="width:85%" class="w3-border w3-padding" value="@Model.FuelConsumption">&nbsp;&nbsp;&nbsp;&nbsp;Litres/Km
+            <span asp-validation-for="FuelConsumption" class="text-danger"></span>
+
+            <br /><br /><br />
+
+            <center>
+                <button type="submit" class="w3-button w3-theme w3-large">
+                    Save
+                    <!-- <i class='fas fa-angle-double-right'></i> -->
+                </button>
+            </center>
+
+        </form>
+
+    </div>
+</div>
+<br />
+<br />
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
