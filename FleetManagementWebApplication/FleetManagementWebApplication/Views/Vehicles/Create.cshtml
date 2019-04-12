@@ -11,7 +11,7 @@
         top: 40px;
         padding: 10px 30px;
         width: 60%;
-        height: 970px;
+     padding-bottom:40px;
         background: #FFF;
         margin: 40px auto;
     }
@@ -41,19 +41,18 @@
             <hr>
             <h3>Specifications</h3>
             <h6 class="w3-opacity"><label asp-for="Odometer"></label></h6>
-            <input asp-for="Odometer" style="width:85%" class="w3-border w3-padding" value="2018">&nbsp;&nbsp;&nbsp;&nbsp;Km
+            <input asp-for="Odometer" style="width:85%" class="w3-border w3-padding" value="100">&nbsp;&nbsp;&nbsp;&nbsp;Km
             <span asp-validation-for="Odometer" class="text-danger"></span>
 
             <h6 class="w3-opacity"><label asp-for="PayLoad"></label></h6>
-            <input asp-for="PayLoad" style="width:85%" class="w3-border w3-padding" value="2018">&nbsp;&nbsp;&nbsp;&nbsp;Litres
-            <span asp-validation-for="PayLoad" class="text-danger"></span>
+            <input asp-for="PayLoad" style="width:85%" class="w3-border w3-padding" value="100">&nbsp;&nbsp;&nbsp;&nbsp;@ViewData["type"]
 
             <h6 class="w3-opacity"><label asp-for="EmissionsCO2"></label></h6>
-            <input asp-for="EmissionsCO2" style="width:85%" class="w3-border w3-padding" value="2018">&nbsp;&nbsp;&nbsp;&nbsp;G/Km
+            <input asp-for="EmissionsCO2" style="width:85%" class="w3-border w3-padding" value="10">&nbsp;&nbsp;&nbsp;&nbsp;G/Km
             <span asp-validation-for="EmissionsCO2" class="text-danger"></span>
 
             <h6 class="w3-opacity"><label asp-for="FuelConsumption"></label></h6>
-            <input asp-for="FuelConsumption" style="width:85%" class="w3-border w3-padding" value="2018">&nbsp;&nbsp;&nbsp;&nbsp;Litres/Km
+            <input asp-for="FuelConsumption" style="width:85%" class="w3-border w3-padding" value="5">&nbsp;&nbsp;&nbsp;&nbsp;Litres/Km
             <span asp-validation-for="FuelConsumption" class="text-danger"></span>
 
             <br /><br /><br />

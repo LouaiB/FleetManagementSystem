@@ -14,13 +14,13 @@
             .box {
                 text-align: left;
                 position: relative;
-                top: 40px;
+                top: 30px;
                 padding: 10px 30px;
             }
 
             .box {
                 width: 60%;
-                height: 520px;
+                padding-bottom:40px;
                 background: #FFF;
                 margin: 40px auto;
             }
@@ -93,9 +93,6 @@
             </div>
         </div>
 
-        <div>
-            <a asp-action="Index">Back to List</a>
-        </div>
 
         @section Scripts {
             @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

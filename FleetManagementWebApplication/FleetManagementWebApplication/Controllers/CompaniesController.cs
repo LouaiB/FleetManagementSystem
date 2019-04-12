@@ -113,6 +113,7 @@ namespace FleetManagementWebApplication.Controllers
             HttpContext.Session.SetString("CompanyName", company.Name);
             HttpContext.Session.SetInt32("CompanyId",(int)company.Id);
             HttpContext.Session.SetInt32("LoggedIn", 1);
+            HttpContext.Session.SetString("OrderType", company.OrderType);
 
 
             await _context.SaveChangesAsync();

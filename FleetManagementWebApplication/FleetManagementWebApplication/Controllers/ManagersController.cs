@@ -67,6 +67,7 @@ namespace FleetManagementWebApplication.Controllers
                 HttpContext.Session.SetString("Name", manager.Name);
                 HttpContext.Session.SetInt32("CompanyId", (int)company.Id);
                 HttpContext.Session.SetString("CompanyName", company.Name);
+                HttpContext.Session.SetString("OrderType", company.OrderType);
                 return RedirectToAction("Index");
             }
             catch (Exception)
@@ -172,6 +173,9 @@ namespace FleetManagementWebApplication.Controllers
         {
             long cid = (long)HttpContext.Session.GetInt32("CompanyId");
             long id = (long)HttpContext.Session.GetInt32("Id");
+            List<Vehicle> vehicles = _context.Vehicles.Where(v => v.Company.Id == cid).ToList<Vehicle>();
+            _context.Vehicles.RemoveRange(vehicles);
+            _context.SaveChanges();
             var company = _context.Companies.Find(cid);
             _context.Companies.Remove(company);
             _context.SaveChanges();

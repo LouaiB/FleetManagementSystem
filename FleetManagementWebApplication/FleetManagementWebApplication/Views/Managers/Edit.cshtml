@@ -22,7 +22,7 @@
 
     .box {
         width: 60%;
-        height: 520px;
+        padding-bottom:40px;
         background: #FFF;
         margin: 40px auto;
     }
@@ -69,19 +69,19 @@
             <div asp-validation-summary="All" class="text-danger"></div>
             -->
             <h6 class="w3-opacity">Full Name :</h6>
-            <input asp-for="Name" style="width:100%" class="w3-border w3-padding" value="Abdullah Haidar">
+            <input asp-for="Name" style="width:100%" class="w3-border w3-padding" value="@Model.Name">
             <span asp-validation-for="Name" class="text-danger"></span>
             <h6 class="w3-opacity"><label asp-for="Email"></label></h6>
-            <input asp-for="Email" style="width:100%" class="w3-border w3-padding" value="theahmaster7@gmail.com">
+            <input asp-for="Email" style="width:100%" class="w3-border w3-padding" value="@Model.Email">
             <span asp-validation-for="Email" class="text-danger"></span>
             <span class="text-danger">@ViewData["EmailError"]</span>
 
             <h6 class="w3-opacity"><label asp-for="Password"></label></h6>
-            <input asp-for="Password" style="width:100%" class="w3-border w3-padding" value="Aa123$">
+            <input asp-for="Password" style="width:100%" class="w3-border w3-padding" value="@Model.Password">
             <span asp-validation-for="Password" class="text-danger"></span>
 
             <h6 class="w3-opacity">ConfirmPassword</h6>
-            <input type="password" name="ConfirmPassword" style="width:100%" class="w3-border w3-padding" value="Aa123$">
+            <input type="password" name="ConfirmPassword" style="width:100%" class="w3-border w3-padding" >
             <span class="text-danger">@ViewData["PasswordError"]</span>
             <br>
             <br>

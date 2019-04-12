@@ -10,8 +10,13 @@ using Microsoft.AspNetCore.Http;
 
 namespace FleetManagementWebApplication.Controllers
 {
+
     public class VehiclesDetailsController : Controller
     {
+        private int Id;
+        private string Name = " Account ";
+        private int CompanyId;
+        private string CompanyName = " Company ";
         private readonly ApplicationDbContext _context;
 
         public VehiclesDetailsController(ApplicationDbContext context)
@@ -24,6 +29,12 @@ namespace FleetManagementWebApplication.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(int id=0)
         {
+            Name = HttpContext.Session.GetString("Name");
+            CompanyName = HttpContext.Session.GetString("CompanyName");
+            CompanyId = (int)HttpContext.Session.GetInt32("CompanyId");
+            ViewData["Name"] = Name;
+            ViewData["CompanyName"] = CompanyName;
+
             if (id == 0)
             {
                 return NotFound();

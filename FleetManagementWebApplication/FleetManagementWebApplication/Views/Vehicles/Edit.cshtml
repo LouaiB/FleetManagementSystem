@@ -12,7 +12,7 @@
         top: 40px;
         padding: 10px 30px;
         width: 60%;
-        height: 970px;
+       padding-bottom:40px;
         background: #FFF;
         margin: 40px auto;
     }
@@ -47,7 +47,7 @@
             <span asp-validation-for="Odometer" class="text-danger"></span>
 
             <h6 class="w3-opacity"><label asp-for="PayLoad"></label></h6>
-            <input asp-for="PayLoad" style="width:85%" class="w3-border w3-padding" value="@Model.PayLoad">&nbsp;&nbsp;&nbsp;&nbsp;Litres
+            <input asp-for="PayLoad" style="width:85%" class="w3-border w3-padding" value="@Model.PayLoad">&nbsp;&nbsp;&nbsp;&nbsp;@ViewData["type"]
             <span asp-validation-for="PayLoad" class="text-danger"></span>
 
             <h6 class="w3-opacity"><label asp-for="EmissionsCO2"></label></h6>

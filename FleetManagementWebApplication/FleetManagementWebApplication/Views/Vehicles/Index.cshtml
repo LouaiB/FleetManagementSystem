@@ -35,17 +35,17 @@
                                         <td rowspan="3">
 
                                             <h6 class="w3-opacity">Odometer : @Vehicles[i].Odometer Km</h6>
-                                            <h6 class="w3-opacity">Current Load : @Vehicles[i].PayLoad Km</h6>
-                                            <h6 class="w3-opacity">Fuel Level : @Vehicles[i].FuelLevel Km</h6>
+                                            <h6 class="w3-opacity">PayLoad : @Vehicles[i].PayLoad @ViewData["type"]</h6>
+                                            <h6 class="w3-opacity">Fuel Level : @Vehicles[i].FuelLevel Litres</h6>
                                         </td>
                                       
                                         <td>
-                                            <button type="submit" class="w3-button w3-theme w3-large" formaction="/VehiclesDetails/Index"> View details  </button>
+                                            <button type="submit" class="w3-button w3-theme w3-large sized" formaction="/VehiclesDetails/Index"> Configuration</button>
                                             <input type="hidden" name="id" value="@Vehicles[i].Id" />
                                         </td>
                                     </tr>
-                                    <tr><td><button type="submit" class="w3-button w3-theme w3-large" formaction="/Vehicles/GetEdit"> Modify or delete</button></td></tr>
-                                    <tr><td><button type="submit" class="w3-button w3-theme w3-large"  >Track on map </button></td></tr>
+                                    <tr><td><button type="submit" class="w3-button w3-theme w3-large sized" formaction="/Vehicles/GetEdit"> Edit or delete</button></td></tr>
+                                    <tr><td><button type="submit" class="w3-button w3-theme w3-large sized"  >Track on map </button></td></tr>
                                 </table>
 
                             </form>
@@ -69,16 +69,16 @@
                                             <td rowspan="3">
 
                                                 <h6 class="w3-opacity">Odometer : @Vehicles[i + 1].Odometer Km</h6>
-                                                <h6 class="w3-opacity">Current Load :@Vehicles[i + 1].PayLoad Km</h6>
-                                                <h6 class="w3-opacity">Fuel Level : @Vehicles[i + 1].FuelLevel Km</h6>
+                                                <h6 class="w3-opacity">PayLoad : @Vehicles[i + 1].PayLoad @ViewData["type"]</h6>
+                                                <h6 class="w3-opacity">Fuel Level : @Vehicles[i + 1].FuelLevel Litres</h6>
                                             </td>
                                             <td>
-                                                <button type="submit" class="w3-button w3-theme w3-large" formaction="/VehiclesDetails/Index"> View details  </button>
+                                                <button type="submit" class="w3-button w3-theme w3-large sized" formaction="/VehiclesDetails/Index"> Configuration  </button>
                                                 <input type="hidden" name="id" value="@Vehicles[i+1].Id"  />
                                             </td>
                                         </tr>
-                                        <tr><td><button type="submit" class="w3-button w3-theme w3-large"  formaction="/Vehicles/GetEdit"> Modify or delete</button></td></tr>
-                                        <tr><td><button type="submit" class="w3-button w3-theme w3-large">Track on map </button></td></tr>
+                                        <tr><td><button type="submit" class="w3-button w3-theme w3-large sized"  formaction="/Vehicles/GetEdit"> Edit or delete</button></td></tr>
+                                        <tr><td><button type="submit" class="w3-button w3-theme w3-large sized">Track on map </button></td></tr>
                                     </table>
 
                                 </form>
@@ -104,16 +104,16 @@
                                             <td rowspan="3">
 
                                                 <h6 class="w3-opacity">Odometer : @Vehicles[i + 2].Odometer Km</h6>
-                                                <h6 class="w3-opacity">Current Load :@Vehicles[i + 2].PayLoad Km</h6>
-                                                <h6 class="w3-opacity">Fuel Level : @Vehicles[i + 2].FuelLevel Km</h6>
+                                                <h6 class="w3-opacity">PayLoad : @Vehicles[i + 2].PayLoad @ViewData["type"]</h6>
+                                                <h6 class="w3-opacity">Fuel Level : @Vehicles[i + 2].FuelLevel  Litres</h6>
                                             </td>
                                             <td>
-                                                <button type="submit" class="w3-button w3-theme w3-large" formaction="/VehiclesDetails/Index"> View details  </button>
+                                                <button type="submit" class="w3-button w3-theme w3-large sized" formaction="/VehiclesDetails/Index"> Configuration  </button>
                                                 <input type="hidden" name="id" value="@Vehicles[i+2].Id" />
                                             </td>
                                         </tr>
-                                        <tr><td><button type="submit" class="w3-button w3-theme w3-large" formaction="/Vehicles/GetEdit"> Modify or delete</button></td></tr>
-                                        <tr><td><button type="submit" class="w3-button w3-theme w3-large">Track on map </button></td></tr>
+                                        <tr><td><button type="submit" class="w3-button w3-theme w3-large sized" formaction="/Vehicles/GetEdit"> Edit or delete </button></td></tr>
+                                        <tr><td><button type="submit" class="w3-button w3-theme w3-large sized">Track on map </button></td></tr>
                                     </table>
 
                                 </form>

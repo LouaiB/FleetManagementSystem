@@ -1,6 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Details";
 Layout="LayoutManager";
+    ViewData["QueryPlaceHolder"] = "Vehicles";
 }
 <style>
     .box {
@@ -33,8 +34,6 @@ Layout="LayoutManager";
   color: black;
   border: 2px solid #e7e7e7;
 }
-
-.v-btn:hover {background-color: #e7e7e7;}
 .v-btn-selected{background-color: #e7e7e7;}
 </style>
 <div class="box effect6">
@@ -45,19 +44,19 @@ Layout="LayoutManager";
                     <table >
                         <form asp-controller="" asp-action="">
                             <input type="hidden" name="VehicleId" />
-                            <button class="v-btn v-btn-selected">Properties</button>
+                            <button class="v-btn v-btn-selected sized">Properties</button>
                         </form><br />
                         <form asp-controller="" asp-action="">
                             <input type="hidden" name="VehicleId" />
-                            <button class="v-btn">Drivers</button>
+                            <button class="v-btn sized">Drivers</button>
                         </form><br />
                         <form asp-controller="" asp-action="">
                             <input type="hidden" name="VehicleId" />
-                            <button class="v-btn">Costs</button>
+                            <button class="v-btn sized">Costs</button>
                         </form><br />
                         <form asp-controller="" asp-action="">
                             <input type="hidden" name="VehicleId" />
-                            <button class="v-btn">Maintenance</button>
+                            <button class="v-btn sized">Maintenance</button>
                         </form>    <br />                
                     </table>
                 </td>

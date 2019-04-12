@@ -6,11 +6,16 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FleetManagementWebApplication.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace FleetManagementWebApplication.Controllers
 {
     public class DriversController : Controller
     {
+        private int Id;
+        private string Name = " Account ";
+        private int CompanyId;
+        private string CompanyName = " Company ";
         private readonly ApplicationDbContext _context;
 
         public DriversController(ApplicationDbContext context)
@@ -21,12 +26,24 @@ namespace FleetManagementWebApplication.Controllers
         // GET: Drivers
         public async Task<IActionResult> Index()
         {
+            Name = HttpContext.Session.GetString("Name");
+            CompanyName = HttpContext.Session.GetString("CompanyName");
+            CompanyId = (int)HttpContext.Session.GetInt32("CompanyId");
+            ViewData["Name"] = Name;
+            ViewData["CompanyName"] = CompanyName;
+            ViewData["QueryPlaceHolder"] ="Drivers" ;
             return View(await _context.Drivers.ToListAsync());
         }
 
         // GET: Drivers/Details/5
         public async Task<IActionResult> Details(long? id)
         {
+            Name = HttpContext.Session.GetString("Name");
+            CompanyName = HttpContext.Session.GetString("CompanyName");
+            CompanyId = (int)HttpContext.Session.GetInt32("CompanyId");
+            ViewData["Name"] = Name;
+            ViewData["CompanyName"] = CompanyName;
+            ViewData["QueryPlaceHolder"] = "Drivers";
             if (id == null)
             {
                 return NotFound();
@@ -45,6 +62,12 @@ namespace FleetManagementWebApplication.Controllers
         // GET: Drivers/Create
         public IActionResult Create()
         {
+            Name = HttpContext.Session.GetString("Name");
+            CompanyName = HttpContext.Session.GetString("CompanyName");
+            CompanyId = (int)HttpContext.Session.GetInt32("CompanyId");
+            ViewData["Name"] = Name;
+            ViewData["CompanyName"] = CompanyName;
+            ViewData["QueryPlaceHolder"] = "Drivers";
             return View();
         }
 
@@ -55,6 +78,12 @@ namespace FleetManagementWebApplication.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Username,Password,Name,Birthdate,Address,Phonenumber")] Driver driver)
         {
+            Name = HttpContext.Session.GetString("Name");
+            CompanyName = HttpContext.Session.GetString("CompanyName");
+            CompanyId = (int)HttpContext.Session.GetInt32("CompanyId");
+            ViewData["Name"] = Name;
+            ViewData["CompanyName"] = CompanyName;
+            ViewData["QueryPlaceHolder"] = "Drivers";
             if (ModelState.IsValid)
             {
                 _context.Add(driver);
@@ -67,6 +96,13 @@ namespace FleetManagementWebApplication.Controllers
         // GET: Drivers/Edit/5
         public async Task<IActionResult> Edit(long? id)
         {
+            Name = HttpContext.Session.GetString("Name");
+            CompanyName = HttpContext.Session.GetString("CompanyName");
+            CompanyId = (int)HttpContext.Session.GetInt32("CompanyId");
+            ViewData["Name"] = Name;
+            ViewData["CompanyName"] = CompanyName;
+            ViewData["QueryPlaceHolder"] = "Drivers";
+
             if (id == null)
             {
                 return NotFound();
@@ -87,6 +123,13 @@ namespace FleetManagementWebApplication.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(long id, [Bind("Id,Username,Password,Name,Birthdate,Address,Phonenumber")] Driver driver)
         {
+            Name = HttpContext.Session.GetString("Name");
+            CompanyName = HttpContext.Session.GetString("CompanyName");
+            CompanyId = (int)HttpContext.Session.GetInt32("CompanyId");
+            ViewData["Name"] = Name;
+            ViewData["CompanyName"] = CompanyName;
+            ViewData["QueryPlaceHolder"] = "Drivers";
+
             if (id != driver.Id)
             {
                 return NotFound();
@@ -118,6 +161,13 @@ namespace FleetManagementWebApplication.Controllers
         // GET: Drivers/Delete/5
         public async Task<IActionResult> Delete(long? id)
         {
+            Name = HttpContext.Session.GetString("Name");
+            CompanyName = HttpContext.Session.GetString("CompanyName");
+            CompanyId = (int)HttpContext.Session.GetInt32("CompanyId");
+            ViewData["Name"] = Name;
+            ViewData["CompanyName"] = CompanyName;
+            ViewData["QueryPlaceHolder"] = "Drivers";
+
             if (id == null)
             {
                 return NotFound();
@@ -138,6 +188,13 @@ namespace FleetManagementWebApplication.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
+            Name = HttpContext.Session.GetString("Name");
+            CompanyName = HttpContext.Session.GetString("CompanyName");
+            CompanyId = (int)HttpContext.Session.GetInt32("CompanyId");
+            ViewData["Name"] = Name;
+            ViewData["CompanyName"] = CompanyName;
+            ViewData["QueryPlaceHolder"] = "Drivers";
+
             var driver = await _context.Drivers.FindAsync(id);
             _context.Drivers.Remove(driver);
             await _context.SaveChangesAsync();
@@ -146,6 +203,11 @@ namespace FleetManagementWebApplication.Controllers
 
         private bool DriverExists(long id)
         {
+            Name = HttpContext.Session.GetString("Name");
+            CompanyName = HttpContext.Session.GetString("CompanyName");
+            CompanyId = (int)HttpContext.Session.GetInt32("CompanyId");
+            ViewData["Name"] = Name;
+            ViewData["CompanyName"] = CompanyName;
             return _context.Drivers.Any(e => e.Id == id);
         }
     }

@@ -13,7 +13,10 @@ namespace FleetManagementWebApplication.Controllers
     public class VehiclesController : Controller
     {
         private readonly ApplicationDbContext _context;
-
+        private int Id;
+        private string Name=" Account ";
+        private int CompanyId;
+        private string CompanyName=" Company ";
         public VehiclesController(ApplicationDbContext context)
         {
             _context = context;
@@ -22,13 +25,60 @@ namespace FleetManagementWebApplication.Controllers
         // GET: Vehicles
         public async Task<IActionResult> Index()
         {
-           int id= (int)HttpContext.Session.GetInt32("CompanyId");
-            return View(await _context.Vehicles.Where(v => v.Company.Id == id).ToListAsync());
+           
+            Name = HttpContext.Session.GetString("Name");
+            CompanyName = HttpContext.Session.GetString("CompanyName");
+            CompanyId = (int)HttpContext.Session.GetInt32("CompanyId");
+            ViewData["Name"] = Name;
+            ViewData["CompanyName"] = CompanyName;     
+            ViewData["type"] = HttpContext.Session.GetString("OrderType");
+            ViewData["QueryPlaceHolder"] = "Vehicles";
+            return View(await _context.Vehicles.Where(v => v.Company.Id == CompanyId).ToListAsync());
+   
+        }
+
+        public async Task<IActionResult> Search(string Query="")
+        {
+   
+            Name = HttpContext.Session.GetString("Name");
+            CompanyId = (int)HttpContext.Session.GetInt32("CompanyId");
+            CompanyName = HttpContext.Session.GetString("CompanyName");
+            ViewData["Name"] = Name;
+            ViewData["CompanyName"] = CompanyName;
+            ViewData["type"] = HttpContext.Session.GetString("OrderType");
+            ViewData["QueryPlaceHolder"] = "Vehicles";
+            if (Query == null)
+                return View("/Views/Vehicles/Index.cshtml",await _context.Vehicles.Where(v => v.Company.Id == CompanyId).ToListAsync());
+            string[] query = Query.Split(" ");
+
+            var infoQuery = (
+                          from v in _context.Vehicles
+                          where v.Company.Id == CompanyId && (v.Model == query[0] || v.Make == query[0] || v.LicensePlate == query[0])
+                          select v);
+            if (query.Length > 1)
+                infoQuery = infoQuery.Intersect
+                       (from v in _context.Vehicles
+                        where v.Company.Id == CompanyId && (v.Model == query[1] || v.Make == query[1] || v.LicensePlate == query[1])
+                        select v);
+            if (query.Length > 2)
+                infoQuery = infoQuery.Intersect
+                       (from v in _context.Vehicles
+                        where v.Company.Id == CompanyId && (v.Model == query[2] || v.Make == query[2] || v.LicensePlate == query[2])
+                        select v);
+
+                ViewData["Query"] = Query; 
+            return View("/Views/Vehicles/Index.cshtml",infoQuery.ToList<Vehicle>());
         }
 
         [HttpPost]
         public async Task<IActionResult> Details(int id)
         {
+            Name = HttpContext.Session.GetString("Name");
+            CompanyName = HttpContext.Session.GetString("CompanyName");
+            ViewData["Name"] = Name;
+            ViewData["CompanyName"] = CompanyName;
+            ViewData["QueryPlaceHolder"] = "Vehicles";
+
             if (id == 0)
             {
                 return NotFound();
@@ -47,6 +97,13 @@ namespace FleetManagementWebApplication.Controllers
         // GET: Vehicles/Create
         public IActionResult Create()
         {
+            Name = HttpContext.Session.GetString("Name");
+            CompanyName = HttpContext.Session.GetString("CompanyName");
+            CompanyId = (int)HttpContext.Session.GetInt32("CompanyId");
+            ViewData["Name"] = Name;
+            ViewData["CompanyName"] = CompanyName;
+            ViewData["type"]= _context.Companies.FirstOrDefault(c => c.Id == CompanyId).OrderType;
+            ViewData["QueryPlaceHolder"] = "Vehicles";
             return View();
         }
 
@@ -57,10 +114,17 @@ namespace FleetManagementWebApplication.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,LicensePlate,Make,Model,purchaseDate,Odometer,PayLoad,EmissionsCO2,FuelConsumption,fuelType,FuelLevel,CurrentLoad")] Vehicle vehicle)
         {
+            Name = HttpContext.Session.GetString("Name");
+            CompanyName = HttpContext.Session.GetString("CompanyName");
+            CompanyId = (int)HttpContext.Session.GetInt32("CompanyId");
+            ViewData["Name"] = Name;
+            ViewData["CompanyName"] = CompanyName;
+            ViewData["type"] = HttpContext.Session.GetString("OrderType");
+            ViewData["QueryPlaceHolder"] = "Vehicles";
             if (ModelState.IsValid)
             {
-                int id = (int)HttpContext.Session.GetInt32("CompanyId");
-                vehicle.Company= _context.Companies.FirstOrDefault(c => c.Id == id);
+               
+                vehicle.Company= _context.Companies.FirstOrDefault(c => c.Id == CompanyId);
                 _context.Add(vehicle);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -71,6 +135,13 @@ namespace FleetManagementWebApplication.Controllers
    
         public async Task<IActionResult> GetEdit(long?  id)
         {
+            Name = HttpContext.Session.GetString("Name");
+            CompanyName = HttpContext.Session.GetString("CompanyName");
+            CompanyId = (int)HttpContext.Session.GetInt32("CompanyId");
+            ViewData["Name"] = Name;
+            ViewData["CompanyName"] = CompanyName;
+            ViewData["QueryPlaceHolder"] = "Vehicles";
+            ViewData["type"] = _context.Companies.FirstOrDefault(c => c.Id == CompanyId).OrderType;
             if (id == null)
             {
                 return NotFound();
@@ -91,6 +162,14 @@ namespace FleetManagementWebApplication.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(long id, [Bind("Id,LicensePlate,Make,Model,purchaseDate,Odometer,PayLoad,EmissionsCO2,FuelConsumption,fuelType,FuelLevel,CurrentLoad")] Vehicle vehicle)
         {
+            Name = HttpContext.Session.GetString("Name");
+            CompanyName = HttpContext.Session.GetString("CompanyName");
+            CompanyId = (int)HttpContext.Session.GetInt32("CompanyId");
+            ViewData["Name"] = Name;
+            ViewData["CompanyName"] = CompanyName;
+            ViewData["type"] = HttpContext.Session.GetString("OrderType");
+            ViewData["QueryPlaceHolder"] = "Vehicles";
+
             if (id != vehicle.Id)
             {
                 return NotFound();
@@ -122,6 +201,12 @@ namespace FleetManagementWebApplication.Controllers
         // GET: Vehicles/Delete/5
         public async Task<IActionResult> Delete(long? id)
         {
+            Name = HttpContext.Session.GetString("Name");
+            CompanyName = HttpContext.Session.GetString("CompanyName");
+            ViewData["Name"] = Name;
+            ViewData["CompanyName"] = CompanyName;
+            ViewData["QueryPlaceHolder"] = "Vehicles";
+
             if (id == null)
             {
                 return NotFound();
@@ -142,6 +227,12 @@ namespace FleetManagementWebApplication.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
+         
+            Name = HttpContext.Session.GetString("Name");
+            CompanyName = HttpContext.Session.GetString("CompanyName");
+            ViewData["Name"] = Name;
+            ViewData["CompanyName"] = CompanyName;
+            ViewData["QueryPlaceHolder"] = "Vehicles";
             var vehicle = await _context.Vehicles.FindAsync(id);
             _context.Vehicles.Remove(vehicle);
             await _context.SaveChangesAsync();
@@ -150,6 +241,10 @@ namespace FleetManagementWebApplication.Controllers
 
         private bool VehicleExists(long id)
         {
+            Name = HttpContext.Session.GetString("Name");
+            CompanyName = HttpContext.Session.GetString("CompanyName");
+            ViewData["Name"] = Name;
+            ViewData["CompanyName"] = CompanyName;
             return _context.Vehicles.Any(e => e.Id == id);
         }
     }
