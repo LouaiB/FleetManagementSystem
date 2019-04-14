@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FleetManagementWebApplication.Models;
 
 namespace FleetManagementWebApplication.Models
 {
@@ -18,6 +19,10 @@ namespace FleetManagementWebApplication.Models
         public DbSet<Company> Companies { get; set; }
         public DbSet<Client> Clients { get; set; }
         public DbSet<Vehicle> Vehicles { get; set; }
+        public DbSet<Plan> Plan { get; set; }
+        public DbSet<Activity> Activities { get; set; }
+        public DbSet<ScheduledActivity> ScheduledActivities { get; set; }
+        public DbSet<ServiceLog> ServiceLogs { get; set; }
 
 
     }

@@ -1,0 +1,221 @@
+﻿@{
+    ViewData["Title"] = "Add Vehicles";
+    Layout = "LayoutManager";
+    Vehicle[] Vehicles = (Vehicle[])ViewData["Vehicles"];
+}
+<style>
+    html, body, h1, h2, h3, h4, h5 {
+        font-family: "Open Sans", sans-serif
+    }
+   .td1{
+        width:180px;
+        height:50px;
+        background-color:#E8E8E8;
+        padding :10px 10px
+    }
+    body {
+        background: #ccc
+    }
+
+    .box {
+        text-align: left;
+        position: relative;
+        top: 30px;
+        padding: 10px 30px;
+    }
+
+    .box {
+        width: 60%;
+        padding-bottom: 40px;
+        background: #FFF;
+        margin: 40px auto;
+    }
+     /* Customize the label (the container) */
+.container1 {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 18px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.container1 input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  background-color: white;
+}
+
+/* On mouse-over, add a grey background color */
+.container1:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.container1 input:checked ~ .checkmark {
+  background-color: #2196F3;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.container1 input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.container1 .checkmark:after {
+  left: 9px;
+  top: 5px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+} 
+    .effect6 {
+        position: relative;
+        -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+        -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+        box-shadow: 0 1px 40px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+    }
+
+        .effect6:before, .effect6:after {
+            content: "";
+            position: absolute;
+            z-index: -1;
+            -webkit-box-shadow: 0 0 20px rgba(0,0,0,0.8);
+            -moz-box-shadow: 0 0 20px rgba(0,0,0,0.8);
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            top: 50%;
+            bottom: 0;
+            left: 10px;
+            right: 10px;
+            -moz-border-radius: 100px / 10px;
+            border-radius: 100px / 10px;
+        }
+
+        .effect6:after {
+            right: 10px;
+            left: auto;
+            -webkit-transform: skew(8deg) rotate(3deg);
+            -moz-transform: skew(8deg) rotate(3deg);
+            -ms-transform: skew(8deg) rotate(3deg);
+            -o-transform: skew(8deg) rotate(3deg);
+            transform: skew(8deg) rotate(3deg);
+        }
+</style>
+<div class="box effect6">
+    <table width="100%"><tr><td><h3>Assign Plan to Vehicles </h3></td>
+        <td align="right"><input type="text" placeholder="filter vehicles" />
+            </td></tr></table>
+
+    <div class="w3-container w3-padding">
+        <form asp-controller="Plans" asp-action="AddPlanToVehicles">
+           
+          <table  >
+            @for(int i = 0; i < Vehicles.Length; i += 4)
+            {
+              <tr>
+                  <td class="td1">
+                      <div>
+                          <label class="container1">
+                              @Vehicles[i].Make   @Vehicles[i].Model<br />
+                              &nbsp;@Vehicles[i].LicensePlate
+                              <input type="checkbox">
+                              <span class="checkmark"></span>
+                          </label>
+
+                      </div>
+                  </td>
+
+                  @if (i + 1 < Vehicles.Length)
+                  {
+                      <td class="td1">
+                          <div>
+                              <label class="container1">
+                                  @Vehicles[i + 1].Make @Vehicles[i + 1].Model<br />
+                                  &nbsp;@Vehicles[i + 1].LicensePlate
+                                  <input type="checkbox">
+                                  <span class="checkmark"></span>
+                              </label>
+                          </div>
+                      </td>
+                  }
+                  @if (i + 2 < Vehicles.Length)
+                  {
+                      <td class="td1">
+                          <div>
+                              <label class="container1">
+                                  @Vehicles[i + 2].Make @Vehicles[i + 2].Model<br />
+                                  &nbsp; @Vehicles[i + 2].LicensePlate
+                                  <input type="checkbox">
+                                  <span class="checkmark"></span>
+                              </label>
+                          </div>
+                      </td>
+                  }
+                  @if (i +3 < Vehicles.Length)
+                  {
+                      <td class="td1">
+                          <div>
+                              <label class="container1">
+                                  @Vehicles[i +3].Make @Vehicles[i + 3].Model<br />
+                                  &nbsp; @Vehicles[i + 3].LicensePlate
+                                  <input type="checkbox">
+                                  <span class="checkmark"></span>
+                              </label>
+                          </div>
+                      </td>
+                  }
+              </tr>
+            }
+
+          </table>
+
+
+            <br>
+            <br>
+
+
+            <button type="submit" class="w3-button w3-theme w3-right">
+                Next
+                <!-- <i class='fas fa-angle-double-right'></i> -->
+            </button>
+        </form>
+    </div>
+</div>
+<script>
+    function addNewActivity() {
+        document.getElementById("Act_List").innerHTML =
+            document.getElementById("Act_List").innerHTML  + "<br>  <div> <input type='text' name='ActivityType' style='width:40%' class='w3-border w3-padding' placeholder='Activity Type' > &nbsp;&nbsp; do every &nbsp;&nbsp; <input type='number' name='ActivityPeriod' style='width:40%' class='w3-border w3-padding' value='15'> days</div>";
+    }
+</script>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -4,14 +4,16 @@ using FleetManagementWebApplication.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FleetManagementWebApplication.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190413213132_Maintenance")]
+    partial class Maintenance
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -267,10 +269,6 @@ namespace FleetManagementWebApplication.Migrations
 
                     b.Property<int>("PayLoad");
 
-                    b.Property<long?>("PlanId");
-
-                    b.Property<string>("Status");
-
                     b.Property<int>("fuelType");
 
                     b.Property<DateTime>("purchaseDate")
@@ -285,8 +283,6 @@ namespace FleetManagementWebApplication.Migrations
                     b.HasIndex("DriverId");
 
                     b.HasIndex("ManagerId");
-
-                    b.HasIndex("PlanId");
 
                     b.ToTable("Vehicles");
                 });
@@ -355,10 +351,6 @@ namespace FleetManagementWebApplication.Migrations
                     b.HasOne("FleetManagementWebApplication.Models.Manager")
                         .WithMany("Vehicles")
                         .HasForeignKey("ManagerId");
-
-                    b.HasOne("FleetManagementWebApplication.Models.Plan", "Plan")
-                        .WithMany()
-                        .HasForeignKey("PlanId");
                 });
 #pragma warning restore 612, 618
         }

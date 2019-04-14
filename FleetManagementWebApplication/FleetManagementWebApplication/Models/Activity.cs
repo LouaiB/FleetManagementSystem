@@ -1,0 +1,21 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace FleetManagementWebApplication.Models
+{
+    public class Activity
+    {
+        [Required]
+        public int Id { get; set; }
+        [Required]
+        [StringLength(100)]
+        public string Type { get; set; }
+        [Required]
+        public int Period  { get; set; }
+        public List<ServiceLog> ServiceLogs { get; set; }
+        public List<ScheduledActivity> ScheduledActivities { get; set; }
+    }
+}
