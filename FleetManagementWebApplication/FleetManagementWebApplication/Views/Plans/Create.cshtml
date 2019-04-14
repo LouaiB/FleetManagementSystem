@@ -2,6 +2,51 @@
     ViewData["Title"] = "Create Plan";
     Layout = "LayoutManager";
 }
+
+<div class="box effect6">
+    <h3>Create Plan</h3>
+
+    <div class="w3-container w3-padding">
+        <form asp-controller="Plans" asp-action="AddPlanToVehicles">
+           
+            <h6 class="w3-opacity">Plan Name :</h6>
+            <input type="text" name="PlanName" style="width:100%" class="w3-border w3-padding" value="BMW CheckUp">
+            <h6 class="w3-opacity">Activities
+                <button type="button" onclick="addNewActivity();" class="w3-button w3-theme w3-right">
+                    New Activity      
+                </button></h6><br />
+            <div id="Act_List">
+                <div>
+                    <input type="text" name="ActivityType" style="width:40%" class="w3-border w3-padding" placeholder="Activity Type">&nbsp;&nbsp;&nbsp; do every &nbsp;&nbsp;  <input type="number" name='ActivityPeriod' style="width:40%" class="w3-border w3-padding" value="15"> days
+                </div>
+                </div>
+                
+
+            <br>
+            <br>
+
+
+            <button type="submit" class="w3-button w3-theme w3-right">
+                Next
+                <!-- <i class='fas fa-angle-double-right'></i> -->
+            </button>
+        </form>
+    </div>
+</div>
+<script>
+    function addNewActivity() {
+        $('#Act_List').append(  "<br>  <div> <input type='text' name='ActivityType' style='width:40%' class='w3-border w3-padding' placeholder='Activity Type' > &nbsp;&nbsp; do every &nbsp;&nbsp; <input type='number' name='ActivityPeriod' style='width:40%' class='w3-border w3-padding' value='15'> days</div>");
+          
+    }
+</script>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+
+
+
 <style>
     html, body, h1, h2, h3, h4, h5 {
         font-family: "Open Sans", sans-serif
@@ -57,46 +102,3 @@
             transform: skew(8deg) rotate(3deg);
         }
 </style>
-<div class="box effect6">
-    <h3>Create Plan</h3>
-
-    <div class="w3-container w3-padding">
-        <form asp-controller="Plans" asp-action="AddPlanToVehicles">
-            <!--
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div asp-validation-summary="All" class="text-danger"></div>
-    -->
-            <h6 class="w3-opacity">Plan Name :</h6>
-            <input type="text" name="PlanName" style="width:100%" class="w3-border w3-padding" value="BMW CheckUp">
-            <h6 class="w3-opacity">Activities</label>
-                <button type="button" onclick="addNewActivity();" class="w3-button w3-theme w3-right">
-                    New Activity      
-                </button></h6><br />
-            <div id="Act_List">
-                <div>
-                    <input type="text" name="ActivityType" style="width:40%" class="w3-border w3-padding" placeholder="Activity Type">&nbsp;&nbsp;&nbsp; do every &nbsp;&nbsp;  <input type="number" name='ActivityName' style="width:40%" class="w3-border w3-padding" value="15"> days
-                </div>
-                </div>
-                
-
-            <br>
-            <br>
-
-
-            <button type="submit" class="w3-button w3-theme w3-right">
-                Next
-                <!-- <i class='fas fa-angle-double-right'></i> -->
-            </button>
-        </form>
-    </div>
-</div>
-<script>
-    function addNewActivity() {
-        document.getElementById("Act_List").innerHTML =
-            document.getElementById("Act_List").innerHTML  + "<br>  <div> <input type='text' name='ActivityType' style='width:40%' class='w3-border w3-padding' placeholder='Activity Type' > &nbsp;&nbsp; do every &nbsp;&nbsp; <input type='number' name='ActivityPeriod' style='width:40%' class='w3-border w3-padding' value='15'> days</div>";
-    }
-</script>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

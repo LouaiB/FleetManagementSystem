@@ -18,8 +18,8 @@ Layout="LayoutManager";
   background-color: #4CAF50; /* Green */
   border: none;
   color: white;
-  padding: 16px 32px;
-  text-align: center;
+  padding: 16px 8px;
+  text-align: left;
   text-decoration: none;
   display: inline-block;
   font-size: 16px;
@@ -27,6 +27,7 @@ Layout="LayoutManager";
   -webkit-transition-duration: 0.4s; /* Safari */
   transition-duration: 0.4s;
   cursor: pointer;
+  padding-left:12px;
 }
 
 .v-btn {
@@ -42,22 +43,22 @@ Layout="LayoutManager";
             <tr style="vertical-align:top">
                 <td style="padding-right:20px;">
                     <table >
-                        <form asp-controller="" asp-action="">
-                            <input type="hidden" name="VehicleId" />
+                        <form asp-controller="VehiclesDetails" asp-action="Index">
+                            <input type="hidden" name="Id" value="@ViewData["Id"]" />
                             <button class="v-btn v-btn-selected sized">Properties</button>
                         </form><br />
-                        <form asp-controller="" asp-action="">
-                            <input type="hidden" name="VehicleId" />
-                            <button class="v-btn sized">Drivers</button>
-                        </form><br />
-                        <form asp-controller="" asp-action="">
-                            <input type="hidden" name="VehicleId" />
-                            <button class="v-btn sized">Costs</button>
-                        </form><br />
-                        <form asp-controller="" asp-action="">
-                            <input type="hidden" name="VehicleId" />
-                            <button class="v-btn sized">Maintenance</button>
-                        </form>    <br />                
+                               <form asp-controller="VehiclesDetails" asp-action="ScheduledServices">
+                                   <input type="hidden" name="Id" value="@ViewData["Id"]" />
+                                   <button class="v-btn sized">Scheduled services</button>
+                               </form><br />
+                                      <form asp-controller="" asp-action="">
+                                          <input type="hidden" name="Id" value="@ViewData["Id"]" />
+                                          <button class="v-btn sized">Performed services</button>
+                                      </form><br />
+                                             <form asp-controller="" asp-action="">
+                                                 <input type="hidden" name="Id" value="@ViewData["Id"]" />
+                                                 <button class="v-btn sized">Drivers history</button>
+                                             </form>    <br />                
                     </table>
                 </td>
                 <td style="padding-left:40px;border-left: 1px solid grey;height:500px">@RenderBody()</td>

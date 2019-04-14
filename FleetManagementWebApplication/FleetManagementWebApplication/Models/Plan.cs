@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace FleetManagementWebApplication.Models
 {
@@ -13,5 +14,7 @@ namespace FleetManagementWebApplication.Models
         [Required]
         public string Name { get; set; }
         public List<Activity> Activities { get; set; }
+
+     
     }
 }

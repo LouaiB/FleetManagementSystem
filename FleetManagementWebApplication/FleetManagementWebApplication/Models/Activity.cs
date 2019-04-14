@@ -17,5 +17,6 @@ namespace FleetManagementWebApplication.Models
         public int Period  { get; set; }
         public List<ServiceLog> ServiceLogs { get; set; }
         public List<ScheduledActivity> ScheduledActivities { get; set; }
+        public Plan Plan { get; set; }
     }
 }

@@ -1,0 +1,25 @@
+﻿@model IEnumerable<FleetManagementWebApplication.Models.ScheduledActivity>
+<style>
+    .td1{
+        padding-left:10px;
+        padding-bottom:5px;
+           padding-top:5px;
+    }
+</style>
+@{
+  ScheduledActivity[] Services=Model.ToArray();
+    ViewData["Title"] = "Scheduled Services";
+    Layout = "LayoutVehicle";
+}
+<h1>Scheduled Services</h1>
+<table width="800px" >
+   <tr ><td class="td1"  width="70%" style="background-color:silver">Service</td>
+    <td class="td1" style="background-color:red">Time</td></tr>
+    @foreach(ScheduledActivity s in Services)
+{
+    <tr ><td class="td1">@s.Activity.Type</td><td class="td1" >@s.DueDate</td></tr>
+}
+</table>
+
+
+

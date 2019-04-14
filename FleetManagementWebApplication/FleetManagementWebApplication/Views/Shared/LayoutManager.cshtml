@@ -29,9 +29,9 @@
             <button class="w3-button w3-padding-large">Vehicles</button>
             <div class="w3-dropdown-content w3-card-4 w3-bar-block" style="width:270px">
                 <a asp-controller="Vehicles" asp-action="Create" class="w3-bar-item w3-button">Add a vehicle</a>
-                <a asp-controller="Vehicles" asp-action="Index" class="w3-bar-item w3-button">All vehicles</a>
+                <a asp-controller="Vehicles" asp-action="Index" class="w3-bar-item w3-button">Manage vehicles</a>
                 <a asp-controller="Plans" asp-action="Create" class="w3-bar-item w3-button">Create maintenance plan</a>
-                <a asp-controller="Plans" asp-action="Index" class="w3-bar-item w3-button">All maintenance plans</a>
+                <a asp-controller="Plans" asp-action="Index" class="w3-bar-item w3-button">Manage maintenance plans</a>
             </div>
         </div>
 
@@ -48,10 +48,17 @@
         <div class="w3-dropdown-hover w3-hide-small ">
             <button class="w3-button w3-padding-large">Trips</button>
             <div class="w3-dropdown-content w3-card-4 w3-bar-block" style="width:300px">
-                <a href="#" class="w3-bar-item w3-button">Add Trip</a>
-                <a href="#" class="w3-bar-item w3-button">Trip History</a>
-                <a href="#" class="w3-bar-item w3-button">Maintenance Report</a>
-                <a href="#" class="w3-bar-item w3-button">CO2 Emission Report</a>
+                <a href="#" class="w3-bar-item w3-button">Start a trip</a>
+                <a href="#" class="w3-bar-item w3-button">Trips history</a>
+
+            </div>
+        </div>
+
+        <div class="w3-dropdown-hover w3-hide-small ">
+            <button class="w3-button w3-padding-large">Bills</button>
+            <div class="w3-dropdown-content w3-card-4 w3-bar-block" style="width:300px">
+                <a href="#" class="w3-bar-item w3-button">New bill</a>
+                <a href="#" class="w3-bar-item w3-button">All bills</a>
             </div>
         </div>
 
@@ -64,6 +71,7 @@
                 <a href="#" class="w3-bar-item w3-button">CO2 Emission Report</a>
             </div>
         </div>
+
 
 
 
@@ -83,10 +91,11 @@
                 <a href="#" class="w3-bar-item w3-button">Maintenance alert </a>
             </div>
         </div>
+
         <div class="w3-bar-item   w3-right " style="height:53px;padding-bottom:10px;padding-right:40px;">
             <form defaultbutton="Query" asp-controller="Vehicles" asp-action="Search" runat="server">
                 <input type="text" name="Query" placeholder="Search @ViewData["QueryPlaceHolder"]"
-                       style="background-color:silver;height:40px;width:300px;padding-left:10px"
+                       style="background-color:silver;height:40px;width:260px;padding-left:10px"
                        value="@ViewData["Query"]">
             </form>
         </div>

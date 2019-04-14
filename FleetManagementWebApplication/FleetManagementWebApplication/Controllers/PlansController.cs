@@ -52,8 +52,25 @@ namespace FleetManagementWebApplication.Controllers
         {
             return View();
         }
-        public IActionResult AddPlanToVehicles()
+        public IActionResult AddPlanToVehicles(string PlanName,string[] ActivityType,int[] ActivityPeriod)
         {
+            Plan plan = new Plan();
+            plan.Name = PlanName;
+            _context.Add(plan);
+            _context.SaveChanges();
+            plan.Activities = new List<Activity>();
+            for(int i = 0; i < ActivityType.Length; i++)
+            {
+                if (ActivityType[i] == null || ActivityPeriod[i] == 0)
+                    continue;
+                Activity A = new Activity();
+                A.Type = ActivityType[i];
+                A.Period = ActivityPeriod[i];
+                plan.Activities.Add(A);
+                _context.Add(A);
+            }
+            _context.SaveChanges();
+            HttpContext.Session.SetInt32("PlanId", (int)plan.Id);
             Name = HttpContext.Session.GetString("Name");
             CompanyName = HttpContext.Session.GetString("CompanyName");
             CompanyId = (int)HttpContext.Session.GetInt32("CompanyId");
@@ -62,6 +79,37 @@ namespace FleetManagementWebApplication.Controllers
             ViewData["type"] = HttpContext.Session.GetString("OrderType");
             ViewData["QueryPlaceHolder"] = "Vehicles";
            ViewData["Vehicles"]= _context.Vehicles.Where(v => v.Company.Id == CompanyId).ToArray<Vehicle>();
+            return View();
+        }
+
+        public async Task<IActionResult> FinishAddPlanToVehicles(long [] SelectedVehicles)
+        {
+            int N = SelectedVehicles.Length;
+            Vehicle[] vehicles = new Vehicle[N];       
+            long PlanId = (long)HttpContext.Session.GetInt32("PlanId");
+            Plan plan = _context.Plan.Find(PlanId);
+            DateTime dateTime = DateTime.Now;
+            Activity[] activities =_context.Activities.Where(a=>a.Plan.Id==PlanId).ToArray<Activity>();
+            int M = activities.Length;
+            ScheduledActivity[] scheduledActivities = new ScheduledActivity[N * M];
+            for (int i = 0; i < N; i++)
+            {
+                vehicles[i] = await _context.Vehicles.FindAsync(SelectedVehicles[i]);
+                vehicles[i].Plan =plan;
+                for(int j = 0; j <M; j++)
+                {
+                    scheduledActivities[i*M+j] = new ScheduledActivity();
+                    scheduledActivities[i * M + j].Activity = activities[j];
+                    scheduledActivities[i * M + j].Vehicle = vehicles[i];
+                    scheduledActivities[i * M + j].DueDate = dateTime.AddDays(activities[j].Period);
+                  }
+
+               
+            }
+            _context.UpdateRange(vehicles);
+            _context.AddRange(scheduledActivities);
+            await _context.SaveChangesAsync();
+            
             return View();
         }
         // POST: Plans/Create

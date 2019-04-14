@@ -34,6 +34,7 @@ namespace FleetManagementWebApplication.Controllers
             CompanyId = (int)HttpContext.Session.GetInt32("CompanyId");
             ViewData["Name"] = Name;
             ViewData["CompanyName"] = CompanyName;
+            ViewData["Id"] = id;
 
             if (id == 0)
             {
@@ -48,6 +49,22 @@ namespace FleetManagementWebApplication.Controllers
             }
 
             return View(vehicle);
+        }
+        public async Task<IActionResult> ScheduledServices(int id = 0)
+        {
+            Name = HttpContext.Session.GetString("Name");
+            CompanyName = HttpContext.Session.GetString("CompanyName");
+            CompanyId = (int)HttpContext.Session.GetInt32("CompanyId");
+            ViewData["Name"] = Name;
+            ViewData["CompanyName"] = CompanyName;
+            ViewData["Id"] = id;
+            
+            {
+
+            }
+            ScheduledActivity [] scheduledActivities =  _context.ScheduledActivities
+             .Where(s => s.Vehicle.Id == id).Include(s=>s.Activity).OrderBy(s=>s.DueDate).ToArray<ScheduledActivity>();
+            return View(scheduledActivities);
         }
 
         // GET: Vehicles/Create
