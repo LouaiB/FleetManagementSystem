@@ -22,6 +22,8 @@ namespace FleetManagementWebApplication.Models
         public string Model { get; set; }
         [Required]
         [Column(TypeName = "Date")]
+        public double Longtitude { get; set; }
+        public double Latitude { get; set; }
         public DateTime purchaseDate { get; set; }
         public float Odometer { get; set; }
         public Company Company { get; set; }

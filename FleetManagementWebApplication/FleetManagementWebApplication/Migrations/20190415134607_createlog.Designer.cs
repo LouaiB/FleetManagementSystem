@@ -4,14 +4,16 @@ using FleetManagementWebApplication.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FleetManagementWebApplication.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190415134607_createlog")]
+    partial class createlog
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -291,41 +293,6 @@ namespace FleetManagementWebApplication.Migrations
                     b.ToTable("Vehicles");
                 });
 
-            modelBuilder.Entity("FleetManagementWebApplication.Models.VehicleLog", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<long>("DriverId");
-
-                    b.Property<double>("Fuel");
-
-                    b.Property<bool>("Harshbreak");
-
-                    b.Property<double>("Langtitude");
-
-                    b.Property<double>("Latitude");
-
-                    b.Property<double>("Odometer");
-
-                    b.Property<bool>("Seatbelt");
-
-                    b.Property<int>("Speed");
-
-                    b.Property<DateTime>("Time");
-
-                    b.Property<long>("VehicleId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DriverId");
-
-                    b.HasIndex("VehicleId");
-
-                    b.ToTable("VehicleLogs");
-                });
-
             modelBuilder.Entity("FleetManagementWebApplication.Models.Activity", b =>
                 {
                     b.HasOne("FleetManagementWebApplication.Models.Plan", "Plan")
@@ -394,19 +361,6 @@ namespace FleetManagementWebApplication.Migrations
                     b.HasOne("FleetManagementWebApplication.Models.Plan", "Plan")
                         .WithMany()
                         .HasForeignKey("PlanId");
-                });
-
-            modelBuilder.Entity("FleetManagementWebApplication.Models.VehicleLog", b =>
-                {
-                    b.HasOne("FleetManagementWebApplication.Models.Driver", "Driver")
-                        .WithMany()
-                        .HasForeignKey("DriverId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("FleetManagementWebApplication.Models.Vehicle", "Vehicle")
-                        .WithMany()
-                        .HasForeignKey("VehicleId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

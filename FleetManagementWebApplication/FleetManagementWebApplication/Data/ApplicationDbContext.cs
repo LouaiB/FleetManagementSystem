@@ -23,6 +23,7 @@ namespace FleetManagementWebApplication.Models
         public DbSet<Activity> Activities { get; set; }
         public DbSet<ScheduledActivity> ScheduledActivities { get; set; }
         public DbSet<ServiceLog> ServiceLogs { get; set; }
+        public DbSet<VehicleLog> VehicleLogs { get; set; }
 
 
     }
