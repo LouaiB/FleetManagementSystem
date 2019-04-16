@@ -14,8 +14,8 @@ namespace FleetManagementWebApplication.Models
         [Required]
         public string Type { get; set; }
         [Required]
-        public double Langtitude { get; set; }
+        public float Langtitude { get; set; }
         [Required]
-        public double Latitude { get; set; }
+        public float Latitude { get; set; }
     }
 }

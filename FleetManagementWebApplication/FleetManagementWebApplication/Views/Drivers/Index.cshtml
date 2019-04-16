@@ -1,65 +1,72 @@
 ﻿@model IEnumerable<FleetManagementWebApplication.Models.Driver>
 
+
 @{
     ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/LayoutManager.cshtml";
 }
 
-<h1>Index</h1>
+<style>
+    .btn1 {
+        text-align: right;
+    }
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Username)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Password)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Birthdate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Address)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Phonenumber)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
+    .box {
+        text-align: left;
+        position: relative;
+        top: 1px;
+        padding: 1px 1px;
+        width: 800px;
+        background: #FFF;
+        margin: 6px 5px;
+    }
+</style>
+<br /><br /><br />
+<table align="center">
+
+    @foreach (var item in Model)
+    {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Username)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Password)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Birthdate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Address)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Phonenumber)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <div class="box effect6 effect6 ">
+                    <div class="w3-container w3-padding">
+                        <form asp-controller="Drivers">
+
+                            <table width="100%">
+                                <tr>
+                                    <td rowspan="3">
+                                        <h3>@item.Name   </h3>
+                                        <h6 class="w3-opacity">Username : @item.Username</h6>
+                                        <h6 class="w3-opacity">Birthdate :@item.Birthdate</h6>
+                                        <h6 class="w3-opacity">Address :@item.Address</h6>
+                                        <h6 class="w3-opacity">Phone :@item.Phonenumber </h6>
+                                    </td>
+
+                                    <td class="btn1">
+                                        <button type="submit" class="w3-button w3-theme w3-large sized" formaction="/Drivers/Raiting">Rating</button>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="btn1">
+                                        <button type="submit" class=" w3-button w3-theme w3-large sized" formaction="/Drivers/Edit"> Edit</button>
+
+                                    </td>
+                                <tr>
+                                    <td class="btn1">
+                                        <button type="submit" class=" w3-button w3-theme w3-large sized" formaction="/Drivers/Delete"> Delete</button>
+
+                                    </td>
+                                </tr>
+                            </table>
+                            <input type="hidden" name="id" value="@item.Id" />
+                        </form>
+                    </div>
+                </div>
+
             </td>
         </tr>
-}
-    </tbody>
+
+    }
 </table>
+

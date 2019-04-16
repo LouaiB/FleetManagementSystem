@@ -93,7 +93,7 @@
         </div>
 
         <div class="w3-bar-item   w3-right " style="height:53px;padding-bottom:10px;padding-right:40px;">
-            <form defaultbutton="Query" asp-controller="Vehicles" asp-action="Search" runat="server">
+            <form defaultbutton="Query" asp-controller="@ViewData["QueryPlaceHolder"]" asp-action="Search" runat="server">
                 <input type="text" name="Query" placeholder="Search @ViewData["QueryPlaceHolder"]"
                        style="background-color:silver;height:40px;width:260px;padding-left:10px"
                        value="@ViewData["Query"]">

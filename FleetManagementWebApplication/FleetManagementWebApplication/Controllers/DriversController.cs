@@ -14,7 +14,7 @@ namespace FleetManagementWebApplication.Controllers
     {
         private int Id;
         private string Name = " Account ";
-        private int CompanyId;
+        private long CompanyId;
         private string CompanyName = " Company ";
         private readonly ApplicationDbContext _context;
 
@@ -32,7 +32,28 @@ namespace FleetManagementWebApplication.Controllers
             ViewData["Name"] = Name;
             ViewData["CompanyName"] = CompanyName;
             ViewData["QueryPlaceHolder"] ="Drivers" ;
-            return View(await _context.Drivers.ToListAsync());
+            return View(await _context.Drivers.Where(d=>d.Company.Id==CompanyId).ToListAsync());
+        }
+        public async Task<IActionResult> Search(string Query="")
+        {
+            Name = HttpContext.Session.GetString("Name");
+            CompanyName = HttpContext.Session.GetString("CompanyName");
+            CompanyId = (int)HttpContext.Session.GetInt32("CompanyId");
+            ViewData["Name"] = Name;
+            ViewData["CompanyName"] = CompanyName;
+            ViewData["QueryPlaceHolder"] = "Drivers";
+
+            if (Query == null)
+                return View("/Views/Drivers/Index.cshtml", _context.Drivers.Where(v => v.Company.Id == CompanyId).ToList<Driver>());
+            string[] query = Query.Split(" ");
+
+            var infoQuery = (
+                          from v in _context.Drivers
+                          where v.Company.Id == CompanyId && (v.Username==query[0] || v.Name == Query)
+                          select v);
+            ViewData["Query"] = Query;
+
+            return View("/Views/Drivers/Index.cshtml",infoQuery.ToList<Driver>());
         }
 
         // GET: Drivers/Details/5
@@ -86,7 +107,8 @@ namespace FleetManagementWebApplication.Controllers
             ViewData["QueryPlaceHolder"] = "Drivers";
             if (ModelState.IsValid)
             {
-                _context.Add(driver);
+                driver.Company = _context.Companies.Find(CompanyId);
+                    _context.Add(driver);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -121,7 +143,7 @@ namespace FleetManagementWebApplication.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Username,Password,Name,Birthdate,Address,Phonenumber")] Driver driver)
+        public async Task<IActionResult> EditConfirmed(long id, [Bind("Id,Username,Password,Name,Birthdate,Address,Phonenumber")] Driver driver)
         {
             Name = HttpContext.Session.GetString("Name");
             CompanyName = HttpContext.Session.GetString("CompanyName");
@@ -155,7 +177,7 @@ namespace FleetManagementWebApplication.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(driver);
+            return View("/Views/Drivers/Edit.cshtml",driver);
         }
 
         // GET: Drivers/Delete/5

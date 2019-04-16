@@ -19,13 +19,13 @@ namespace FleetManagementWebApplication.Models
         [Required]
         public double Langtitude { get; set; }
         [Required]
-        public double Latitude { get; set; }
+        public double  Latitude { get; set; }
         [Required]
-        public double Fuel { get; set; }
+        public float Fuel { get; set; }
         [Required]
         public int Speed { get; set; }
         [Required]
-        public double Odometer { get; set; }
+        public float Odometer { get; set; }
         [Required]
         public bool Seatbelt { get; set; }
         [Required]

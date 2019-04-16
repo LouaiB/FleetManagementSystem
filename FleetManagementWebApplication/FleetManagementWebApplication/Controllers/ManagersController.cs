@@ -58,8 +58,8 @@ namespace FleetManagementWebApplication.Controllers
 
         public IActionResult LogIn(string Email, string Password)
         {
-            try
-            {
+          //  try
+          //  {
                 Manager manager = _context.Managers.First(m => m.Email == Email && m.Password == Password);
                 Company company = _context.Companies.First(c => c.Manager.Id == manager.Id);
                 HttpContext.Session.SetInt32("LoggedIn", 1);
@@ -69,11 +69,11 @@ namespace FleetManagementWebApplication.Controllers
                 HttpContext.Session.SetString("CompanyName", company.Name);
                 HttpContext.Session.SetString("OrderType", company.OrderType);
                 return RedirectToAction("Index");
-            }
-            catch (Exception)
-            {
+          //  }
+          //  catch (Exception)
+           // {
                 ViewData["Error"] = "Invalid Login";
-            }
+            //}
 
                 return View("/Views/Home/LogIn.cshtml");
         }

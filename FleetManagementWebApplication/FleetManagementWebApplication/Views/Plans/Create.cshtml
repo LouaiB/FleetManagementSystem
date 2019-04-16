@@ -2,7 +2,35 @@
     ViewData["Title"] = "Create Plan";
     Layout = "LayoutManager";
 }
+<style>
+    button {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 10px 15px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  -webkit-transition-duration: 0.4s; /* Safari */
+  transition-duration: 0.4s;
+  cursor: pointer;
+}
 
+.button1 {
+  background-color: darkgreen; 
+  color: white; 
+  font-weight:bold;
+}
+
+.button1:hover {
+  background-color:darkgray ;
+color:black;
+  font-weight:bold;
+}
+
+</style>
 <div class="box effect6">
     <h3>Create Plan</h3>
 
@@ -12,7 +40,8 @@
             <h6 class="w3-opacity">Plan Name :</h6>
             <input type="text" name="PlanName" style="width:100%" class="w3-border w3-padding" value="BMW CheckUp">
             <h6 class="w3-opacity">Activities
-                <button type="button" onclick="addNewActivity();" class="w3-button w3-theme w3-right">
+                <button type="button" onclick="addNewActivity();"
+                        class="  button1 w3-right">
                     New Activity      
                 </button></h6><br />
             <div id="Act_List">
@@ -26,7 +55,7 @@
             <br>
 
 
-            <button type="submit" class="w3-button w3-theme w3-right">
+            <button type="submit" class="w3-button w3-theme w3-right  ">
                 Next
                 <!-- <i class='fas fa-angle-double-right'></i> -->
             </button>

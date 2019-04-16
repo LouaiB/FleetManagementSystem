@@ -5,32 +5,64 @@
     Layout = "~/Views/Shared/LayoutManager.cshtml";
 }
 
-<h1>Index</h1>
+<style>
+    .btn1{
+        text-align:right;
+    }
+    .box {
+        text-align: left;
+        position: relative;
+        top: 1px;
+        padding: 1px 1px;
+        width: 800px;
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+        background: #FFF;
+        margin: 6px 5px;
+    }
+</style>
+<br /><br /><br />
+            <table align="center" >
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            <div class="box effect6 effect6 ">
+                                <div class="w3-container w3-padding">
+                                    <form asp-controller="Plans">
+
+                                        <table width="100%">
+                                            <tr>
+                                                <td rowspan="3">
+                                                    <h3>@item.Name   </h3>
+                                                    <h6 class="w3-opacity">@item.Activities.LongCount() Activities</h6>
+                                                    <h6 class="w3-opacity">@item.Vehicles.LongCount() : Vehicles</h6>
+                                                </td>
+
+                                                <td class="btn1">
+                                                    <button type="submit" class="w3-button w3-theme w3-large sized" formaction="/Plans/Details"> Details</button>
+
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="btn1">
+                                                    <button type="submit" class=" w3-button w3-theme w3-large sized" formaction="/Plans/Delete"> Delete</button>
+
+                                                </td>
+                                            <tr>
+                                                <td class="btn1">
+                                                    <button type="submit" class=" w3-button w3-theme w3-large sized" formaction="/Plans/AddVehicles"> Add Vehicles</button>
+
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <input type="hidden" name="id" value="@item.Id" />
+                                    </form>
+                                </div>
+                            </div>
+                         
+                        </td>
+                    </tr>
+                   
+                }
+            </table>

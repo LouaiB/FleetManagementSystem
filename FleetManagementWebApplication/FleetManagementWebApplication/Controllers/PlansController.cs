@@ -26,12 +26,22 @@ namespace FleetManagementWebApplication.Controllers
         // GET: Plans
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Plan.ToListAsync());
+            Name = HttpContext.Session.GetString("Name");
+            CompanyName = HttpContext.Session.GetString("CompanyName");
+            ViewData["Name"] = Name;
+            ViewData["CompanyName"] = CompanyName;
+            ViewData["QueryPlaceHolder"] = "Vehicles";
+            return View(await _context.Plan.Include(p=>p.Vehicles).Include(p=>p.Activities).ToListAsync());
         }
 
         // GET: Plans/Details/5
         public async Task<IActionResult> Details(long? id)
         {
+            Name = HttpContext.Session.GetString("Name");
+            CompanyName = HttpContext.Session.GetString("CompanyName");
+            ViewData["Name"] = Name;
+            ViewData["CompanyName"] = CompanyName;
+            ViewData["QueryPlaceHolder"] = "Vehicles";
             if (id == null)
             {
                 return NotFound();
@@ -50,10 +60,16 @@ namespace FleetManagementWebApplication.Controllers
         // GET: Plans/Create
         public IActionResult Create()
         {
+            Name = HttpContext.Session.GetString("Name");
+            CompanyName = HttpContext.Session.GetString("CompanyName");
+            ViewData["Name"] = Name;
+            ViewData["CompanyName"] = CompanyName;
+            ViewData["QueryPlaceHolder"] = "Vehicles";
             return View();
         }
         public IActionResult AddPlanToVehicles(string PlanName,string[] ActivityType,int[] ActivityPeriod)
         {
+
             Plan plan = new Plan();
             plan.Name = PlanName;
             _context.Add(plan);
@@ -92,12 +108,15 @@ namespace FleetManagementWebApplication.Controllers
             Activity[] activities =_context.Activities.Where(a=>a.Plan.Id==PlanId).ToArray<Activity>();
             int M = activities.Length;
             ScheduledActivity[] scheduledActivities = new ScheduledActivity[N * M];
+          
             for (int i = 0; i < N; i++)
             {
                 vehicles[i] = await _context.Vehicles.FindAsync(SelectedVehicles[i]);
                 vehicles[i].Plan =plan;
-                for(int j = 0; j <M; j++)
-                {
+                _context.ScheduledActivities.RemoveRange(_context.ScheduledActivities.Where(s => s.Vehicle == vehicles[i]));
+               
+                for (int j = 0; j <M; j++)
+                {  
                     scheduledActivities[i*M+j] = new ScheduledActivity();
                     scheduledActivities[i * M + j].Activity = activities[j];
                     scheduledActivities[i * M + j].Vehicle = vehicles[i];
@@ -109,8 +128,12 @@ namespace FleetManagementWebApplication.Controllers
             _context.UpdateRange(vehicles);
             _context.AddRange(scheduledActivities);
             await _context.SaveChangesAsync();
-            
-            return View();
+            Name = HttpContext.Session.GetString("Name");
+            CompanyName = HttpContext.Session.GetString("CompanyName");
+            ViewData["Name"] = Name;
+            ViewData["CompanyName"] = CompanyName;
+            ViewData["QueryPlaceHolder"] = "Vehicles";
+            return RedirectToAction("Index") ;
         }
         // POST: Plans/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
@@ -119,6 +142,11 @@ namespace FleetManagementWebApplication.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name")] Plan plan)
         {
+            Name = HttpContext.Session.GetString("Name");
+            CompanyName = HttpContext.Session.GetString("CompanyName");
+            ViewData["Name"] = Name;
+            ViewData["CompanyName"] = CompanyName;
+            ViewData["QueryPlaceHolder"] = "Vehicles";
             if (ModelState.IsValid)
             {
                 _context.Add(plan);
@@ -131,6 +159,11 @@ namespace FleetManagementWebApplication.Controllers
         // GET: Plans/Edit/5
         public async Task<IActionResult> Edit(long? id)
         {
+            Name = HttpContext.Session.GetString("Name");
+            CompanyName = HttpContext.Session.GetString("CompanyName");
+            ViewData["Name"] = Name;
+            ViewData["CompanyName"] = CompanyName;
+            ViewData["QueryPlaceHolder"] = "Vehicles";
             if (id == null)
             {
                 return NotFound();
@@ -151,6 +184,12 @@ namespace FleetManagementWebApplication.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(long id, [Bind("Id,Name")] Plan plan)
         {
+            
+            Name = HttpContext.Session.GetString("Name");
+            CompanyName = HttpContext.Session.GetString("CompanyName");
+            ViewData["Name"] = Name;
+            ViewData["CompanyName"] = CompanyName;
+            ViewData["QueryPlaceHolder"] = "Vehicles";
             if (id != plan.Id)
             {
                 return NotFound();
@@ -176,12 +215,23 @@ namespace FleetManagementWebApplication.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            Name = HttpContext.Session.GetString("Name");
+            CompanyName = HttpContext.Session.GetString("CompanyName");
+            ViewData["Name"] = Name;
+            ViewData["CompanyName"] = CompanyName;
+            ViewData["QueryPlaceHolder"] = "Vehicles";
             return View(plan);
         }
 
         // GET: Plans/Delete/5
         public async Task<IActionResult> Delete(long? id)
         {
+
+            Name = HttpContext.Session.GetString("Name");
+            CompanyName = HttpContext.Session.GetString("CompanyName");
+            ViewData["Name"] = Name;
+            ViewData["CompanyName"] = CompanyName;
+            ViewData["QueryPlaceHolder"] = "Vehicles";
             if (id == null)
             {
                 return NotFound();
@@ -198,11 +248,25 @@ namespace FleetManagementWebApplication.Controllers
         }
 
         // POST: Plans/Delete/5
-        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
+
+            Name = HttpContext.Session.GetString("Name");
+            CompanyName = HttpContext.Session.GetString("CompanyName");
+            ViewData["Name"] = Name;
+            ViewData["CompanyName"] = CompanyName;
+            ViewData["QueryPlaceHolder"] = "Vehicles";
             var plan = await _context.Plan.FindAsync(id);
+
+            ScheduledActivity[] SA = _context.ScheduledActivities.Where(s => s.Activity.Plan == plan).ToArray();
+            Activity[]  A = _context.Activities.Where(a => a.Plan == plan).ToArray();
+            Vehicle[] V = _context.Vehicles.Where(v => v.Plan == plan).ToArray();
+            foreach(Vehicle v in V)
+                v.Plan = null;
+            _context.Vehicles.UpdateRange(V);
+            _context.ScheduledActivities.RemoveRange(SA);
+            _context.Activities.RemoveRange(A);
             _context.Plan.Remove(plan);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
