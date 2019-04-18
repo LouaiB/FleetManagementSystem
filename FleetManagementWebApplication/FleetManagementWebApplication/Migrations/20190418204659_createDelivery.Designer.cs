@@ -4,14 +4,16 @@ using FleetManagementWebApplication.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FleetManagementWebApplication.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190418204659_createDelivery")]
+    partial class createDelivery
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -153,12 +155,6 @@ namespace FleetManagementWebApplication.Migrations
                     b.Property<long?>("DriverId");
 
                     b.Property<bool>("Finished");
-
-                    b.Property<float>("OptimalDistance");
-
-                    b.Property<float>("OptimalFuelConsumption");
-
-                    b.Property<int>("OptimalTime");
 
                     b.Property<int>("Quantity");
 

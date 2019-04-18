@@ -1,0 +1,119 @@
+﻿@model IEnumerable<FleetManagementWebApplication.Models.Bill>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/LayoutManager.cshtml";
+}
+<style>
+    tr,th{text-align:left}
+    th{background-color:green;
+         color:white
+    }
+    .date{
+background-color:cyan;  
+width:200px;
+color:black;
+    }
+      .cost{
+background-color:red;  
+width:150px;
+color:black;
+    }
+td{
+    background-color:white;
+    padding-left:10px;
+}
+.td1{
+    text-align:center;
+  background-color:grey;
+  padding:2px 2px;
+color:white;
+font-size:18px;
+
+}
+input{
+    width:250px;
+    height:50px;
+    padding-left:20px;
+}
+</style>
+<br />
+<br />
+
+<br />
+&nbsp;&nbsp;<b>Filter by </b>
+<form asp-controller="Bills"  asp-action="Search" id="myForm">
+    <table width="100%" cellspacing="15px">
+
+        <tr>
+            <td class="td1">
+                <input type="text" name="StartDate" placeholder="Start Date" 
+                       value="@ViewData["start"]" onkeyup="search(event);"/>
+            </td>
+            <td class="td1">
+                <input type="text" name="EndDate" placeholder="End Date" 
+                         value="@ViewData["end"]"  onkeyup="search(event);" />
+            </td>
+            <td class="td1">
+                <input type="text" name="Service" placeholder="Service" 
+                         value="@ViewData["service"]"  onkeyup="search(event);"  />
+            </td>
+            <td class="td1">
+                <input type="text" name="Vehicle" placeholder="Vehicle" 
+                         value="@ViewData["vehicle"]"  onkeyup="search(event);"  />
+            </td>
+            <td class="td1">
+                <input type="text" name="Provider" placeholder="Provider"  
+                         value="@ViewData["provider"]"  onkeyup="search(event);" />
+            </td>
+        </tr>
+
+    </table>
+</form>
+<center>
+   
+    <table width="90%" style="padding:10px 10px">
+        <tr>
+            <th>Date</th>
+            <th>Service</th>
+            <th>Vehicle</th>
+            <th>Provider</th>
+            <th>Cost</th>
+        </tr>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td class="date">
+                    @item.DateTime.ToShortDateString()
+                </td>
+                <td>
+                    @item.Service
+                </td>
+                <td>
+                    @item.Vehicle.Make @item.Vehicle.Model @item.Vehicle.LicensePlate
+                </td>
+                <td>
+                    @item.Provider
+                </td>
+                <td class="cost">
+                    @item.Cost $
+                </td>
+
+            </tr>
+        }
+
+    </table>
+
+</center>
+
+<script>
+    function search(event) {
+        // Number 13 is the "Enter" key on the keyboard
+        if (event.keyCode === 13) {
+            // Cancel the default action, if needed
+            event.preventDefault();
+            // Trigger the button element with a click
+            document.getElementById("myForm").submit();
+        }
+    }
+</script>

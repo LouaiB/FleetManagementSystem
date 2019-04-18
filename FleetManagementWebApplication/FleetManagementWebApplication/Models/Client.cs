@@ -26,9 +26,10 @@ namespace FleetManagementWebAplication.Models
         public string Address { get; set; }
         [StringLength(20)]
         public string Phonenumber { get; set; }
-    
-        
+        public List<Delivery> Deliveries { get; set; }
 
-        
+
+
+
     }
 }

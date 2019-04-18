@@ -22,9 +22,11 @@ namespace FleetManagementWebApplication.Models
         public DbSet<Plan> Plan { get; set; }
         public DbSet<Activity> Activities { get; set; }
         public DbSet<ScheduledActivity> ScheduledActivities { get; set; }
-        public DbSet<ServiceLog> ServiceLogs { get; set; }
-        public DbSet<VehicleLog> VehicleLogs { get; set; }
-
+        public DbSet<Bill> Bills { get; set; }
+        public DbSet<Delivery> Deliveries { get; set; }
+        public DbSet<DeliverySummary> DeliverySummaries { get; set; }
+        public DbSet<Route> Routes { get; set; }
+        public DbSet<MapLocation> MapLocations { get; set; }
 
     }
 }

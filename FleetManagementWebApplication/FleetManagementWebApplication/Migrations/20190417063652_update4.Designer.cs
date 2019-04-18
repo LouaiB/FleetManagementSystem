@@ -4,14 +4,16 @@ using FleetManagementWebApplication.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FleetManagementWebApplication.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190417063652_update4")]
+    partial class update4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -72,33 +74,6 @@ namespace FleetManagementWebApplication.Migrations
                     b.ToTable("Activities");
                 });
 
-            modelBuilder.Entity("FleetManagementWebApplication.Models.Bill", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<float>("Cost");
-
-                    b.Property<DateTime>("DateTime")
-                        .HasColumnType("Date");
-
-                    b.Property<string>("Provider")
-                        .HasMaxLength(150);
-
-                    b.Property<string>("Service")
-                        .IsRequired()
-                        .HasMaxLength(100);
-
-                    b.Property<long?>("VehicleId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("VehicleId");
-
-                    b.ToTable("Bills");
-                });
-
             modelBuilder.Entity("FleetManagementWebApplication.Models.Company", b =>
                 {
                     b.Property<long>("Id")
@@ -131,92 +106,6 @@ namespace FleetManagementWebApplication.Migrations
                     b.HasIndex("ManagerId");
 
                     b.ToTable("Companies");
-                });
-
-            modelBuilder.Entity("FleetManagementWebApplication.Models.Delivery", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<bool>("Answered");
-
-                    b.Property<long>("ClientId");
-
-                    b.Property<string>("DestinationCity")
-                        .IsRequired();
-
-                    b.Property<double>("DestinationLatitude");
-
-                    b.Property<double>("DestinationLongtitude");
-
-                    b.Property<long?>("DriverId");
-
-                    b.Property<bool>("Finished");
-
-                    b.Property<float>("OptimalDistance");
-
-                    b.Property<float>("OptimalFuelConsumption");
-
-                    b.Property<int>("OptimalTime");
-
-                    b.Property<int>("Quantity");
-
-                    b.Property<string>("SourceCity")
-                        .IsRequired();
-
-                    b.Property<double>("SourceLatitude");
-
-                    b.Property<double>("SourceLongtitude");
-
-                    b.Property<bool>("Started");
-
-                    b.Property<DateTime>("Time");
-
-                    b.Property<long?>("VehicleId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ClientId");
-
-                    b.HasIndex("DriverId");
-
-                    b.HasIndex("VehicleId");
-
-                    b.ToTable("Deliveries");
-                });
-
-            modelBuilder.Entity("FleetManagementWebApplication.Models.DeliverySummary", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<long>("DeliveryId");
-
-                    b.Property<float>("EndFuelLevel");
-
-                    b.Property<float>("EndOdometer");
-
-                    b.Property<DateTime>("EndTime");
-
-                    b.Property<bool>("NumberOfHarshbreaks");
-
-                    b.Property<bool>("NumberOfNoSeatbelts");
-
-                    b.Property<int>("NumberOfSpeedings");
-
-                    b.Property<float>("StartFuelLevel");
-
-                    b.Property<float>("StartOdometer");
-
-                    b.Property<DateTime>("StartTime");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DeliveryId");
-
-                    b.ToTable("DeliverySummaries");
                 });
 
             modelBuilder.Entity("FleetManagementWebApplication.Models.Driver", b =>
@@ -280,30 +169,6 @@ namespace FleetManagementWebApplication.Migrations
                     b.ToTable("Managers");
                 });
 
-            modelBuilder.Entity("FleetManagementWebApplication.Models.MapLocation", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<float>("Langtitude");
-
-                    b.Property<float>("Latitude");
-
-                    b.Property<string>("Name");
-
-                    b.Property<long?>("RouteId");
-
-                    b.Property<string>("Type")
-                        .IsRequired();
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RouteId");
-
-                    b.ToTable("MapLocations");
-                });
-
             modelBuilder.Entity("FleetManagementWebApplication.Models.Plan", b =>
                 {
                     b.Property<long>("Id")
@@ -316,20 +181,6 @@ namespace FleetManagementWebApplication.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Plan");
-                });
-
-            modelBuilder.Entity("FleetManagementWebApplication.Models.Route", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(100);
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Routes");
                 });
 
             modelBuilder.Entity("FleetManagementWebApplication.Models.ScheduledActivity", b =>
@@ -351,6 +202,33 @@ namespace FleetManagementWebApplication.Migrations
                     b.HasIndex("VehicleId");
 
                     b.ToTable("ScheduledActivities");
+                });
+
+            modelBuilder.Entity("FleetManagementWebApplication.Models.ServiceLog", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ActivityId");
+
+                    b.Property<float>("Cost");
+
+                    b.Property<DateTime>("Date");
+
+                    b.Property<string>("Provider")
+                        .IsRequired()
+                        .HasMaxLength(100);
+
+                    b.Property<long>("VehicleId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ActivityId");
+
+                    b.HasIndex("VehicleId");
+
+                    b.ToTable("ServiceLogs");
                 });
 
             modelBuilder.Entity("FleetManagementWebApplication.Models.Vehicle", b =>
@@ -399,6 +277,8 @@ namespace FleetManagementWebApplication.Migrations
 
                     b.Property<string>("Status");
 
+                    b.Property<int>("fuelType");
+
                     b.Property<DateTime>("purchaseDate")
                         .HasColumnType("Date");
 
@@ -417,18 +297,46 @@ namespace FleetManagementWebApplication.Migrations
                     b.ToTable("Vehicles");
                 });
 
+            modelBuilder.Entity("FleetManagementWebApplication.Models.VehicleLog", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<long>("DriverId");
+
+                    b.Property<float>("Fuel");
+
+                    b.Property<bool>("Harshbreak");
+
+                    b.Property<double>("Langtitude");
+
+                    b.Property<double>("Latitude");
+
+                    b.Property<float>("Odometer");
+
+                    b.Property<bool>("Seatbelt");
+
+                    b.Property<int>("Speed");
+
+                    b.Property<DateTime>("Time");
+
+                    b.Property<long>("VehicleId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DriverId");
+
+                    b.HasIndex("VehicleId");
+
+                    b.ToTable("VehicleLogs");
+                });
+
             modelBuilder.Entity("FleetManagementWebApplication.Models.Activity", b =>
                 {
                     b.HasOne("FleetManagementWebApplication.Models.Plan", "Plan")
                         .WithMany("Activities")
                         .HasForeignKey("PlanId");
-                });
-
-            modelBuilder.Entity("FleetManagementWebApplication.Models.Bill", b =>
-                {
-                    b.HasOne("FleetManagementWebApplication.Models.Vehicle", "Vehicle")
-                        .WithMany("Bills")
-                        .HasForeignKey("VehicleId");
                 });
 
             modelBuilder.Entity("FleetManagementWebApplication.Models.Company", b =>
@@ -438,42 +346,11 @@ namespace FleetManagementWebApplication.Migrations
                         .HasForeignKey("ManagerId");
                 });
 
-            modelBuilder.Entity("FleetManagementWebApplication.Models.Delivery", b =>
-                {
-                    b.HasOne("FleetManagementWebAplication.Models.Client", "Client")
-                        .WithMany("Deliveries")
-                        .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("FleetManagementWebApplication.Models.Driver", "Driver")
-                        .WithMany("Deliveries")
-                        .HasForeignKey("DriverId");
-
-                    b.HasOne("FleetManagementWebApplication.Models.Vehicle", "Vehicle")
-                        .WithMany("Deliveries")
-                        .HasForeignKey("VehicleId");
-                });
-
-            modelBuilder.Entity("FleetManagementWebApplication.Models.DeliverySummary", b =>
-                {
-                    b.HasOne("FleetManagementWebApplication.Models.Delivery", "Delivery")
-                        .WithMany()
-                        .HasForeignKey("DeliveryId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("FleetManagementWebApplication.Models.Driver", b =>
                 {
                     b.HasOne("FleetManagementWebApplication.Models.Company", "Company")
                         .WithMany("Drivers")
                         .HasForeignKey("CompanyId");
-                });
-
-            modelBuilder.Entity("FleetManagementWebApplication.Models.MapLocation", b =>
-                {
-                    b.HasOne("FleetManagementWebApplication.Models.Route", "Route")
-                        .WithMany("Points")
-                        .HasForeignKey("RouteId");
                 });
 
             modelBuilder.Entity("FleetManagementWebApplication.Models.ScheduledActivity", b =>
@@ -485,6 +362,19 @@ namespace FleetManagementWebApplication.Migrations
 
                     b.HasOne("FleetManagementWebApplication.Models.Vehicle", "Vehicle")
                         .WithMany("ScheduledActivities")
+                        .HasForeignKey("VehicleId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("FleetManagementWebApplication.Models.ServiceLog", b =>
+                {
+                    b.HasOne("FleetManagementWebApplication.Models.Activity", "Activity")
+                        .WithMany("ServiceLogs")
+                        .HasForeignKey("ActivityId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("FleetManagementWebApplication.Models.Vehicle", "Vehicle")
+                        .WithMany("ServiceLogs")
                         .HasForeignKey("VehicleId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
@@ -510,6 +400,19 @@ namespace FleetManagementWebApplication.Migrations
                     b.HasOne("FleetManagementWebApplication.Models.Plan", "Plan")
                         .WithMany("Vehicles")
                         .HasForeignKey("PlanId");
+                });
+
+            modelBuilder.Entity("FleetManagementWebApplication.Models.VehicleLog", b =>
+                {
+                    b.HasOne("FleetManagementWebApplication.Models.Driver", "Driver")
+                        .WithMany()
+                        .HasForeignKey("DriverId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("FleetManagementWebApplication.Models.Vehicle", "Vehicle")
+                        .WithMany()
+                        .HasForeignKey("VehicleId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

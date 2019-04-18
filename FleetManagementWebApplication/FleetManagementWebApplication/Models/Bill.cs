@@ -1,24 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace FleetManagementWebApplication.Models
 {
-    public class ServiceLog
-    { 
+    public class Bill
+    {
         [Required]
         public long Id { get; set; }
         [Required]
-        public Vehicle Vehicle { get; set; }
-        [Required]
-        public Activity Activity { get; set; }
-        [Required]
-        public DateTime Date { get; set; }
-        [Required]
         [StringLength(100)]
-        public string Provider { get; set; }
+        public string Service { get; set; }
+        [Required]
+        [Column(TypeName = "Date")]
+        public DateTime DateTime { get; set; }
+        [Required]
         public float Cost { get; set; }
+        public Vehicle Vehicle { get; set; }
+        [StringLength(150)]
+        public string Provider { get; set; }
+
     }
 }

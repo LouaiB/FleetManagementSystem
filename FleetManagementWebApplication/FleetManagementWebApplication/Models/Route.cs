@@ -6,17 +6,12 @@ using System.Threading.Tasks;
 
 namespace FleetManagementWebApplication.Models
 {
-    public class MapLocation
+    public class Route
     {
         [Required]
         public long Id { get; set; }
+        [StringLength(100)]
         public string Name { get; set; }
-        [Required]
-        public string Type { get; set; }
-        [Required]
-        public float Langtitude { get; set; }
-        [Required]
-        public float Latitude { get; set; }
-        public Route Route { get; set; }
+        public List<MapLocation> Points { get; set; }
     }
 }
