@@ -21,10 +21,10 @@ namespace FleetApi1.Models
         [DataType(DataType.Password)]
         [Display(Name = "Password")]
         public string Password { get; set; }
+        public List<Vehicle> Vehicles { get; set; }
 
-        
 
-   
+
 
 
     }

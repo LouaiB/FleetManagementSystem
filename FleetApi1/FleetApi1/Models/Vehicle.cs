@@ -13,34 +13,41 @@ namespace FleetApi1.Models
         public long Id { get; set; }
         [Required]
         [StringLength(50)]
-        public string LicensePlate{ get; set; }
+        public string LicensePlate { get; set; }
         [Required]
         [StringLength(50)]
         public string Make { get; set; }
         [Required]
         [StringLength(50)]
         public string Model { get; set; }
-        [Required]
-        [Column(TypeName = "Date")]
-        public DateTime purchaseDate { get; set; }
-        public decimal Odometer { get; set; }
+        
+        public double Longtitude { get; set; }
+        public double Latitude { get; set; }
+
         public Company Company { get; set; }
         public Driver Driver { get; set; }
-    
+        public Driver CurrentDriver { get; set; }
+
+        [Required]
+        [Column(TypeName = "Date")]
+        public DateTime purchaseDate { get; set; }    
         [Required]
         public int PayLoad { get; set; }
         [Required]
         public int EmissionsCO2 { get; set; }
-       [Required]
-        public int FuelConsumption  { get; set; }
         [Required]
-        
-        public int fuelType { get; set; }
-
+        public int FuelConsumption { get; set; }
+        [Required]
         public int FuelLevel { get; set; }
         public int CurrentLoad { get; set; }
-        public Driver CurrentDriver { get; set; }
+        public float Odometer { get; set; }
 
+        public Plan Plan { get; set; }
+        public string Status { get; set; }
+
+        public List<Bill> Bills { get; set; }
+        public List<ScheduledActivity> ScheduledActivities { get; set; }
+        public List<Delivery> Deliveries { get; set; }
 
     }
 }

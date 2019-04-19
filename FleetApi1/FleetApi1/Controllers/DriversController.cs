@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FleetApi1.Models;
-using FleetApi1Models;
+
 
 namespace FleetApi1.Controllers
 {
@@ -35,7 +35,8 @@ namespace FleetApi1.Controllers
             Driver driver = null;
             try
             {
-              driver = await _context.Drivers.Where(d => d.Username == L.username && d.Password == L.password).SingleAsync();
+              driver = await _context.Drivers.Where(d => d.Username == L.username && d.Password == L.password)
+                                                                      .Include(d=>d.Company).SingleAsync();
             }
            catch (Exception)
             {
@@ -46,7 +47,7 @@ namespace FleetApi1.Controllers
             {
                 return BadRequest("Invalid Login");
             }
-
+            driver.Company.Drivers = null;
             return driver;
         }
 

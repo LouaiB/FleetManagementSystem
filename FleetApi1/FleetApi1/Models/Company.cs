@@ -1,4 +1,4 @@
-﻿using FleetApi1Models;
+﻿
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -27,6 +27,7 @@ namespace FleetApi1.Models
         public bool AutomaticResponse { get; set; }
         public List<Driver> Drivers { get; set; }
         public Manager Manager { get; set; }
-        public List<Vehicle> Vehicles { get; set; }
+        public List<Delivery> Deliveries { get; set; }
+
     }
 }

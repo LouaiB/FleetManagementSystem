@@ -1,5 +1,4 @@
-﻿using FleetApi1.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -32,5 +31,7 @@ namespace FleetApi1.Models
         public string Phonenumber { get; set; }
 
         public Company Company { get; set; }
+        public List<Delivery> Deliveries { get; set; }
+
     }
 }
