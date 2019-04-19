@@ -4,14 +4,16 @@ using FleetManagementWebApplication.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FleetManagementWebApplication.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190419100513_update5")]
+    partial class update5
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -141,9 +143,7 @@ namespace FleetManagementWebApplication.Migrations
 
                     b.Property<bool>("Answered");
 
-                    b.Property<long?>("ClientId");
-
-                    b.Property<long?>("CompanyId");
+                    b.Property<long>("ClientId");
 
                     b.Property<string>("DestinationCity")
                         .IsRequired();
@@ -180,8 +180,6 @@ namespace FleetManagementWebApplication.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ClientId");
-
-                    b.HasIndex("CompanyId");
 
                     b.HasIndex("DriverId");
 
@@ -344,8 +342,6 @@ namespace FleetManagementWebApplication.Migrations
 
                     b.Property<int>("ActivityId");
 
-                    b.Property<long>("CompanyId");
-
                     b.Property<DateTime>("DueDate");
 
                     b.Property<long>("VehicleId");
@@ -448,11 +444,8 @@ namespace FleetManagementWebApplication.Migrations
                 {
                     b.HasOne("FleetManagementWebAplication.Models.Client", "Client")
                         .WithMany("Deliveries")
-                        .HasForeignKey("ClientId");
-
-                    b.HasOne("FleetManagementWebApplication.Models.Company", "Company")
-                        .WithMany("Deliveries")
-                        .HasForeignKey("CompanyId");
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("FleetManagementWebApplication.Models.Driver", "Driver")
                         .WithMany("Deliveries")

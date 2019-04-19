@@ -9,22 +9,22 @@ using FleetManagementWebApplication.Models;
 
 namespace FleetManagementWebApplication.Controllers
 {
-    public class ScheduledActivitiesController : Controller
+    public class DeliverySummariesController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public ScheduledActivitiesController(ApplicationDbContext context)
+        public DeliverySummariesController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: ScheduledActivities
+        // GET: DeliverySummaries
         public async Task<IActionResult> Index()
         {
-            return View(await _context.ScheduledActivities.ToListAsync());
+            return View(await _context.DeliverySummaries.ToListAsync());
         }
 
-        // GET: ScheduledActivities/Details/5
+        // GET: DeliverySummaries/Details/5
         public async Task<IActionResult> Details(long? id)
         {
             if (id == null)
@@ -32,39 +32,39 @@ namespace FleetManagementWebApplication.Controllers
                 return NotFound();
             }
 
-            var scheduledActivity = await _context.ScheduledActivities
+            var deliverySummary = await _context.DeliverySummaries
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (scheduledActivity == null)
+            if (deliverySummary == null)
             {
                 return NotFound();
             }
 
-            return View(scheduledActivity);
+            return View(deliverySummary);
         }
 
-        // GET: ScheduledActivities/Create
+        // GET: DeliverySummaries/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: ScheduledActivities/Create
+        // POST: DeliverySummaries/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,DueDate")] ScheduledActivity scheduledActivity)
+        public async Task<IActionResult> Create([Bind("Id,StartTime,EndTime,StartFuelLevel,EndFuelLevel,StartOdometer,EndOdometer,NumberOfSpeedings,NumberOfNoSeatbelts,NumberOfHarshbreaks")] DeliverySummary deliverySummary)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(scheduledActivity);
+                _context.Add(deliverySummary);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(scheduledActivity);
+            return View(deliverySummary);
         }
 
-        // GET: ScheduledActivities/Edit/5
+        // GET: DeliverySummaries/Edit/5
         public async Task<IActionResult> Edit(long? id)
         {
             if (id == null)
@@ -72,22 +72,22 @@ namespace FleetManagementWebApplication.Controllers
                 return NotFound();
             }
 
-            var scheduledActivity = await _context.ScheduledActivities.FindAsync(id);
-            if (scheduledActivity == null)
+            var deliverySummary = await _context.DeliverySummaries.FindAsync(id);
+            if (deliverySummary == null)
             {
                 return NotFound();
             }
-            return View(scheduledActivity);
+            return View(deliverySummary);
         }
 
-        // POST: ScheduledActivities/Edit/5
+        // POST: DeliverySummaries/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,DueDate")] ScheduledActivity scheduledActivity)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,StartTime,EndTime,StartFuelLevel,EndFuelLevel,StartOdometer,EndOdometer,NumberOfSpeedings,NumberOfNoSeatbelts,NumberOfHarshbreaks")] DeliverySummary deliverySummary)
         {
-            if (id != scheduledActivity.Id)
+            if (id != deliverySummary.Id)
             {
                 return NotFound();
             }
@@ -96,12 +96,12 @@ namespace FleetManagementWebApplication.Controllers
             {
                 try
                 {
-                    _context.Update(scheduledActivity);
+                    _context.Update(deliverySummary);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ScheduledActivityExists(scheduledActivity.Id))
+                    if (!DeliverySummaryExists(deliverySummary.Id))
                     {
                         return NotFound();
                     }
@@ -112,10 +112,10 @@ namespace FleetManagementWebApplication.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(scheduledActivity);
+            return View(deliverySummary);
         }
 
-        // GET: ScheduledActivities/Delete/5
+        // GET: DeliverySummaries/Delete/5
         public async Task<IActionResult> Delete(long? id)
         {
             if (id == null)
@@ -123,31 +123,30 @@ namespace FleetManagementWebApplication.Controllers
                 return NotFound();
             }
 
-            var scheduledActivity = await _context.ScheduledActivities
+            var deliverySummary = await _context.DeliverySummaries
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (scheduledActivity == null)
+            if (deliverySummary == null)
             {
                 return NotFound();
             }
 
-            return View(scheduledActivity);
+            return View(deliverySummary);
         }
 
-        // POST: ScheduledActivities/Delete/5
+        // POST: DeliverySummaries/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
-            var scheduledActivity = await _context.ScheduledActivities.FindAsync(id);
-            _context.ScheduledActivities.Remove(scheduledActivity);
+            var deliverySummary = await _context.DeliverySummaries.FindAsync(id);
+            _context.DeliverySummaries.Remove(deliverySummary);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ScheduledActivityExists(long id)
+        private bool DeliverySummaryExists(long id)
         {
-            return _context.ScheduledActivities.Any(e => e.Id == id);
+            return _context.DeliverySummaries.Any(e => e.Id == id);
         }
-
     }
 }

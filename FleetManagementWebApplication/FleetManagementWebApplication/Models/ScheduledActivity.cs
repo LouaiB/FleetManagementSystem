@@ -16,6 +16,7 @@ namespace FleetManagementWebApplication.Models
         public Activity Activity { get; set; }
         [Required]
         public DateTime DueDate{ get; set; }
+        public long CompanyId { get; set; }
 
     }
 }

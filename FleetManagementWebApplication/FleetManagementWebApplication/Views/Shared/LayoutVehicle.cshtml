@@ -7,12 +7,12 @@ Layout="LayoutManager";
     .box {
         text-align: left;
         position: relative;
-        top: 20px;
+        top: 10px;
         padding: 10px 30px;
         width: 95%;
         height: 560px;
         background: #FFF;
-        margin: 40px auto;
+      
     }
 .v-btn {
   background-color: #4CAF50; /* Green */
@@ -39,25 +39,25 @@ Layout="LayoutManager";
 </style>
 <div class="box effect6">
     <div class="w3-container w3-padding">
-        <table>
+        <table width="100%" >
             <tr style="vertical-align:top">
-                <td style="padding-right:20px;">
-                    <table >
+                <td style="padding-right:20px;" width="15%">
+                    <table  >
                         <form asp-controller="VehiclesDetails" asp-action="Index">
                             <input type="hidden" name="Id" value="@ViewData["Id"]" />
-                            <button class="v-btn v-btn-selected sized">Properties</button>
+                            <button class="v-btn @ViewData["one"] sized">Properties</button>
                         </form><br />
                                <form asp-controller="VehiclesDetails" asp-action="ScheduledServices">
                                    <input type="hidden" name="Id" value="@ViewData["Id"]" />
-                                   <button class="v-btn sized">Scheduled services</button>
+                                   <button class="v-btn  @ViewData["two"] sized">Scheduled services</button>
                                </form><br />
-                                      <form asp-controller="" asp-action="">
+                                      <form asp-controller="VehiclesDetails"  asp-action="Costs">
                                           <input type="hidden" name="Id" value="@ViewData["Id"]" />
-                                          <button class="v-btn sized">Performed services</button>
+                                          <button class="v-btn @ViewData["three"]  sized">Costs</button>
                                       </form><br />
-                                             <form asp-controller="" asp-action="">
+                                             <form  asp-controller="VehiclesDetails"  asp-action="Deliveries">
                                                  <input type="hidden" name="Id" value="@ViewData["Id"]" />
-                                                 <button class="v-btn sized">Drivers history</button>
+                                                 <button class="v-btn @ViewData["four"]  sized">Delivery history</button>
                                              </form>    <br />                
                     </table>
                 </td>

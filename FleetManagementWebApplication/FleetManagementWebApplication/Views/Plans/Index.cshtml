@@ -17,10 +17,10 @@
         width: 800px;
 
         background: #FFF;
-        margin: 6px 5px;
+        margin: 1px 5px;
     }
 </style>
-<br /><br /><br />
+<br />
             <table align="center" >
 
                 @foreach (var item in Model)
@@ -46,13 +46,13 @@
                                             </tr>
                                             <tr>
                                                 <td class="btn1">
-                                                    <button type="submit" class=" w3-button w3-theme w3-large sized" formaction="/Plans/Delete"> Delete</button>
+                                                    <button type="submit" class=" w3-button w3-theme w3-large sized" formaction="/Plans/AddVehiclesToPlan"> Add Vehicles</button>
 
                                                 </td>
                                             <tr>
                                                 <td class="btn1">
-                                                    <button type="submit" class=" w3-button w3-theme w3-large sized" formaction="/Plans/AddVehicles"> Add Vehicles</button>
-
+                                               
+                                                    <button type="submit" class=" w3-button w3-theme w3-large sized" formaction="/Plans/Delete"> Delete</button>
                                                 </td>
                                             </tr>
                                         </table>

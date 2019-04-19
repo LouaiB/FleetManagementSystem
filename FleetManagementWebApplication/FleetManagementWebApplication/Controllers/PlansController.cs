@@ -17,15 +17,20 @@ namespace FleetManagementWebApplication.Controllers
         private string Name = " Account ";
         private int CompanyId;
         private string CompanyName = " Company ";
-
+        private readonly NotificationManager NotificationManager;
         public PlansController(ApplicationDbContext context)
         {
             _context = context;
+            NotificationManager = new NotificationManager();
         }
 
         // GET: Plans
         public async Task<IActionResult> Index()
         {
+            if (!isLogedIn())
+                return RedirectToRoute("Home");
+            CompanyId = (int)HttpContext.Session.GetInt32("CompanyId");
+            ViewData["Notifications"] = NotificationManager.GetNotifications(CompanyId, _context);
             Name = HttpContext.Session.GetString("Name");
             CompanyName = HttpContext.Session.GetString("CompanyName");
             ViewData["Name"] = Name;
@@ -37,19 +42,25 @@ namespace FleetManagementWebApplication.Controllers
         // GET: Plans/Details/5
         public async Task<IActionResult> Details(long? id)
         {
+            if (!isLogedIn())
+                return RedirectToRoute("Home");
             Name = HttpContext.Session.GetString("Name");
             CompanyName = HttpContext.Session.GetString("CompanyName");
             ViewData["Name"] = Name;
             ViewData["CompanyName"] = CompanyName;
+            CompanyId = (int)HttpContext.Session.GetInt32("CompanyId");
+            ViewData["Notifications"] = NotificationManager.GetNotifications(CompanyId, _context);
             ViewData["QueryPlaceHolder"] = "Vehicles";
             if (id == null)
             {
                 return NotFound();
             }
-
-            var plan = await _context.Plan
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (plan == null)
+            Plan plan=null;
+            try
+            {
+                 plan = _context.Plan.Where(m => m.Id == id).Include(p => p.Vehicles).
+                                                        Include(p => p.Activities).Single<Plan>();
+            }catch(Exception)
             {
                 return NotFound();
             }
@@ -60,8 +71,13 @@ namespace FleetManagementWebApplication.Controllers
         // GET: Plans/Create
         public IActionResult Create()
         {
+            if (!isLogedIn())
+                return RedirectToRoute("Home");
+
             Name = HttpContext.Session.GetString("Name");
             CompanyName = HttpContext.Session.GetString("CompanyName");
+            CompanyId = (int)HttpContext.Session.GetInt32("CompanyId");
+            ViewData["Notifications"] = NotificationManager.GetNotifications(CompanyId, _context);
             ViewData["Name"] = Name;
             ViewData["CompanyName"] = CompanyName;
             ViewData["QueryPlaceHolder"] = "Vehicles";
@@ -69,7 +85,10 @@ namespace FleetManagementWebApplication.Controllers
         }
         public IActionResult AddPlanToVehicles(string PlanName,string[] ActivityType,int[] ActivityPeriod)
         {
-
+            if (!isLogedIn())
+                return RedirectToRoute("Home");
+            CompanyId = (int)HttpContext.Session.GetInt32("CompanyId");
+            ViewData["Notifications"] = NotificationManager.GetNotifications(CompanyId, _context);
             Plan plan = new Plan();
             plan.Name = PlanName;
             _context.Add(plan);
@@ -82,14 +101,14 @@ namespace FleetManagementWebApplication.Controllers
                 Activity A = new Activity();
                 A.Type = ActivityType[i];
                 A.Period = ActivityPeriod[i];
+                
                 plan.Activities.Add(A);
                 _context.Add(A);
             }
             _context.SaveChanges();
             HttpContext.Session.SetInt32("PlanId", (int)plan.Id);
             Name = HttpContext.Session.GetString("Name");
-            CompanyName = HttpContext.Session.GetString("CompanyName");
-            CompanyId = (int)HttpContext.Session.GetInt32("CompanyId");
+            CompanyName = HttpContext.Session.GetString("CompanyName");       
             ViewData["Name"] = Name;
             ViewData["CompanyName"] = CompanyName;
             ViewData["type"] = HttpContext.Session.GetString("OrderType");
@@ -97,9 +116,62 @@ namespace FleetManagementWebApplication.Controllers
            ViewData["Vehicles"]= _context.Vehicles.Where(v => v.Company.Id == CompanyId).ToArray<Vehicle>();
             return View();
         }
+        public IActionResult AddVehiclesToPlan(long id) 
+        {
+            if (!isLogedIn())
+                return RedirectToRoute("Home");
+            CompanyId = (int)HttpContext.Session.GetInt32("CompanyId");
+            ViewData["Notifications"] = NotificationManager.GetNotifications(CompanyId, _context);
+            HttpContext.Session.SetInt32("PlanId", (int)id);
+            Name = HttpContext.Session.GetString("Name");
+            CompanyName = HttpContext.Session.GetString("CompanyName");
+            ViewData["Name"] = Name;
+            ViewData["CompanyName"] = CompanyName;
+            ViewData["type"] = HttpContext.Session.GetString("OrderType");
+            ViewData["QueryPlaceHolder"] = "Vehicles";
+            ViewData["Vehicles"] = _context.Vehicles.Where(v => v.Company.Id == CompanyId && v.Plan.Id!=id).ToArray<Vehicle>();
+            return View("/Views/Plans/AddPlanToVehicles.cshtml");
+        }
+        public IActionResult SearchAddPlanToVehicles(string Query1)
+        {
+            if (!isLogedIn())
+                return RedirectToRoute("Home");
+            CompanyId = (int)HttpContext.Session.GetInt32("CompanyId");
+            ViewData["Notifications"] = NotificationManager.GetNotifications(CompanyId, _context);
+            Name = HttpContext.Session.GetString("Name");
+            CompanyName = HttpContext.Session.GetString("CompanyName");
+            ViewData["Name"] = Name;
+            ViewData["CompanyName"] = CompanyName;
+            ViewData["type"] = HttpContext.Session.GetString("OrderType");
+            ViewData["QueryPlaceHolder"] = "Vehicles";
+            IQueryable<Vehicle> infoQuery = _context.Vehicles.Where(v => v.Company.Id == CompanyId);
+            if (Query1!= null)
+            {
+                string[] query = Query1.Split(" ");
+                infoQuery = infoQuery.Where(v => v.Model == query[0]
+                                                                        ||v.Make == query[0] ||
+                                                                            v.LicensePlate == query[0]);
+                if (query.Length > 1)
+                    infoQuery.Where(v =>v.Model == query[1]
+                                                                         || v.Make == query[1] ||
+                                                                         v.LicensePlate == query[1]);
+                if (query.Length > 2)
+                    infoQuery.Where(v =>v.Model == query[2]
+                                                                         || v.Make == query[2] ||
+                                                                         v.LicensePlate == query[2]);
+
+
+            }
+            ViewData["Vehicles"] =infoQuery.ToArray<Vehicle>();
+            return View("/Views/Plans/AddPlanToVehicles.cshtml");
+        }
 
         public async Task<IActionResult> FinishAddPlanToVehicles(long [] SelectedVehicles)
         {
+            if (!isLogedIn())
+                return RedirectToRoute("Home");
+            CompanyId = (int)HttpContext.Session.GetInt32("CompanyId");
+            ViewData["Notifications"] = NotificationManager.GetNotifications(CompanyId, _context);
             int N = SelectedVehicles.Length;
             Vehicle[] vehicles = new Vehicle[N];       
             long PlanId = (long)HttpContext.Session.GetInt32("PlanId");
@@ -120,6 +192,7 @@ namespace FleetManagementWebApplication.Controllers
                     scheduledActivities[i*M+j] = new ScheduledActivity();
                     scheduledActivities[i * M + j].Activity = activities[j];
                     scheduledActivities[i * M + j].Vehicle = vehicles[i];
+                    scheduledActivities[i * M + j].CompanyId = CompanyId;
                     scheduledActivities[i * M + j].DueDate = dateTime.AddDays(activities[j].Period);
                   }
 
@@ -135,15 +208,17 @@ namespace FleetManagementWebApplication.Controllers
             ViewData["QueryPlaceHolder"] = "Vehicles";
             return RedirectToAction("Index") ;
         }
-        // POST: Plans/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name")] Plan plan)
         {
+            if (!isLogedIn())
+                return RedirectToRoute("Home");
             Name = HttpContext.Session.GetString("Name");
             CompanyName = HttpContext.Session.GetString("CompanyName");
+            CompanyId = (int)HttpContext.Session.GetInt32("CompanyId");
+            ViewData["Notifications"] = NotificationManager.GetNotifications(CompanyId, _context);
             ViewData["Name"] = Name;
             ViewData["CompanyName"] = CompanyName;
             ViewData["QueryPlaceHolder"] = "Vehicles";
@@ -156,77 +231,12 @@ namespace FleetManagementWebApplication.Controllers
             return View(plan);
         }
 
-        // GET: Plans/Edit/5
-        public async Task<IActionResult> Edit(long? id)
-        {
-            Name = HttpContext.Session.GetString("Name");
-            CompanyName = HttpContext.Session.GetString("CompanyName");
-            ViewData["Name"] = Name;
-            ViewData["CompanyName"] = CompanyName;
-            ViewData["QueryPlaceHolder"] = "Vehicles";
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var plan = await _context.Plan.FindAsync(id);
-            if (plan == null)
-            {
-                return NotFound();
-            }
-            return View(plan);
-        }
-
-        // POST: Plans/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Name")] Plan plan)
-        {
-            
-            Name = HttpContext.Session.GetString("Name");
-            CompanyName = HttpContext.Session.GetString("CompanyName");
-            ViewData["Name"] = Name;
-            ViewData["CompanyName"] = CompanyName;
-            ViewData["QueryPlaceHolder"] = "Vehicles";
-            if (id != plan.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(plan);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PlanExists(plan.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            Name = HttpContext.Session.GetString("Name");
-            CompanyName = HttpContext.Session.GetString("CompanyName");
-            ViewData["Name"] = Name;
-            ViewData["CompanyName"] = CompanyName;
-            ViewData["QueryPlaceHolder"] = "Vehicles";
-            return View(plan);
-        }
-
+        
         // GET: Plans/Delete/5
         public async Task<IActionResult> Delete(long? id)
         {
-
+            if (!isLogedIn())
+                return RedirectToRoute("Home");
             Name = HttpContext.Session.GetString("Name");
             CompanyName = HttpContext.Session.GetString("CompanyName");
             ViewData["Name"] = Name;
@@ -251,14 +261,12 @@ namespace FleetManagementWebApplication.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
-
+            if (!isLogedIn())
+                return RedirectToRoute("Home");
             Name = HttpContext.Session.GetString("Name");
             CompanyName = HttpContext.Session.GetString("CompanyName");
-            ViewData["Name"] = Name;
-            ViewData["CompanyName"] = CompanyName;
-            ViewData["QueryPlaceHolder"] = "Vehicles";
+            CompanyId = (int)HttpContext.Session.GetInt32("CompanyId");
             var plan = await _context.Plan.FindAsync(id);
-
             ScheduledActivity[] SA = _context.ScheduledActivities.Where(s => s.Activity.Plan == plan).ToArray();
             Activity[]  A = _context.Activities.Where(a => a.Plan == plan).ToArray();
             Vehicle[] V = _context.Vehicles.Where(v => v.Plan == plan).ToArray();
@@ -275,6 +283,14 @@ namespace FleetManagementWebApplication.Controllers
         private bool PlanExists(long id)
         {
             return _context.Plan.Any(e => e.Id == id);
+        }
+        private bool isLogedIn()
+        {
+            if (HttpContext.Session.GetInt32("LoggedIn") == null)
+                return false;
+            else
+                return true;
+
         }
     }
 }

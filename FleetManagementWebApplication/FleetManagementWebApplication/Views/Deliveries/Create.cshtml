@@ -1,0 +1,96 @@
+﻿@model FleetManagementWebApplication.Models.Delivery
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/LayoutManager.cshtml";
+}
+
+<h1>Create</h1>
+
+<h4>Delivery</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Time" class="control-label"></label>
+                <input asp-for="Time" class="form-control" />
+                <span asp-validation-for="Time" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SourceLongtitude" class="control-label"></label>
+                <input asp-for="SourceLongtitude" class="form-control" />
+                <span asp-validation-for="SourceLongtitude" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SourceLatitude" class="control-label"></label>
+                <input asp-for="SourceLatitude" class="form-control" />
+                <span asp-validation-for="SourceLatitude" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SourceCity" class="control-label"></label>
+                <input asp-for="SourceCity" class="form-control" />
+                <span asp-validation-for="SourceCity" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DestinationLongtitude" class="control-label"></label>
+                <input asp-for="DestinationLongtitude" class="form-control" />
+                <span asp-validation-for="DestinationLongtitude" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DestinationLatitude" class="control-label"></label>
+                <input asp-for="DestinationLatitude" class="form-control" />
+                <span asp-validation-for="DestinationLatitude" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DestinationCity" class="control-label"></label>
+                <input asp-for="DestinationCity" class="form-control" />
+                <span asp-validation-for="DestinationCity" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Quantity" class="control-label"></label>
+                <input asp-for="Quantity" class="form-control" />
+                <span asp-validation-for="Quantity" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Answered" /> @Html.DisplayNameFor(model => model.Answered)
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Started" /> @Html.DisplayNameFor(model => model.Started)
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Finished" /> @Html.DisplayNameFor(model => model.Finished)
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="OptimalDistance" class="control-label"></label>
+                <input asp-for="OptimalDistance" class="form-control" />
+                <span asp-validation-for="OptimalDistance" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="OptimalTime" class="control-label"></label>
+                <input asp-for="OptimalTime" class="form-control" />
+                <span asp-validation-for="OptimalTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="OptimalFuelConsumption" class="control-label"></label>
+                <input asp-for="OptimalFuelConsumption" class="form-control" />
+                <span asp-validation-for="OptimalFuelConsumption" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

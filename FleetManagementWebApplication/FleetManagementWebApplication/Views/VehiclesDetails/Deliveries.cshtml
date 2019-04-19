@@ -1,0 +1,41 @@
+﻿@model IEnumerable<FleetManagementWebApplication.Models.Delivery>
+    <style>
+        .td1 {
+            padding-left: 10px;
+            padding-bottom: 5px;
+            padding-top: 5px;
+            
+        }
+        th{
+            background-color:silver;
+            width:25%;
+        }
+    </style>
+@{
+    Delivery[] deliveries=Model.ToArray();
+    ViewData["Title"] = "Deliveries";
+    Layout = "LayoutVehicle";
+}
+<h1>Delivery History</h1>
+
+    <table width="100%">
+        <tr>
+            <th class="td1">Time</th>
+            <th class="td1">Driver</th>
+            <th class="td1">Source </th>
+            <th class="td1">Destination </th>
+        </tr>
+        @foreach (Delivery d in deliveries)
+        {
+    <tr>
+        <td class="td1">@d.Time</td>
+        <td class="td1">@d.Driver.Name</td>
+        <td class="td1">@d.SourceCity </td>
+        <td class="td1">@d.DestinationCity </td>
+    </tr>
+        }
+    </table>
+    
+
+    
+

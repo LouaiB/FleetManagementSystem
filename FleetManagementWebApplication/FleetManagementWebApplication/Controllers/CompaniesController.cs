@@ -13,45 +13,12 @@ namespace FleetManagementWebApplication.Controllers
     public class CompaniesController : Controller
     {
         private readonly ApplicationDbContext _context;
-
+     
         public CompaniesController(ApplicationDbContext context)
         {
-            _context = context;
+            _context = context; 
         }
 
-        // GET: Companies
-        public async Task<IActionResult> Index()
-        {
-            return View(await _context.Companies.ToListAsync());
-        }
-
-        // GET: Companies/Details/5
-        public async Task<IActionResult> Details(long? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var company = await _context.Companies
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (company == null)
-            {
-                return NotFound();
-            }
-
-            return View(company);
-        }
-
-        // GET: Companies/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Companies/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Address,Type,Size")] Company company)
@@ -64,11 +31,7 @@ namespace FleetManagementWebApplication.Controllers
                 valid = false;
             }
             if (valid&&ModelState.IsValid)
-            {/*
-                _context.Add(company);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-                */
+            { 
                 HttpContext.Session.SetString("Input-CompanyName", company.Name);
                 HttpContext.Session.SetString("Input-CompanyAddress", company.Address);
                 HttpContext.Session.SetString("Input-CompanyType", company.Type);
@@ -81,7 +44,7 @@ namespace FleetManagementWebApplication.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> FinishCreate(string OrderType, bool AutomaticResponse =false)
+        public async Task<IActionResult> FinishCreate(string OrderType, bool AutomaticResponse = false)
         {
             string Name = HttpContext.Session.GetString("Input-Name");
             string Email = HttpContext.Session.GetString("Input-Email");
@@ -105,113 +68,19 @@ namespace FleetManagementWebApplication.Controllers
             company.Manager = manager;
             _context.Add(manager);
             _context.SaveChanges();
-            HttpContext.Session.SetInt32("Id",(int)manager.Id);
-            HttpContext.Session.SetString("Name",manager.Name);
-           
+            HttpContext.Session.SetInt32("Id", (int)manager.Id);
+            HttpContext.Session.SetString("Name", manager.Name);
+
             _context.Add(company);
             _context.SaveChanges();
             HttpContext.Session.SetString("CompanyName", company.Name);
-            HttpContext.Session.SetInt32("CompanyId",(int)company.Id);
+            HttpContext.Session.SetInt32("CompanyId", (int)company.Id);
             HttpContext.Session.SetInt32("LoggedIn", 1);
             HttpContext.Session.SetString("OrderType", company.OrderType);
-
-
             await _context.SaveChangesAsync();
-            //return RedirectToAction(nameof(Index));
-
-
-
-
-
             return RedirectToRoute("Manager");
-         
+
         }
-
-
-
-        // GET: Companies/Edit/5
-        public async Task<IActionResult> Edit(long? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var company = await _context.Companies.FindAsync(id);
-            if (company == null)
-            {
-                return NotFound();
-            }
-            return View(company);
-        }
-
-        // POST: Companies/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Address,Type,Size,AutomaticReply")] Company company)
-        {
-            if (id != company.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(company);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CompanyExists(company.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(company);
-        }
-
-        // GET: Companies/Delete/5
-        public async Task<IActionResult> Delete(long? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var company = await _context.Companies
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (company == null)
-            {
-                return NotFound();
-            }
-
-            return View(company);
-        }
-
-        // POST: Companies/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(long id)
-        {
-            var company = await _context.Companies.FindAsync(id);
-            _context.Companies.Remove(company);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool CompanyExists(long id)
-        {
-            return _context.Companies.Any(e => e.Id == id);
-        }
+        
     }
 }

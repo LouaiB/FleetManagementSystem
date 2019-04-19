@@ -4,116 +4,175 @@
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/LayoutManager.cshtml";
 }
-<style>
-    tr,th{text-align:left}
-    th{background-color:green;
-         color:white
-    }
-    .date{
-background-color:cyan;  
-width:200px;
-color:black;
-    }
-      .cost{
-background-color:red;  
-width:150px;
-color:black;
-    }
-td{
-    background-color:white;
-    padding-left:10px;
-}
-.td1{
-    text-align:center;
-  background-color:grey;
-  padding:2px 2px;
-color:white;
-font-size:18px;
 
-}
-input{
-    width:250px;
-    height:50px;
-    padding-left:20px;
-}
-</style>
-<br />
-<br />
+<div class="box effect6">
+    <h3>All Bills</h3>
+    <div class="w3-container w3-padding">
+      
 
-<br />
-&nbsp;&nbsp;<b>Filter by </b>
-<form asp-controller="Bills"  asp-action="Search" id="myForm">
-    <table width="100%" cellspacing="15px">
+        <form asp-controller="Bills" asp-action="Search" id="myForm">
+            <table width="100%" cellspacing="15px">
 
-        <tr>
-            <td class="td1">
-                <input type="text" name="StartDate" placeholder="Start Date" 
-                       value="@ViewData["start"]" onkeyup="search(event);"/>
-            </td>
-            <td class="td1">
-                <input type="text" name="EndDate" placeholder="End Date" 
-                         value="@ViewData["end"]"  onkeyup="search(event);" />
-            </td>
-            <td class="td1">
-                <input type="text" name="Service" placeholder="Service" 
-                         value="@ViewData["service"]"  onkeyup="search(event);"  />
-            </td>
-            <td class="td1">
-                <input type="text" name="Vehicle" placeholder="Vehicle" 
-                         value="@ViewData["vehicle"]"  onkeyup="search(event);"  />
-            </td>
-            <td class="td1">
-                <input type="text" name="Provider" placeholder="Provider"  
-                         value="@ViewData["provider"]"  onkeyup="search(event);" />
-            </td>
-        </tr>
+                <tr>
+                    <td class="td1">
+                        <input type="text" name="StartDate" placeholder="Start Date"
+                               value="@ViewData["start"]" onkeyup="search(event);" />
+                    </td>
+                    <td class="td1">
+                        <input type="text" name="EndDate" placeholder="End Date"
+                               value="@ViewData["end"]" onkeyup="search(event);" />
+                    </td>
+                    <td class="td1">
+                        <input type="text" name="Service" placeholder="Service"
+                               value="@ViewData["service"]" onkeyup="search(event);" />
+                    </td>
+                    <td class="td1">
+                        <input type="text" name="Vehicle" placeholder="Vehicle"
+                               value="@ViewData["vehicle"]" onkeyup="search(event);" />
+                    </td>
+                    <td class="td1">
+                        <input type="text" name="Provider" placeholder="Provider"
+                               value="@ViewData["provider"]" onkeyup="search(event);" />
+                    </td>
+                </tr>
 
-    </table>
-</form>
-<center>
-   
-    <table width="90%" style="padding:10px 10px">
-        <tr>
-            <th>Date</th>
-            <th>Service</th>
-            <th>Vehicle</th>
-            <th>Provider</th>
-            <th>Cost</th>
-        </tr>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td class="date">
-                    @item.DateTime.ToShortDateString()
-                </td>
-                <td>
-                    @item.Service
-                </td>
-                <td>
-                    @item.Vehicle.Make @item.Vehicle.Model @item.Vehicle.LicensePlate
-                </td>
-                <td>
-                    @item.Provider
-                </td>
-                <td class="cost">
-                    @item.Cost $
-                </td>
+            </table>
+        </form>
+        <center>
 
-            </tr>
-        }
+            <table width="90%" style="padding:10px 10px">
+                <tr>
+                    <th>Date</th>
+                    <th>Service</th>
+                    <th>Vehicle</th>
+                    <th>Provider</th>
+                    <th>Cost</th>
+                </tr>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="date">
+                            @item.DateTime.ToShortDateString()
+                        </td>
+                        <td>
+                            @item.Service
+                        </td>
+                        <td>
+                            @item.Vehicle.Make @item.Vehicle.Model @item.Vehicle.LicensePlate
+                        </td>
+                        <td>
+                            @item.Provider
+                        </td>
+                        <td class="cost">
+                            @item.Cost $
+                        </td>
 
-    </table>
+                    </tr>
+                }
 
-</center>
+            </table>
 
-<script>
-    function search(event) {
-        // Number 13 is the "Enter" key on the keyboard
-        if (event.keyCode === 13) {
-            // Cancel the default action, if needed
-            event.preventDefault();
-            // Trigger the button element with a click
-            document.getElementById("myForm").submit();
-        }
-    }
-</script>
+        </center>
+</div>
+    </div>
+        <script>
+            function search(event) {
+                // Number 13 is the "Enter" key on the keyboard
+                if (event.keyCode === 13) {
+                    // Cancel the default action, if needed
+                    event.preventDefault();
+                    // Trigger the button element with a click
+                    document.getElementById("myForm").submit();
+                }
+            }
+        </script>
+
+        <style>
+            tr, th {
+                text-align: left
+            }
+
+            th {
+                background-color: green;
+                color: white
+            }
+
+            .date {
+                background-color: cyan;
+                width: 200px;
+                color: black;
+            }
+
+            .cost {
+                background-color: red;
+                width: 150px;
+                color: black;
+            }
+
+            td {
+                background-color: silver;
+                padding-left: 10px;
+            }
+
+            .td1 {
+                text-align: center;
+                background-color: grey;
+                padding: 2px 2px;
+                color: white;
+                font-size: 18px;
+            }
+
+            input {
+                width: 100%;
+              
+                padding-left: 20px;
+            }
+
+            html, body, h1, h2, h3, h4, h5 {
+                font-family: "Open Sans", sans-serif
+            }
+
+           
+
+            .box {
+                text-align: left;
+                position: relative;
+                top: 12px;
+                padding: 10px 30px;
+                width: 95%;
+                padding-bottom: 200px;
+                background: #FFF;
+            }
+
+            .effect6 {
+                position: relative;
+                -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+                -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+                box-shadow: 0 1px 40px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+            }
+
+                .effect6:before, .effect6:after {
+                    content: "";
+                    position: absolute;
+                    z-index: -1;
+                    -webkit-box-shadow: 0 0 20px rgba(0,0,0,0.8);
+                    -moz-box-shadow: 0 0 20px rgba(0,0,0,0.8);
+                    box-shadow: 0 0 50px rgba(0,0,0,0.8);
+                    top: 50%;
+                    bottom: 0;
+                    left: 10px;
+                    right: 10px;
+                    -moz-border-radius: 100px / 10px;
+                    border-radius: 100px / 10px;
+                }
+
+                .effect6:after {
+                    right: 10px;
+                    left: auto;
+                    -webkit-transform: skew(8deg) rotate(3deg);
+                    -moz-transform: skew(8deg) rotate(3deg);
+                    -ms-transform: skew(8deg) rotate(3deg);
+                    -o-transform: skew(8deg) rotate(3deg);
+                    transform: skew(8deg) rotate(3deg);
+                }
+        </style>

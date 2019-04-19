@@ -1,0 +1,36 @@
+﻿@model IEnumerable<FleetManagementWebApplication.Models.Bill>
+    <style>
+        .td1 {
+            padding-left: 10px;
+            padding-bottom: 5px;
+            padding-top: 5px;
+        }
+    </style>
+@{
+    Bill[] Bills=Model.ToArray();
+    ViewData["Title"] = "Costs";
+    Layout = "LayoutVehicle";
+}
+<h1>Costs</h1>
+
+    <table width="100%">
+        <tr>
+            <td class="td1" style="background-color:silver">Time</td>
+            <td class="td1" width="60%" style="background-color:silver">Service</td>
+            <td class="td1" style="background-color:red">Cost</td>
+        </tr>
+        @foreach (Bill b in Bills)
+        {
+    <tr>
+        <td class="td1">@b.DateTime</td>
+        <td class="td1">@b.Service</td>
+        <td class="td1" style="background-color:red">@b.Cost $</td>
+
+    </tr>
+        }
+    </table>
+    <hr />
+<br />
+<h3> total : @ViewData["total"] $</h3>   
+    
+

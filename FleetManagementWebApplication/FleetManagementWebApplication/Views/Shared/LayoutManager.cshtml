@@ -16,14 +16,22 @@
     body {
         background: #ccc
     }
+    .box{
+        margin: 10px auto;
+    }
 </style>
-
-
+@{ 
+    Notification[] Notifications = (Notification[])ViewData["Notifications"];
+    if (Notifications == null)
+    {
+        Notifications = new Notification[0];
+    }
+}
 <!-- Navbar -->
-<div class="w3-top">
+<div>
     <div class="w3-bar w3-theme-d2 w3-left-align w3-large">
-        <a class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-padding-large w3-hover-white w3-large w3-theme-d2" href="javascript:void(0);" onclick="openNav()"><i class="fa fa-bars"></i></a>
-        <a href="#" class="w3-bar-item w3-button w3-padding-large w3-theme-d4"><i class="fa fa-home w3-margin-right"></i>@ViewData["CompanyName"]</a>
+        <a href="/Home" class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-padding-large w3-hover-white w3-large w3-theme-d2" href="javascript:void(0);" onclick="openNav()"><i class="fa fa-bars"></i></a>
+        <a href="/Home" class="w3-bar-item w3-button w3-padding-large w3-theme-d4"><i class="fa fa-home w3-margin-right"></i>@ViewData["CompanyName"]</a>
 
         <div class="w3-dropdown-hover w3-hide-small ">
             <button class="w3-button w3-padding-large">Vehicles</button>
@@ -40,9 +48,7 @@
             <div class="w3-dropdown-content w3-card-4 w3-bar-block" style="width:280px">
                 <a asp-controller="Drivers" asp-action="Create" class="w3-bar-item w3-button">Add a driver</a>
                 <a asp-controller="Drivers" asp-action="Index" class="w3-bar-item w3-button">All drivers</a>
-                <a href="#" class="w3-bar-item w3-button">Drivers performance reports</a>
-                <a href="#" class="w3-bar-item w3-button">Drivers health reports</a>
-            </div>
+     </div>
         </div>
 
         <div class="w3-dropdown-hover w3-hide-small ">
@@ -58,7 +64,7 @@
             <button class="w3-button w3-padding-large">Bills</button>
             <div class="w3-dropdown-content w3-card-4 w3-bar-block" style="width:300px">
                 <a asp-controller="Bills" asp-action="Create" class="w3-bar-item w3-button">New bill</a>
-                <a  asp-controller="Bills" class="w3-bar-item w3-button">All bills</a>
+                <a asp-controller="Bills" asp-action="Index"  class="w3-bar-item w3-button">All bills</a>
             </div>
         </div>
 
@@ -66,42 +72,54 @@
             <button class="w3-button w3-padding-large">Reports</button>
             <div class="w3-dropdown-content w3-card-4 w3-bar-block" style="width:300px">
                 <a href="#" class="w3-bar-item w3-button">Costs Report</a>
+                <a href="#" class="w3-bar-item w3-button">Drivers performance reports</a>
                 <a href="#" class="w3-bar-item w3-button">Fuel Consumption Report</a>
-                <a href="#" class="w3-bar-item w3-button">Maintenance Report</a>
-                <a href="#" class="w3-bar-item w3-button">CO2 Emission Report</a>
+              
             </div>
         </div>
 
+            <div class="w3-dropdown-hover w3-hide-small w3-left">
+                <button class="w3-button w3-padding-large">
+                    <i class="fa fa-bell"></i>
+                    @if (Notifications.Length > 0)
+                    {
+                        <span class="w3-badge w3-right w3-small w3-green">@Notifications.Length</span>
+                    }
+                    </button>
+                <div class="w3-dropdown-content w3-card-4 w3-bar-block">
+                    @foreach (Notification n in Notifications)
+                    {
+                        <form asp-controller="@n.Controller" asp-action="Index">
+                            <input type="hidden" value="@n.Id" name="Id" />
+                            <input type="submit" class="w3-bar-item w3-button" value="@n.Title" />
+                        </form>
+                    }
 
-
-
-        <div class="w3-dropdown-hover w3-hide-small w3-right">
-            <button class="w3-button w3-padding-large">&nbsp;&nbsp;&nbsp;<i class="fa fa-user"></i>&nbsp;&nbsp;&nbsp;@ViewData["Name"]</button>
-            <div class="w3-dropdown-content w3-card-4 w3-bar-block" style="width:220px">
-                <a asp-controller="Managers" asp-action="Edit" class="w3-bar-item w3-button ">Edit</a>
-                <a asp-controller="Managers" asp-action="LogOut" class="w3-bar-item w3-button ">Log out</a>
-                <a asp-controller="Managers" asp-action="Delete" class="w3-bar-item w3-button ">Delete</a>
+                </div>
             </div>
-        </div>
-        <div class="w3-dropdown-hover w3-hide-small w3-right">
-            <button class="w3-button w3-padding-large"><i class="fa fa-bell"></i><span class="w3-badge w3-right w3-small w3-green">3</span></button>
-            <div class="w3-dropdown-content w3-card-4 w3-bar-block" style="width:300px">
-                <a href="#" class="w3-bar-item w3-button">New order from Beqaa</a>
-                <a href="#" class="w3-bar-item w3-button">New order from Beirut</a>
-                <a href="#" class="w3-bar-item w3-button">Maintenance alert </a>
+     
+
+            <div class="w3-dropdown-hover w3-hide-small w3-right">
+                <button class="w3-button w3-padding-large">&nbsp;&nbsp;&nbsp;<i class="fa fa-user"></i>&nbsp;&nbsp;&nbsp;@ViewData["Name"]</button>
+                <div class="w3-dropdown-content w3-card-4 w3-bar-block" style="width:220px">
+                    <a asp-controller="Managers" asp-action="Edit" class="w3-bar-item w3-button ">Edit</a>
+                    <a asp-controller="Managers" asp-action="LogOut" class="w3-bar-item w3-button ">Log out</a>
+                    <a asp-controller="Managers" asp-action="Delete" class="w3-bar-item w3-button ">Delete</a>
+                </div>
             </div>
+            <div class="w3-bar-item   w3-right " style="height:53px;padding-bottom:10px">
+                <form defaultbutton="Query" asp-controller="@ViewData["QueryPlaceHolder"]" asp-action="Search" runat="server">
+                    <input type="text" name="Query" placeholder="Search @ViewData["QueryPlaceHolder"]"
+                           style="background-color:silver;height:40px;width:260px;padding-left:10px"
+                           value="@ViewData["Query"]">
+                </form>
+            </div>
+
+
+
+
+
         </div>
-
-        <div class="w3-bar-item   w3-right " style="height:53px;padding-bottom:10px;padding-right:40px;">
-            <form defaultbutton="Query" asp-controller="@ViewData["QueryPlaceHolder"]" asp-action="Search" runat="server">
-                <input type="text" name="Query" placeholder="Search @ViewData["QueryPlaceHolder"]"
-                       style="background-color:silver;height:40px;width:260px;padding-left:10px"
-                       value="@ViewData["Query"]">
-            </form>
-        </div>
-
-
-    </div>
 
 </div>
 <body>

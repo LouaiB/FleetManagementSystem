@@ -5,7 +5,6 @@
     Layout = "LayoutVehicle";
 }
 <h1>Properties</h1>
-<h1>@Model.Id</h1>
 <h5>License Plate : @Model.LicensePlate</h5>
 <h5>Make : @Model.Make</h5>
 <h5>Model : @Model.Model</h5>
@@ -14,4 +13,10 @@
 <h5>Pay Load : @Model.PayLoad Passengers</h5>
 <h5>Emission CO2 : @Model.EmissionsCO2 G/Km</h5>
 <h5>Fuel Consumption : @Model.FuelConsumption Litres/Km</h5>
-
+<form asp-controller="Plans" asp-action="Details">
+<h5>
+    Plan :
+    <button style="background-color:white;border:none;color:blue">@Model.Plan.Name</button>
+    <input type="hidden" name="id" value="@Model.Plan.Id" />
+</h5>
+</form>

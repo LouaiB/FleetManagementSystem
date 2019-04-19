@@ -17,18 +17,23 @@ namespace FleetManagementWebApplication.Controllers
         private long CompanyId;
         private string CompanyName = " Company ";
         private readonly ApplicationDbContext _context;
-
+        private readonly NotificationManager NotificationManager;
         public DriversController(ApplicationDbContext context)
         {
             _context = context;
+            NotificationManager = new NotificationManager();
         }
 
         // GET: Drivers
         public async Task<IActionResult> Index()
         {
+            if (!isLogedIn())
+                return RedirectToRoute("Home");
+
             Name = HttpContext.Session.GetString("Name");
             CompanyName = HttpContext.Session.GetString("CompanyName");
             CompanyId = (int)HttpContext.Session.GetInt32("CompanyId");
+            ViewData["Notifications"] = NotificationManager.GetNotifications(CompanyId, _context);
             ViewData["Name"] = Name;
             ViewData["CompanyName"] = CompanyName;
             ViewData["QueryPlaceHolder"] ="Drivers" ;
@@ -36,9 +41,13 @@ namespace FleetManagementWebApplication.Controllers
         }
         public async Task<IActionResult> Search(string Query="")
         {
+            if (!isLogedIn())
+                return RedirectToRoute("Home");
+
             Name = HttpContext.Session.GetString("Name");
             CompanyName = HttpContext.Session.GetString("CompanyName");
             CompanyId = (int)HttpContext.Session.GetInt32("CompanyId");
+            ViewData["Notifications"] = NotificationManager.GetNotifications(CompanyId, _context);
             ViewData["Name"] = Name;
             ViewData["CompanyName"] = CompanyName;
             ViewData["QueryPlaceHolder"] = "Drivers";
@@ -59,9 +68,13 @@ namespace FleetManagementWebApplication.Controllers
         // GET: Drivers/Details/5
         public async Task<IActionResult> Details(long? id)
         {
+            if (!isLogedIn())
+                return RedirectToRoute("Home");
+
             Name = HttpContext.Session.GetString("Name");
             CompanyName = HttpContext.Session.GetString("CompanyName");
             CompanyId = (int)HttpContext.Session.GetInt32("CompanyId");
+            ViewData["Notifications"] = NotificationManager.GetNotifications(CompanyId, _context);
             ViewData["Name"] = Name;
             ViewData["CompanyName"] = CompanyName;
             ViewData["QueryPlaceHolder"] = "Drivers";
@@ -83,9 +96,13 @@ namespace FleetManagementWebApplication.Controllers
         // GET: Drivers/Create
         public IActionResult Create()
         {
+            if (!isLogedIn())
+                return RedirectToRoute("Home");
+
             Name = HttpContext.Session.GetString("Name");
             CompanyName = HttpContext.Session.GetString("CompanyName");
             CompanyId = (int)HttpContext.Session.GetInt32("CompanyId");
+            ViewData["Notifications"] = NotificationManager.GetNotifications(CompanyId, _context);
             ViewData["Name"] = Name;
             ViewData["CompanyName"] = CompanyName;
             ViewData["QueryPlaceHolder"] = "Drivers";
@@ -99,9 +116,13 @@ namespace FleetManagementWebApplication.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Username,Password,Name,Birthdate,Address,Phonenumber")] Driver driver)
         {
+            if (!isLogedIn())
+                return RedirectToRoute("Home");
+
             Name = HttpContext.Session.GetString("Name");
             CompanyName = HttpContext.Session.GetString("CompanyName");
             CompanyId = (int)HttpContext.Session.GetInt32("CompanyId");
+            ViewData["Notifications"] = NotificationManager.GetNotifications(CompanyId, _context);
             ViewData["Name"] = Name;
             ViewData["CompanyName"] = CompanyName;
             ViewData["QueryPlaceHolder"] = "Drivers";
@@ -118,9 +139,12 @@ namespace FleetManagementWebApplication.Controllers
         // GET: Drivers/Edit/5
         public async Task<IActionResult> Edit(long? id)
         {
+            if (!isLogedIn())
+                return RedirectToRoute("Home");
             Name = HttpContext.Session.GetString("Name");
             CompanyName = HttpContext.Session.GetString("CompanyName");
             CompanyId = (int)HttpContext.Session.GetInt32("CompanyId");
+            ViewData["Notifications"] = NotificationManager.GetNotifications(CompanyId, _context);
             ViewData["Name"] = Name;
             ViewData["CompanyName"] = CompanyName;
             ViewData["QueryPlaceHolder"] = "Drivers";
@@ -145,9 +169,13 @@ namespace FleetManagementWebApplication.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditConfirmed(long id, [Bind("Id,Username,Password,Name,Birthdate,Address,Phonenumber")] Driver driver)
         {
+            if (!isLogedIn())
+                return RedirectToRoute("Home");
+
             Name = HttpContext.Session.GetString("Name");
             CompanyName = HttpContext.Session.GetString("CompanyName");
             CompanyId = (int)HttpContext.Session.GetInt32("CompanyId");
+            ViewData["Notifications"] = NotificationManager.GetNotifications(CompanyId, _context);
             ViewData["Name"] = Name;
             ViewData["CompanyName"] = CompanyName;
             ViewData["QueryPlaceHolder"] = "Drivers";
@@ -183,9 +211,13 @@ namespace FleetManagementWebApplication.Controllers
         // GET: Drivers/Delete/5
         public async Task<IActionResult> Delete(long? id)
         {
+            if (!isLogedIn())
+                return RedirectToRoute("Home");
+
             Name = HttpContext.Session.GetString("Name");
             CompanyName = HttpContext.Session.GetString("CompanyName");
             CompanyId = (int)HttpContext.Session.GetInt32("CompanyId");
+            ViewData["Notifications"] = NotificationManager.GetNotifications(CompanyId, _context);
             ViewData["Name"] = Name;
             ViewData["CompanyName"] = CompanyName;
             ViewData["QueryPlaceHolder"] = "Drivers";
@@ -210,9 +242,13 @@ namespace FleetManagementWebApplication.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
+            if (!isLogedIn())
+                return RedirectToRoute("Home");
+
             Name = HttpContext.Session.GetString("Name");
             CompanyName = HttpContext.Session.GetString("CompanyName");
             CompanyId = (int)HttpContext.Session.GetInt32("CompanyId");
+            ViewData["Notifications"] = NotificationManager.GetNotifications(CompanyId, _context);
             ViewData["Name"] = Name;
             ViewData["CompanyName"] = CompanyName;
             ViewData["QueryPlaceHolder"] = "Drivers";
@@ -225,12 +261,15 @@ namespace FleetManagementWebApplication.Controllers
 
         private bool DriverExists(long id)
         {
-            Name = HttpContext.Session.GetString("Name");
-            CompanyName = HttpContext.Session.GetString("CompanyName");
-            CompanyId = (int)HttpContext.Session.GetInt32("CompanyId");
-            ViewData["Name"] = Name;
-            ViewData["CompanyName"] = CompanyName;
             return _context.Drivers.Any(e => e.Id == id);
+        }
+        private bool isLogedIn()
+        {
+            if (HttpContext.Session.GetInt32("LoggedIn") == null)
+                return false;
+            else
+                return true;
+
         }
     }
 }

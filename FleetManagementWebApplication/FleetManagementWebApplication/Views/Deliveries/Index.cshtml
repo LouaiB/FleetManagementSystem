@@ -1,0 +1,114 @@
+﻿@model IEnumerable<FleetManagementWebApplication.Models.Delivery>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/LayoutManager.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Time)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SourceLongtitude)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SourceLatitude)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SourceCity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DestinationLongtitude)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DestinationLatitude)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DestinationCity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Quantity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Answered)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Started)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Finished)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OptimalDistance)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OptimalTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OptimalFuelConsumption)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Time)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SourceLongtitude)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SourceLatitude)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SourceCity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DestinationLongtitude)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DestinationLatitude)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DestinationCity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Quantity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Answered)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Started)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Finished)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OptimalDistance)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OptimalTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OptimalFuelConsumption)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

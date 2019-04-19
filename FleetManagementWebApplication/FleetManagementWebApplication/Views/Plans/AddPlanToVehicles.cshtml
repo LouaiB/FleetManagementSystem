@@ -3,16 +3,22 @@
     Layout = "LayoutManager";
     Vehicle[] Vehicles = (Vehicle[])ViewData["Vehicles"];
 }
-<div class="box effect6">
-    <table width="100%"><tr><td><h3>Assign Plan to Vehicles </h3></td>
-        <td align="right"><input type="text" placeholder="filter vehicles" />
-            </td></tr></table>
+    <div class="box effect6">
+   
+        <table width="100%">
+            <tr>
+                <td><h3>Assign Plan to Vehicles </h3></td>
+                <td align="right">
+                    <form asp-controller="Plans" asp-action="SearchAddPlanToVehicles">
+                        <input type="text" placeholder="filter vehicles" onkeyup="search(event);"
+                               value="@ViewData["Query1"]" name="Query1" />
+                    </form>
+                </td>
+            </tr>
+        </table>
 
-    <div class="w3-container w3-padding">
-        <form asp-controller="Plans" asp-action="FinishAddPlanToVehicles">
-         
-         
-
+        <div class="w3-container w3-padding">
+            <form asp-controller="Plans" asp-action="FinishAddPlanToVehicles">
                 <table>
                     @for (int i = 0; i < Vehicles.Length; i += 4)
                     {
@@ -70,26 +76,36 @@
                             }
                         </tr>
                     }
-
                 </table>
-
-
                 <br>
                 <br>
+
 
 
                 <button type="submit" class="w3-button w3-theme w3-right">
                     Next
                     <!-- <i class='fas fa-angle-double-right'></i> -->
-                </button>
-</form>
+                </button>   
+            </form>
+        </div>
     </div>
-</div>
 
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+
+<script>
+    function search(event) {
+        // Number 13 is the "Enter" key on the keyboard
+        if (event.keyCode === 13) {
+            // Cancel the default action, if needed
+            event.preventDefault();
+            // Trigger the button element with a click
+            document.getElementById("myForm").submit();
+        }
+    }
+</script>
 <style>
     html, body, h1, h2, h3, h4, h5 {
         font-family: "Open Sans", sans-serif
@@ -154,7 +170,7 @@
 
     /* On mouse-over, add a grey background color */
     .container1:hover input ~ .checkmark {
-        background-color: #ccc;
+        background-color: rgba(9, 226, 233, 0.30);
     }
 
     /* When the checkbox is checked, add a blue background */

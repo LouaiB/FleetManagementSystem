@@ -14,7 +14,7 @@ namespace FleetManagementWebApplication.Models
         [Required]
         public DateTime Time { get; set; }
 
-        [Required]
+        public Company Company { get; set; } 
         public Client Client { get; set; }
         public Vehicle Vehicle { get; set; }
         public Driver Driver { get; set; }

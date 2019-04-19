@@ -23,11 +23,7 @@ namespace FleetManagementWebApplication.Controllers
         public async Task<IActionResult> Index()
         {
             if (!isLogedIn())
-                return RedirectToRoute("Home");
-            ViewData["Name"] = HttpContext.Session.GetString("Name");
-            ViewData["CompanyName"] = HttpContext.Session.GetString("CompanyName");
-            ViewData["CompanyId"] = HttpContext.Session.GetInt32("CompanyId");
-            ViewData["Id"] = HttpContext.Session.GetInt32("Id");
+                return RedirectToRoute("Home");  
             return RedirectToRoute("Vehicles");
             //return View(await _context.Managers.ToListAsync());
         }
@@ -35,6 +31,10 @@ namespace FleetManagementWebApplication.Controllers
         // GET: Managers/Details/5
         public async Task<IActionResult> Details(long? id)
         {
+
+            if (!isLogedIn())
+                return RedirectToRoute("Home");
+
             if (id == null)
             {
                 return NotFound();
@@ -50,16 +50,10 @@ namespace FleetManagementWebApplication.Controllers
             return View(manager);
         }
 
-        // GET: Managers/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
         public IActionResult LogIn(string Email, string Password)
         {
-          //  try
-          //  {
+            try
+            {
                 Manager manager = _context.Managers.First(m => m.Email == Email && m.Password == Password);
                 Company company = _context.Companies.First(c => c.Manager.Id == manager.Id);
                 HttpContext.Session.SetInt32("LoggedIn", 1);
@@ -69,26 +63,24 @@ namespace FleetManagementWebApplication.Controllers
                 HttpContext.Session.SetString("CompanyName", company.Name);
                 HttpContext.Session.SetString("OrderType", company.OrderType);
                 return RedirectToAction("Index");
-          //  }
-          //  catch (Exception)
-           // {
+            }
+           catch (Exception)
+            {
                 ViewData["Error"] = "Invalid Login";
-            //}
+           }
 
                 return View("/Views/Home/LogIn.cshtml");
         }
 
 
-        // POST: Managers/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Email,Password")] Manager manager,string ConfirmPassword)
         {
             bool valid = true;
-         
-              if( _context.Managers.Any(m => m.Email == manager.Email)) {         
+            
+               if( _context.Managers.Any(m => m.Email == manager.Email)) {         
                 ViewData["EmailError"] = "Email already taken";
                 valid = false;
             }
@@ -97,10 +89,8 @@ namespace FleetManagementWebApplication.Controllers
                 ViewData["PasswordError"] = "Passwords don't match";
                 valid = false;
             }
-            
-            if (valid&&ModelState.IsValid)
-            {
-                
+          if (valid&&ModelState.IsValid)
+            { 
                 HttpContext.Session.SetString("Input-Name", manager.Name);
                 HttpContext.Session.SetString("Input-Email", manager.Email);
                 HttpContext.Session.SetString("Input-Password", manager.Password);
@@ -112,7 +102,8 @@ namespace FleetManagementWebApplication.Controllers
         // GET: Managers/Edit
         public async Task<IActionResult> Edit()
         {
-
+            if (!isLogedIn())
+                return RedirectToRoute("Home");
             long id =(long) HttpContext.Session.GetInt32("Id");
              var manager = await _context.Managers.FindAsync(id);
              if (manager == null)
@@ -121,17 +112,16 @@ namespace FleetManagementWebApplication.Controllers
            }
             return View(manager);
         }
-
-    
-
-        // POST: Managers/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-
+        public IActionResult Create()
+        {
+            return View();
+        }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([Bind("Id,Name,Email,Password")] Manager manager)
         {
+            if (!isLogedIn())
+                return RedirectToRoute("Home");
             long id = (long)HttpContext.Session.GetInt32("Id");
             if (ModelState.IsValid)
             {
@@ -158,11 +148,12 @@ namespace FleetManagementWebApplication.Controllers
             return View(manager);
         }
 
-        // GET: Managers/Delete/5
         [HttpGet]
         public async Task<IActionResult> Delete()
         {
- 
+            if (!isLogedIn())
+                return RedirectToRoute("Home");
+
             return View();
         }
 
@@ -171,6 +162,9 @@ namespace FleetManagementWebApplication.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed()
         {
+            if (!isLogedIn())
+                return RedirectToRoute("Home");
+
             long cid = (long)HttpContext.Session.GetInt32("CompanyId");
             long id = (long)HttpContext.Session.GetInt32("Id");
             List<Vehicle> vehicles = _context.Vehicles.Where(v => v.Company.Id == cid).ToList<Vehicle>();
@@ -188,6 +182,9 @@ namespace FleetManagementWebApplication.Controllers
 
         public async Task<IActionResult> LogOut()
         {
+            if (!isLogedIn())
+                return RedirectToRoute("Home");
+
             HttpContext.Session.Clear();
             return RedirectToRoute("Home");
         }
