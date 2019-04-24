@@ -1,0 +1,12 @@
+﻿
+@{
+    ViewData["Title"] = "ShowCompanies";
+}
+
+<h1>ShowCompanies</h1>
+
+@foreach(var com in (List<Company>)@ViewData["Companies"])
+    {
+        @com.Id  @com.Name <br />
+    }
+

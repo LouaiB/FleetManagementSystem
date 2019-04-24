@@ -23,13 +23,13 @@ namespace FleetManagementWebApplication.Models
         public double SourceLongtitude { get; set; }
         [Required]
         public double SourceLatitude { get; set; }
-        [Required]
+        
         public string SourceCity { get; set; }
         [Required]
         public double DestinationLongtitude { get; set; }
         [Required]
         public double DestinationLatitude { get; set; }
-        [Required]
+        
         public string DestinationCity { get; set; }
         [Required]
         public int Quantity { get; set; }

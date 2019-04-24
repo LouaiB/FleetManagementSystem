@@ -1,0 +1,15 @@
+﻿
+@{
+    ViewData["Title"] = "ShowDeliveries";
+}
+
+<br /><br /><br /><br /><br />
+<h1>ShowDeliveries</h1>
+
+@foreach(var d in (List<Delivery>)ViewData["Deliveries"])
+{
+<p>
+    Delivery ID: @d.Id Vehicle ID: @d.Vehicle.Id
+</p>
+}
+
