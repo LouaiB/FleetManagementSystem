@@ -776,8 +776,6 @@ async function addDelivery() {
         vehicleID = optDriver.vehicleID;
     }
 
-    let deliveryID = -10;
-
     //TODO
     ///////////// AJAX add delivery to DB and get delivery ID /////////////
     const ajaxPostRequestJSON = {
@@ -835,19 +833,29 @@ async function cancelDelivery(vehicleID, deliveryID)
 
     //TODO
     ///////////// AJAX remove delivery from DB /////////////
-
-
-
-    ///////////////////////////////////////////////////////
-
-    delete deliveries[deliveryID];
-    if(arrayLength(deliveries) == 0){
-        deliveries = [];
+    const ajaxPostRequestJSON = {
+        vehicleID: `${vehicleID}`,
+        deliveryID: `${deliveryID}`
     }
 
-    let flag = await updateVehicleRoute(vehicleID, deliveries);
-    if(flag) showVehicleDetails(vehicleID);
-    console.log("--------------------- OUT CANCEL DELIVERY --------------------");
+    $.ajax({
+        type: "POST",
+        url: "/Map/CancelDelivery",
+        data: ajaxPostRequestJSON,
+
+        success: async function (result) {
+            delete deliveries[deliveryID];
+            if(arrayLength(deliveries) == 0){
+                deliveries = [];
+            }
+
+            let flag = await updateVehicleRoute(vehicleID, deliveries);
+            if(flag) showVehicleDetails(vehicleID);
+            console.log("--------------------- OUT CANCEL DELIVERY --------------------");
+        }
+    });
+    ///////////////////////////////////////////////////////
+
 }
 
 function finishDelivery(vehicleID, deliveryID)
@@ -1142,7 +1150,29 @@ function addVehicles(vehicles)
  */
 function refetchAndRefresh()
 {
+    //TODO
+    ///////////// AJAX get vehicles from DB /////////////
+    const ajaxPostRequestJSON = {
+        isActive: true
+    }
 
+    $.ajax({
+        type: "POST",
+        url: "/Map/GetVehicles",
+        data: ajaxPostRequestJSON,
+
+        success: async function (result) {
+            ////// Steps 2 -> 5 HERE /////
+
+
+
+
+
+
+            /////////////////////////////
+        }
+    });
+    ///////////////////////////////////////////////////////
 }
 
 ///////////////////////////////////// TESTING ///////////////////////////////////////////////
