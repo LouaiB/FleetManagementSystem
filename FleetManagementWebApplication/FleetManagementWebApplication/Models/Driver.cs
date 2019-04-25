@@ -31,7 +31,7 @@ namespace FleetManagementWebApplication.Models
         public string Phonenumber { get; set; }
 
         public Company Company { get; set; }
-        public List<Delivery> Deliveries { get; set; }
+        public List<Delivery> Deliveries { get; set; } = new List<Delivery>();
 
     }
 }

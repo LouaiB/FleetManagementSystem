@@ -778,14 +778,14 @@ async function addDelivery() {
 
     //TODO
     ///////////// AJAX add delivery to DB and get delivery ID /////////////
-    const ajaxPostRequestJSON = {
-        vehicleID: `${vehicleID}`,
-        driverID: displayedVehicles[vehicleID].currentDriver.driverID,
-        startLatitude: startLatitude,
-        startLongitude: startLongitude,
-        endLatitude: endLatitude,
-        endLongitude: endLongitude,
-    }
+    const ajaxPostRequestJSON = `{
+        vehicleID: ${vehicleID},
+        driverID: ${displayedVehicles[vehicleID].currentDriver.driverID},
+        startLatitude: ${startLatitude},
+        startLongitude: ${startLongitude},
+        endLatitude: ${endLatitude},
+        endLongitude: ${endLongitude}
+    }`
 
     addDeliveryToDB(ajaxPostRequestJSON, vehicleID, startLatitude, startLongitude, endLatitude, endLongitude, customerName, customerPhone, deliveryType, Date.now());
 }
@@ -795,14 +795,18 @@ async function addDeliveryToDB(ajaxPostRequestJSON, vehicleID, startLatitude, st
     console.log(ajaxPostRequestJSON);
     $.ajax({
         type: "POST",
-        url: "/Map/AddDeliveryBySupervisor",
+        url: "http://abdullahhaidar92-001-site1.etempurl.com/api/Deliveries/AddDeliveryBySupervisor",
+        //url: "/Map/AddDeliveryBySupervisor",
+        accepts: "application/json",
+        contentType: "application/json; charset=utf-8",
         data: ajaxPostRequestJSON,
-        //contentType: "application/json",
 
         success: async function (result) {
             // Add delivery to client side map and displayed vehicles array
+            console.log("AJAX ADD DELIVERY RESULT:");
+            console.log(result);
             const delivery = {
-                "deliveryID": result.result,
+                "deliveryID": result,
                 "startLatitude": startLatitude,
                 "startLongitude": startLongitude,
                 "endLatitude": endLatitude,
@@ -1208,7 +1212,7 @@ function refetchAndRefresh()
                             "avatar": "/images/avatar1.jpg",
                             "phone": `${v.CurrentDriver.Phonenumber}`,
                             "email": "In DB but not attributed to Driver table",
-                            "birthdate": `${.CurrentDriver.Birthdate}`
+                            "birthdate": `${v.CurrentDriver.Birthdate}`
                         },
                         vDelList
                     );
