@@ -1,0 +1,410 @@
+﻿@model MapViewModel
+@{
+    ViewData["Title"] = "Index";
+}
+
+<html>
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="/css/component.css" />
+    <link rel="stylesheet" type="text/css" href="/css/content.css" />
+    <script src="/js/modernizr.custom.js"></script>
+
+    <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+    <script src="https://js.api.here.com/v3/3.0/mapsjs-core.js"
+            type="text/javascript" charset="utf-8"></script>
+    <script src="https://js.api.here.com/v3/3.0/mapsjs-service.js"
+            type="text/javascript" charset="utf-8"></script>
+    <script src="https://js.api.here.com/v3/3.0/mapsjs-mapevents.js"
+            type="text/javascript" charset="utf-8"></script>
+    <script src="https://js.api.here.com/v3/3.0/mapsjs-ui.js"
+            type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" charset="UTF-8"
+            src="https://js.api.here.com/v3/3.0/mapsjs-places.js"></script>
+    <link rel="stylesheet" type="text/css"
+          href="https://js.api.here.com/v3/3.0/mapsjs-ui.css" />
+
+    <style>
+        body {
+        }
+
+        #map {
+            margin-left: 30px;
+            margin-right: 30px;
+            margin-top: 60px;
+            height: 90vh;
+            z-index: 1;
+        }
+
+        #map-title {
+            text-align: center;
+            margin-top: 0px;
+            margin-bottom: 0px;
+            background-color: #233237;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            border-bottom: solid 3px #474749;
+            color: #eac67a;
+            height: 6%;
+        }
+
+        #mapContainer {
+            margin-right: 0px;
+            padding-right: 0px;
+            margin-left: 0px;
+            padding-left: 0px;
+            margin-bottom: 0px;
+            padding-bottom: 0px;
+            height: 87%;
+        }
+
+        #underbar {
+            margin-top: 0px;
+            padding-top: 0px;
+            margin-right: 0px;
+            padding-right: 0px;
+            margin-left: 0px;
+            padding-left: 0px;
+            height: 7%;
+            color: white;
+            background-color: #233237;
+            border-top: solid 2px #18121e;
+        }
+
+        #map-and-underbar-col {
+            padding-right: 0px;
+            padding-left: 0px;
+            padding-bottom: 0px;
+            height: inherit;
+            border: solid 5px #18121e;
+        }
+
+        #vehicles-list-col {
+            padding-right: 0px;
+            padding-left: 0px;
+            overflow-y: auto;
+            height: inherit;
+            border: solid 5px #18121e;
+        }
+
+            #vehicles-list-col > h3 {
+                text-align: center;
+                margin-top: 0px;
+                margin-bottom: 0px;
+                background-color: #233237;
+                padding-top: 10px;
+                padding-bottom: 10px;
+                border-bottom: solid 3px #474749;
+                color: #eac67a;
+            }
+
+        #vehicles {
+            margin-bottom: 0px;
+        }
+
+        #vehicles-list {
+            margin-bottom: 0px;
+        }
+
+        #vehicle-list-item {
+            background-color: #f3f3f3;
+        }
+
+            #underbar .btn-primary, #vehicle-list-item .btn-primary {
+                background-color: #814942;
+                border: solid 1px #4d2621;
+            }
+
+        .radio-inline {
+            color: #d1877f;
+        }
+
+            .radio-inline:hover {
+                color: #ecb9b3;
+            }
+
+        #click-section {
+            border-right: solid 2px #18121e;
+        }
+
+        #click-label {
+            font-size: large;
+            margin-top: 10px;
+            color: #d1877f;
+            float: left;
+            width: 30%;
+        }
+
+        #driver-details {
+            text-align: center;
+            margin-left: 50px;
+            margin-right: 50px;
+        }
+
+            #driver-details > h1 {
+                text-align: left;
+                margin-left: 25%;
+            }
+
+            #driver-details .table {
+                align-content: center;
+                text-align: center;
+                width: 100%;
+            }
+
+            #driver-details > h4 {
+                color: rgb(41, 22, 22);
+                background-color: #c4c4c7;
+            }
+
+        #driver-details-list {
+        }
+
+        #driver-details-mainpane {
+        }
+
+        #driver-details-sidepane {
+        }
+
+            #driver-details-sidepane > ul > li > h2 {
+                color: #18121e;
+            }
+    </style>
+
+</head>
+
+<body>
+    <br /><br /><br />
+    <h1>@Model.CompanyName : @Model.CompanyType</h1>
+
+    <div id="map" class="row">
+        <div class="col-lg-8" id="map-and-underbar-col">
+            <h3 id="map-title">Map</h3>
+            <div id="mapContainer"></div>
+            <div id="underbar" class="row">
+                <div class="col-lg-6" id="click-section">
+                    <label id="click-label">Clicking sets:</label>
+
+                    <div class="radio" style="float: right; width: 70%;" id="clickTypeRadioGroup">
+                        <label class="radio-inline" style="font-size: medium"><input type="radio" id="clickType" name="clickType" value="none" checked>None</label>
+                        <label class="radio-inline" style="font-size: medium"><input type="radio" id="clickType" name="clickType" value="source">Source</label>
+                        <label class="radio-inline" style="font-size: medium"><input type="radio" id="clickType" name="clickType" value="destination">Destination</label>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <button class="btn btn-primary" onclick="unsetSelectors()" style="font-size: large; margin-top: 5px; height: 75%">Unset S/D</button>
+                </div>
+                <div class="col-lg-1"></div>
+                <div class="col-lg-3">
+                    <div class="morph-button morph-button-modal morph-button-modal-2 morph-button-fixed">
+                        <button type="button" class="btn btn-primary">Add Delivery</button>
+                        <div class="morph-content">
+                            <div>
+                                <div class="content-style-form content-style-form-1">
+                                    <span class="icon icon-close">Close the dialog</span>
+                                    <h2 style="color: whitesmoke">Add Delivery</h2>
+                                    <form>
+                                        <p>
+                                            <label>Delivery Vehicle</label>
+                                            <select class="form-control" id="deliveryVehicleSelect"></select>
+                                        </p>
+                                        <p><label>Customer Name</label><input type="text" id="customerNameInput" /></p>
+                                        <p><label>Customer Phone Number</label><input type="text" id="customerPhoneInput" /></p>
+                                        <p><label>Delivery Type</label><input type="text" id="deliveryTypeInput" /></p>
+                                        <p><label>Delivery ID (testing)</label><input type="text" id="deliveryIdInput" /></p>
+                                        <p><button onclick="addDelivery()" id="deliverBtn">Deliver</button></p>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-lg-4" id="vehicles-list-col">
+            <h3>Active Vehicles</h3>
+            <div id="vehicles" class="list-group" height="75vh">
+                <ul id="vehicles-list" class="list-group"></ul>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- DRIVER DETAILS SECTION -->
+    <div id="driver-details">
+        <h1>Driver Details</h1>
+        <div class="row">
+            <div id="driver-details-mainpane" class="col-lg-8">
+                <table id="driver-details-list" class="table table-striped table-bordered">
+                    <tr><td colsapn=2>No driver selected</td></tr>
+                </table>
+            </div>
+            <div id="driver-details-sidepane" class="col-lg-4">
+
+            </div>
+        </div>
+    </div>
+
+
+    <input type="hidden" id="startLatitudeOptRouteInput" />
+    <input type="hidden" id="startLongitudeOptRouteInput" /> <br />
+    <input type="hidden" id="endLatitudeOptRouteInput" />
+    <input type="hidden" id="endLongitudeOptRouteInput" />
+
+
+    <script src="/js/classie.js"></script>
+    <script src="/js/uiMorphingButton_fixed.js"></script>
+    <script>
+        (function () {
+            let docElem = window.document.documentElement, didScroll, scrollPosition;
+
+            // trick to prevent scrolling when opening/closing button
+            function noScrollFn() {
+                window.scrollTo(scrollPosition ? scrollPosition.x : 0, scrollPosition ? scrollPosition.y : 0);
+            }
+
+            function noScroll() {
+                window.removeEventListener('scroll', scrollHandler);
+                window.addEventListener('scroll', noScrollFn);
+            }
+
+            function scrollFn() {
+                window.addEventListener('scroll', scrollHandler);
+            }
+
+            function canScroll() {
+                window.removeEventListener('scroll', noScrollFn);
+                scrollFn();
+            }
+
+            function scrollHandler() {
+                if (!didScroll) {
+                    didScroll = true;
+                    setTimeout(function () { scrollPage(); }, 60);
+                }
+            };
+
+            function scrollPage() {
+                scrollPosition = { x: window.pageXOffset || docElem.scrollLeft, y: window.pageYOffset || docElem.scrollTop };
+                didScroll = false;
+            };
+
+            scrollFn();
+
+            [].slice.call(document.querySelectorAll('.morph-button')).forEach(function (bttn) {
+                new UIMorphingButton(bttn, {
+                    closeEl: '.icon-close',
+                    onBeforeOpen: function () {
+                        // don't allow to scroll
+                        noScroll();
+                    },
+                    onAfterOpen: function () {
+                        // can scroll again
+                        canScroll();
+                    },
+                    onBeforeClose: function () {
+                        // don't allow to scroll
+                        noScroll();
+                    },
+                    onAfterClose: function () {
+                        // can scroll again
+                        canScroll();
+                    }
+                });
+            });
+
+            // for demo purposes only
+            [].slice.call(document.querySelectorAll('form button')).forEach(function (bttn) {
+                bttn.addEventListener('click', function (ev) { ev.preventDefault(); });
+            });
+        })();
+
+
+
+
+    </script>
+
+
+    <script src="/js/map_init.js"></script>
+    <script type="text/javascript">
+        let vehicleDeliveriesList = [];
+    </script>
+
+    @foreach (var v in (List<Vehicle>)Model.ActiveVehicles)
+    {
+        <script type="text/javascript">
+            vehicleDeliveriesList = [];
+        </script>
+        @if (!(v.CurrentDriver.Deliveries == null) && v.CurrentDriver.Deliveries.Count > 0)
+        {
+            @foreach (var d in v.CurrentDriver.Deliveries)
+            {
+                <script type="text/javascript">
+                    let aDelivery = {
+                        "deliveryID": "@d.Id",
+                        "startLatitude": "@d.SourceLatitude",
+                        "startLongitude": "@d.SourceLongtitude",
+                        "endLatitude": "@d.DestinationLatitude",
+                        "endLongitude": "@d.DestinationLongtitude",
+                        "info": {
+                            "customerName": "@d.Client.Name",
+                            "customerPhone": "@d.Client.Phonenumber",
+                            "deliveryType": "@d.Company.OrderType",
+                            "orderTime": "@d.Time"
+                        }
+                    };
+
+                    vehicleDeliveriesList.push(aDelivery);
+                </script>
+            }
+        }
+
+        <script type="text/javascript">
+            addVehicleToMap(@v.Id, @v.Latitude, @v.Longtitude,
+                {
+                    "model": "@v.Make",
+                    "year": "@v.Model",
+                    "plateNo": "@v.LicensePlate"
+                },
+                {
+                    "driverID": "@v.CurrentDriver.Id",
+                    "name": "@v.CurrentDriver.Name",
+                    "avatar": "/images/avatar1.jpg",
+                    "phone": "@v.CurrentDriver.Phonenumber",
+                    "email": "In DB but not attributed to Driver table",
+                    "birthdate": "@v.CurrentDriver.Birthdate"
+                },
+                vehicleDeliveriesList
+            );
+        </script>
+
+    }
+
+    <script type="text/javascript">
+        console.log("VEHHHHHHHHHHHHH");
+        console.log(displayedVehicles);
+        fillVehicleList(displayedVehicles);
+    </script>
+
+    <script>
+        const sel = document.querySelector("#deliveryVehicleSelect");
+
+        let inner = "";
+        inner += '<option value="auto" selected>Auto</option>';
+
+        let vehicles = getVehiclesSM();
+        for (v in vehicles) {
+            inner += '<option value="' + vehicles[v].vehicleID + '">' + vehicles[v].driverName + '</option>';
+        }
+
+        sel.innerHTML = inner;
+    </script>
+
+</body>
+</html>
+
