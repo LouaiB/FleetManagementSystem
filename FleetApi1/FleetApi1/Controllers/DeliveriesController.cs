@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FleetApi1.Models;
 
+
 namespace FleetApi1.Controllers
 {
     [Route("api/[controller]/[action]")]
@@ -83,6 +84,7 @@ namespace FleetApi1.Controllers
 
             Delivery delivery = new Delivery
             {
+                Time = order.Time,
                 Client = _context.Clients.Find(order.ClientId),
                 Company = company,
                 Quantity = order.Quantity,
@@ -118,11 +120,105 @@ namespace FleetApi1.Controllers
             return delivery;
         }
 
+        public async Task<ActionResult<Result>> AddDeliveryBySupervisor(AddDeliveryModel Model)
+        {
+            // Add new delivery to DB
+            // This action MUST return this new delivery's ID
+            // This parameters are the main ones. Extra ones can be added later if needed (eg quantity, etc.)
+            // Below code is my attempt. Delete it all if you want
+
+        
+            Driver driver = _context.Drivers.Find(Model.driverID);
+            Vehicle vehicle = _context.Vehicles.Find(Model.vehicleID);
+            Delivery newDelivery = new Delivery();
+            newDelivery.Answered = true;
+            newDelivery.SourceLatitude = Double.Parse(Model.startLatitude);
+            newDelivery.SourceLongtitude = Double.Parse(Model.startLongitude);
+            newDelivery.DestinationLatitude = Double.Parse(Model.endLatitude);
+            newDelivery.DestinationLongtitude = Double.Parse(Model.endLongitude);
+            newDelivery.Driver = driver;
+            newDelivery.Vehicle = vehicle;
+            newDelivery.Company = null;
+            newDelivery.Quantity = 10; // Testing
+            //newDelivery.Time = DateTime.Parse(orderTime);
+
+            
+            _context.Deliveries.Add(newDelivery);
+           
+            _context.SaveChanges();
+
+
+            return new Result(newDelivery.Id) ;
+        }
+        public async Task<ActionResult<Result1>>  CancelDelivery(CancelDelivery Model)
+        {
+            try
+            {
+                Delivery delivery = _context.Deliveries.Find(Model.deliveryID);
+                _context.Deliveries.Remove(delivery);
+                _context.SaveChanges();
+                return new Result1(true);
+            }
+            catch(Exception)
+            {
+                return new Result1(false);
+            }
+            
+        }
+
+        public async Task<ActionResult<Result2>> GetVehicles(GetVehicles Model)
+        {
+            // Get all active vehicles (with their current deliveries if exist)
+            List<Vehicle> vehicles = _context.Vehicles.Where(v=>v.Company.Id==Model.CompanyId
+                                                                                                    &&v.isCurrentlyActive)
+                                                                                                 .Include(v=>v.CurrentDriver).ToList<Vehicle>();
+            foreach(Vehicle v in vehicles)
+            {
+                
+                
+                    List<Delivery> deliveries = _context.Deliveries.Where(d => d.Vehicle.Id== v.Id
+                                                                                                                               && d.Started && !d.Finished)
+                                                                                                                              .Include(d => d.Client)
+                                                                                                                              .ToList<Delivery>();
+                    foreach (Delivery d in deliveries)
+                    {
+                        if (d.Client != null)
+                            d.Client.Deliveries = null;
+                        if (d.Company != null)
+                            d.Company = null;
+                        if (d.Vehicle != null)
+                            d.Vehicle = null;
+                    }
+                    v.Deliveries = deliveries;
+                    if (v.CurrentDriver != null)
+                        v.CurrentDriver.Deliveries = null;
+                }   
+            
+
+            return new Result2(vehicles);
+        }
 
 
         private bool DeliveryExists(long id)
         {
             return _context.Deliveries.Any(e => e.Id == id);
         }
+        public class Result
+        {  
+            public long DeliveryId { get; set; }
+            public Result(long x) { DeliveryId = x; }
+        }
+        public class Result1
+        {
+            public bool Success { get; set; }
+            public Result1(bool x) { Success = x; }
+        }
+        public class Result2
+        {
+            public List<Vehicle> Vehicles { get; set; }
+            public Result2(List<Vehicle> x) {Vehicles = x; }
+        }
     }
 }
+
+

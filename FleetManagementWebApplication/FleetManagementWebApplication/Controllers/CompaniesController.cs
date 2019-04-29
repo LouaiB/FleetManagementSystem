@@ -10,13 +10,13 @@ using Microsoft.AspNetCore.Http;
 
 namespace FleetManagementWebApplication.Controllers
 {
-    public class CompaniesController : Controller
+    public class CompaniesController : FleetController
     {
-        private readonly ApplicationDbContext _context;
+        
      
-        public CompaniesController(ApplicationDbContext context)
+        public CompaniesController(ApplicationDbContext context):base(context)
         {
-            _context = context; 
+             
         }
 
         [HttpPost]

@@ -141,9 +141,9 @@ namespace FleetManagementWebApplication.Migrations
 
                     b.Property<bool>("Answered");
 
-                    b.Property<long>("ClientId");
+                    b.Property<long?>("ClientId");
 
-                    b.Property<long>("CompanyId");
+                    b.Property<long?>("CompanyId");
 
                     b.Property<string>("DestinationCity");
 
@@ -151,7 +151,7 @@ namespace FleetManagementWebApplication.Migrations
 
                     b.Property<double>("DestinationLongtitude");
 
-                    b.Property<long>("DriverId");
+                    b.Property<long?>("DriverId");
 
                     b.Property<bool>("Finished");
 
@@ -173,7 +173,7 @@ namespace FleetManagementWebApplication.Migrations
 
                     b.Property<DateTime>("Time");
 
-                    b.Property<long>("VehicleId");
+                    b.Property<long?>("VehicleId");
 
                     b.HasKey("Id");
 
@@ -194,6 +194,8 @@ namespace FleetManagementWebApplication.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<float>("ComplianceScore");
+
                     b.Property<long>("DeliveryId");
 
                     b.Property<float>("EndFuelLevel");
@@ -202,11 +204,27 @@ namespace FleetManagementWebApplication.Migrations
 
                     b.Property<DateTime>("EndTime");
 
-                    b.Property<bool>("NumberOfHarshbreaks");
+                    b.Property<float>("FuelConsumptionRate");
 
-                    b.Property<bool>("NumberOfNoSeatbelts");
+                    b.Property<float>("HardCorneringRate");
 
-                    b.Property<int>("NumberOfSpeedings");
+                    b.Property<float>("HarshAccelerationAndDeceleration");
+
+                    b.Property<float>("HarshBreakingsRate");
+
+                    b.Property<float>("Idling");
+
+                    b.Property<float>("OnTimeDeliveryRate");
+
+                    b.Property<float>("OverRevving");
+
+                    b.Property<float>("PerformanceScore");
+
+                    b.Property<float>("SafetyScore");
+
+                    b.Property<float>("SeatBeltRate");
+
+                    b.Property<float>("SpeedingsRate");
 
                     b.Property<float>("StartFuelLevel");
 
@@ -237,6 +255,8 @@ namespace FleetManagementWebApplication.Migrations
 
                     b.Property<long?>("CompanyId");
 
+                    b.Property<string>("Image");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100);
@@ -248,6 +268,10 @@ namespace FleetManagementWebApplication.Migrations
                     b.Property<string>("Phonenumber")
                         .IsRequired()
                         .HasMaxLength(100);
+
+                    b.Property<int>("Rank");
+
+                    b.Property<float>("Score");
 
                     b.Property<string>("Username")
                         .IsRequired()
@@ -363,7 +387,7 @@ namespace FleetManagementWebApplication.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<long>("CompanyId");
+                    b.Property<long?>("CompanyId");
 
                     b.Property<long?>("CurrentDriverId");
 
@@ -444,23 +468,19 @@ namespace FleetManagementWebApplication.Migrations
                 {
                     b.HasOne("FleetManagementWebAplication.Models.Client", "Client")
                         .WithMany("Deliveries")
-                        .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("ClientId");
 
                     b.HasOne("FleetManagementWebApplication.Models.Company", "Company")
                         .WithMany("Deliveries")
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("CompanyId");
 
                     b.HasOne("FleetManagementWebApplication.Models.Driver", "Driver")
                         .WithMany("Deliveries")
-                        .HasForeignKey("DriverId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("DriverId");
 
                     b.HasOne("FleetManagementWebApplication.Models.Vehicle", "Vehicle")
                         .WithMany("Deliveries")
-                        .HasForeignKey("VehicleId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("VehicleId");
                 });
 
             modelBuilder.Entity("FleetManagementWebApplication.Models.DeliverySummary", b =>
@@ -502,8 +522,7 @@ namespace FleetManagementWebApplication.Migrations
                 {
                     b.HasOne("FleetManagementWebApplication.Models.Company", "Company")
                         .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("CompanyId");
 
                     b.HasOne("FleetManagementWebApplication.Models.Driver", "CurrentDriver")
                         .WithMany()

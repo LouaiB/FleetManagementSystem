@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FleetManagementWebAplication.Models;
 using FleetManagementWebApplication.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -45,7 +46,7 @@ namespace FleetManagementWebApplication.Controllers
         // Testing [ No need to code anything here ]
         public IActionResult ShowDeliveries()
         {
-            ViewData["Deliveries"] = _context.Deliveries.Where(d => d.Id > 5).ToList();
+            ViewData["Deliveries"] = _context.Deliveries.Where(d => d.Company.Id == 7).ToList();
             return View();
         }
 
@@ -53,7 +54,7 @@ namespace FleetManagementWebApplication.Controllers
         {
             MapViewModel viewModel = new MapViewModel();
 
-            long companyID = 2; // FOR TESTING
+            long companyID = 7; // FOR TESTING
 
             // I want the company object WITH the vehicles it has that are CURRENTLY ACTIVE
             // Also a vehicle's deliveries list should have its CURRENT deliveries
@@ -74,57 +75,82 @@ namespace FleetManagementWebApplication.Controllers
             activeVehicles = _context.Vehicles
                 //.Where(v => v.isCurrentlyActive)
                 .Where(v => v.Company.Id == companyID)
-                //.Include(v => v.Deliveries)
+                .Include(v=>v.CurrentDriver)
                 .Take(2)
-                .ToList();
+                .ToList<Vehicle>();
+          foreach(Vehicle v in activeVehicles)
+            {
+                List<Delivery> Deliveries = new List<Delivery>();
+              
+                if (v.CurrentDriver != null)
+                {
+                    Deliveries = _context.Deliveries.Where(d => d.Driver == v.CurrentDriver)
+                                                                                              .Include(d => d.Client)
+                                                                                              .ToList<Delivery>();
+                    v.CurrentDriver.Deliveries = Deliveries;
+                }
+                else
+                {
+                    v.CurrentDriver = new Driver
+                    {
+                        Id = 0,
+                        Name = "No Driver",
+                        Username = "No Driver",
+                        Password = "No Driver",
+                        Birthdate = "No Driver",
+                        Address = "No Driver",
+                        Phonenumber = "No Driver",
+                        Company = company,
+                        Deliveries = Deliveries
+                    };
+                }
+                   
+           
 
-            /////////// FOR TESTING: REMOVE AFTER LIVE TRACKING HAS BEEN IMPLEMENTED ///////////
-            activeVehicles.First().CurrentDriver = _context.Drivers.Where(d => d.Username == "Ali Jaber" || d.Name == "Ali Jaber").First();
-            activeVehicles.Last().CurrentDriver = _context.Drivers.Where(d => d.Username == "Nader Hisham" || d.Name == "Nader Hisham").First();
+            }
 
-            activeVehicles.First().Latitude = 33.6519220493377;
-            activeVehicles.First().Longtitude = 35.4101220493377;
-            activeVehicles.Last().Latitude = 33.5766220493377;
-            activeVehicles.Last().Longtitude = 35.4856220493377;
-            ////////////////////////////////////////////////////////////////////////////////////
+           
 
+        
+            
             viewModel.ActiveVehicles = activeVehicles;
             
 
             return View(viewModel);
         }
 
-
-        public async Task<ActionResult> AddDeliveryBySupervisor(long vehicleID, long driverID, string startLatitude, string startLongitude,
-            string endLatitude, string endLongitude)
+        
+        public JsonResult AddDeliveryBySupervisor(AddDeliveryModel Model)
         {
             // Add new delivery to DB
             // This action MUST return this new delivery's ID
             // This parameters are the main ones. Extra ones can be added later if needed (eg quantity, etc.)
             // Below code is my attempt. Delete it all if you want
 
+            long newDeliveryID = 100; // whatever
 
-            Driver driver = _context.Drivers.Find(driverID);
-            Vehicle vehicle = _context.Vehicles.Find(vehicleID);
+           
             Delivery newDelivery = new Delivery();
             newDelivery.Answered = true;
-            newDelivery.SourceLatitude = Double.Parse(startLatitude);
-            newDelivery.SourceLongtitude = Double.Parse(startLongitude);
-            newDelivery.DestinationLatitude = Double.Parse(endLatitude);
-            newDelivery.DestinationLongtitude = Double.Parse(endLongitude);
-            newDelivery.DriverId = driverID;
-            newDelivery.VehicleId = vehicleID;
-            newDelivery.Company = null;
+            newDelivery.SourceLatitude = Double.Parse(Model.startLatitude);
+            newDelivery.SourceLongtitude = Double.Parse(Model.startLongitude);
+            newDelivery.DestinationLatitude = Double.Parse(Model.endLatitude);
+            newDelivery.DestinationLongtitude = Double.Parse(Model.endLongitude);
             newDelivery.Quantity = 10; // Testing
-                                       //newDelivery.Time = DateTime.Parse(orderTime);
+            //newDelivery.Time = DateTime.Parse(orderTime);
 
-
-            _context.Deliveries.Add(newDelivery);
-
+            newDelivery.Company = _context.Companies.Find((long)7); // Testing
+            newDelivery.Driver = _context.Drivers.Find(Model.driverID); 
+            newDelivery.Vehicle = _context.Vehicles.Find(Model.vehicleID);
             _context.SaveChanges();
 
+            // Add delivery to corresponding driver and vehicle
+            _context.Vehicles.Find(Model.vehicleID).Deliveries.Add(newDelivery);
+            _context.Drivers.Find(Model.driverID).Deliveries.Add(newDelivery);
+            _context.SaveChanges();
+            
 
-            return new JsonResult(newDelivery.Id);
+            return Json(new { Result = newDeliveryID });
         }
 
         public JsonResult CancelDelivery(long vehicleID, long deliveryID)

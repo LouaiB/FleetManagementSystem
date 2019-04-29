@@ -13,10 +13,17 @@
 <h5>Pay Load : @Model.PayLoad Passengers</h5>
 <h5>Emission CO2 : @Model.EmissionsCO2 G/Km</h5>
 <h5>Fuel Consumption : @Model.FuelConsumption Litres/Km</h5>
+@if (Model.Plan != null)
+{
 <form asp-controller="Plans" asp-action="Details">
-<h5>
-    Plan :
-    <button style="background-color:white;border:none;color:blue">@Model.Plan.Name</button>
-    <input type="hidden" name="id" value="@Model.Plan.Id" />
-</h5>
+    <h5>
+        Plan :
+        <button style="background-color:white;border:none;color:blue">@Model.Plan.Name</button>
+        <input type="hidden" name="id" value="@Model.Plan.Id" />
+    </h5>
 </form>
+}
+else
+{
+<h5>No Plan</h5>
+}

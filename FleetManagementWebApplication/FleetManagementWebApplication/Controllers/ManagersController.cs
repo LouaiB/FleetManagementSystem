@@ -10,20 +10,20 @@ using Microsoft.AspNetCore.Http;
 
 namespace FleetManagementWebApplication.Controllers
 {
-    public class ManagersController : Controller
+    public class ManagersController : FleetController
     {
-        private readonly ApplicationDbContext _context;
 
-        public ManagersController(ApplicationDbContext context)
+
+        public ManagersController(ApplicationDbContext context) : base(context)
         {
-            _context = context;
+
         }
 
         // GET: Managers
         public async Task<IActionResult> Index()
         {
-            if (!isLogedIn())
-                return RedirectToRoute("Home");  
+            if (!LogedIn())
+                return RedirectToRoute("Home");
             return RedirectToRoute("Vehicles");
             //return View(await _context.Managers.ToListAsync());
         }
@@ -32,7 +32,7 @@ namespace FleetManagementWebApplication.Controllers
         public async Task<IActionResult> Details(long? id)
         {
 
-            if (!isLogedIn())
+            if (!LogedIn())
                 return RedirectToRoute("Home");
 
             if (id == null)
@@ -64,23 +64,24 @@ namespace FleetManagementWebApplication.Controllers
                 HttpContext.Session.SetString("OrderType", company.OrderType);
                 return RedirectToAction("Index");
             }
-           catch (Exception)
+            catch (Exception)
             {
                 ViewData["Error"] = "Invalid Login";
-           }
+            }
 
-                return View("/Views/Home/LogIn.cshtml");
+            return View("/Views/Home/LogIn.cshtml");
         }
 
 
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Email,Password")] Manager manager,string ConfirmPassword)
+        public async Task<IActionResult> Create([Bind("Id,Name,Email,Password")] Manager manager, string ConfirmPassword)
         {
             bool valid = true;
-            
-               if( _context.Managers.Any(m => m.Email == manager.Email)) {         
+
+            if (_context.Managers.Any(m => m.Email == manager.Email))
+            {
                 ViewData["EmailError"] = "Email already taken";
                 valid = false;
             }
@@ -89,8 +90,8 @@ namespace FleetManagementWebApplication.Controllers
                 ViewData["PasswordError"] = "Passwords don't match";
                 valid = false;
             }
-          if (valid&&ModelState.IsValid)
-            { 
+            if (valid && ModelState.IsValid)
+            {
                 HttpContext.Session.SetString("Input-Name", manager.Name);
                 HttpContext.Session.SetString("Input-Email", manager.Email);
                 HttpContext.Session.SetString("Input-Password", manager.Password);
@@ -102,14 +103,14 @@ namespace FleetManagementWebApplication.Controllers
         // GET: Managers/Edit
         public async Task<IActionResult> Edit()
         {
-            if (!isLogedIn())
+            if (!LogedIn())
                 return RedirectToRoute("Home");
-            long id =(long) HttpContext.Session.GetInt32("Id");
-             var manager = await _context.Managers.FindAsync(id);
-             if (manager == null)
+            long id = (long)HttpContext.Session.GetInt32("Id");
+            var manager = await _context.Managers.FindAsync(id);
+            if (manager == null)
             {
                 return NotFound();
-           }
+            }
             return View(manager);
         }
         public IActionResult Create()
@@ -120,7 +121,7 @@ namespace FleetManagementWebApplication.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([Bind("Id,Name,Email,Password")] Manager manager)
         {
-            if (!isLogedIn())
+            if (!LogedIn())
                 return RedirectToRoute("Home");
             long id = (long)HttpContext.Session.GetInt32("Id");
             if (ModelState.IsValid)
@@ -151,7 +152,7 @@ namespace FleetManagementWebApplication.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete()
         {
-            if (!isLogedIn())
+            if (!LogedIn())
                 return RedirectToRoute("Home");
 
             return View();
@@ -162,7 +163,7 @@ namespace FleetManagementWebApplication.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed()
         {
-            if (!isLogedIn())
+            if (!LogedIn())
                 return RedirectToRoute("Home");
 
             long cid = (long)HttpContext.Session.GetInt32("CompanyId");
@@ -182,7 +183,7 @@ namespace FleetManagementWebApplication.Controllers
 
         public async Task<IActionResult> LogOut()
         {
-            if (!isLogedIn())
+            if (!LogedIn())
                 return RedirectToRoute("Home");
 
             HttpContext.Session.Clear();
@@ -193,14 +194,7 @@ namespace FleetManagementWebApplication.Controllers
         {
             return _context.Managers.Any(e => e.Id == id);
         }
-        private bool isLogedIn()
-        {
-            if (HttpContext.Session.GetInt32("LoggedIn") == null)
-                return false;
-            else
-                return true;
-
-        }
+       
 
     }
 }

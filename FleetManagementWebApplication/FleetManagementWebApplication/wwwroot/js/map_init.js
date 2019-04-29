@@ -778,14 +778,14 @@ async function addDelivery() {
 
     //TODO
     ///////////// AJAX add delivery to DB and get delivery ID /////////////
-    const ajaxPostRequestJSON = `{
-        vehicleID: ${vehicleID},
-        driverID: ${displayedVehicles[vehicleID].currentDriver.driverID},
-        startLatitude: ${startLatitude},
-        startLongitude: ${startLongitude},
-        endLatitude: ${endLatitude},
-        endLongitude: ${endLongitude}
-    }`
+    const ajaxPostRequestJSON = {
+        vehicleID: `${vehicleID}`,
+        driverID: displayedVehicles[vehicleID].currentDriver.driverID,
+        startLatitude: startLatitude,
+        startLongitude: startLongitude,
+        endLatitude: endLatitude,
+        endLongitude: endLongitude,
+    }
 
     addDeliveryToDB(ajaxPostRequestJSON, vehicleID, startLatitude, startLongitude, endLatitude, endLongitude, customerName, customerPhone, deliveryType, Date.now());
 }
@@ -795,18 +795,14 @@ async function addDeliveryToDB(ajaxPostRequestJSON, vehicleID, startLatitude, st
     console.log(ajaxPostRequestJSON);
     $.ajax({
         type: "POST",
-        url: "http://abdullahhaidar92-001-site1.etempurl.com/api/Deliveries/AddDeliveryBySupervisor",
-        //url: "/Map/AddDeliveryBySupervisor",
-        accepts: "application/json",
-        contentType: "application/json; charset=utf-8",
+        url: "/Map/AddDeliveryBySupervisor",
         data: ajaxPostRequestJSON,
+        //contentType: "application/json",
 
         success: async function (result) {
             // Add delivery to client side map and displayed vehicles array
-            console.log("AJAX ADD DELIVERY RESULT:");
-            console.log(result);
             const delivery = {
-                "deliveryID": result,
+                "deliveryID": result.result,
                 "startLatitude": startLatitude,
                 "startLongitude": startLongitude,
                 "endLatitude": endLatitude,
@@ -1167,114 +1163,18 @@ function refetchAndRefresh()
 
         success: async function (result) {
             ////// Steps 2 -> 5 HERE /////
-            const vList = result.result;
-            for (veh in vList) { // Step 2
-                // Step 3
-                let v = vList[veh];
-                if (displayedVehicles[v.Id]) { // This vehicle is currently displayed, update it
-                    updateVehicleInMap(v.Id, v.Latitude, v.Longtitude);
-                    updateVehicleDeliveries(v.Id, v.Deliveries);
-                }
-                else { // This vehicle is not currently displayed, add it
-                    let vDelList = [];
 
-                    if (!(v.Deliveries == null) && arrayLength(v.Deliveries) > 0) {
-                        for (del in v.Deliveries) {
-                            let d = v.Deliveries[del];
-                                
-                            let aDel = {
-                                "deliveryID": `${d.Id}`,
-                                "startLatitude": `${ d.SourceLatitude }`,
-                                "startLongitude": `${d.SourceLongtitude}`,
-                                "endLatitude": `${d.DestinationLatitude}`,
-                                "endLongitude": `${d.DestinationLongtitude}`,
-                                "info": {
-                                    "customerName": `${d.Client.Name}`,
-                                    "customerPhone": `${d.Client.Phonenumber}`,
-                                    "deliveryType": `${d.Company.OrderType}`,
-                                    "orderTime": `${ d.Time }`
-                                }
-                            };
 
-                            vDelList.push(aDel);          
-                        }
-                    }
- 
-                    addVehicleToMap(v.Id, v.Latitude, v.Longtitude,
-                        {
-                            "model": `${v.Make}`,
-                            "year": `${v.Model}`,
-                            "plateNo": `${v.LicensePlate}`
-                        },
-                        {
-                            "driverID": `${v.CurrentDriver.Id}`,
-                            "name": `${v.CurrentDriver.Name}`,
-                            "avatar": "/images/avatar1.jpg",
-                            "phone": `${v.CurrentDriver.Phonenumber}`,
-                            "email": "In DB but not attributed to Driver table",
-                            "birthdate": `${v.CurrentDriver.Birthdate}`
-                        },
-                        vDelList
-                    );
 
-                }
-            }
-            
-            for (veh in displayedVehicles) { // Step 4
-                // Step 5
-                let v = displayedVehicles[veh];
 
-                let active = false;
-                for (veh2 in vList) {
-                    let v2 = vList[veh2];
 
-                    if (v.vehicleID == v2.Id) { active = true; break; }
-                }
-                if (!active) {
-                    removeRouteFromMap(v.vehicleID);
-                    removeVehicleFromMap(v.vehicleID);
-                    document.removeChild(document.querySelector(`#tag${v.vehicleID}`));
-                }
-            }
 
             /////////////////////////////
         }
     });
-///////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////
 }
 
-function updateVehicleDeliveries(vehicleID, deliveries)
-{
-    // Remove any finished deliveries
-    for (del in displayedVehicles[vehicleID].deliveries) {
-        let d = displayedVehicles[vehicleID].deliveries[del];
-
-        let active = false;
-        for (del2 in deliveries) {
-            let d2 = deliveries[del2];
-
-            if (d.deliveryID == d2.Id) { active = true; break;}
-        }
-        if (!active) {
-            finishDelivery(vehicleID, d.deliveryID);
-        }
-    }
-
-    // Add any new deliveries
-    for (del in deliveries) {
-        let d = deliveries[del];
-
-        let shown = false;
-        for (del2 in displayedVehicles[vehicleID].deliveries) {
-            let d2 = displayedVehicles[vehicleID].deliveries[del2];
-
-            if (d2.deliveryID == d.Id) { shown = true; break; }
-        }
-        if (!shown) {
-            addDeliveryToVehicle(vehicleID, d);
-        }
-    }
-}
 ///////////////////////////////////// TESTING ///////////////////////////////////////////////
 
 //addVehicleToMap(0, 33.5519220493377, 35.4101220493377, { "model": "Toyota", "year": "2008", "plateNo": "123456" }, { "driverID": 10, "name": "Sekkekkyuu AE3803", "avatar": "/images/avatar1.jpg", "phone": "70 123-456", "email": "sekkekkyuu@cells.com", "birthdate": "21/03/2001"}, null);

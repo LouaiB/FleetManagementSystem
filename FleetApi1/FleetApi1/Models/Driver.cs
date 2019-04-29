@@ -29,7 +29,8 @@ namespace FleetApi1.Models
         [Required]
         [StringLength(100)]
         public string Phonenumber { get; set; }
-
+        public int Rank { get; set; }
+        public float Score { get; set; }
         public Company Company { get; set; }
         public List<Delivery> Deliveries { get; set; }
 

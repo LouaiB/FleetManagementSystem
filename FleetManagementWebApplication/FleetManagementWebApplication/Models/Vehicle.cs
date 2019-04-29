@@ -24,10 +24,8 @@ namespace FleetManagementWebApplication.Models
         public double Longtitude { get; set; }
         public double Latitude { get; set; }
 
-
         public Company Company { get; set; }
         public Driver CurrentDriver { get; set; }
-
         public bool isCurrentlyActive { get; set; }
 
 

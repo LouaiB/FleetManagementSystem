@@ -12,7 +12,7 @@ namespace FleetManagementWebApplication.Controllers
     public class HomeController : Controller
     {
         public IActionResult Index()
-        {  if (isLogedIn())
+        {  if (LogedIn())
                 return RedirectToRoute("Manager");
             return View();
         }
@@ -32,7 +32,7 @@ namespace FleetManagementWebApplication.Controllers
         {
             return View(new ErrorViewModel { RequestId = System.Diagnostics.Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-        private bool isLogedIn()
+        private bool LogedIn()
         {
             if (HttpContext.Session.GetInt32("LoggedIn") == null)
                 return false;

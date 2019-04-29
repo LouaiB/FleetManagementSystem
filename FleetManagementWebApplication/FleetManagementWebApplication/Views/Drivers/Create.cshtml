@@ -8,7 +8,7 @@
     <h3>Add driver</h3>
 
     <div class="w3-container w3-padding">
-        <form asp-controller="Drivers" asp-action="Create">
+        <form asp-controller="Drivers" asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <h6 class="w3-opacity">Full Name :</h6>
             <input asp-for="Name" style="width:100%" class="w3-border w3-padding" value="Hadi Haidar">
@@ -17,9 +17,9 @@
             <input asp-for="Username" style="width:100%" class="w3-border w3-padding" value="hadi@gmail.com">
             <span asp-validation-for="Username" class="text-danger"></span>
             <span class="text-danger">@ViewData["UsernameError"]</span>
-
+          
             <h6 class="w3-opacity"><label asp-for="Password"></label></h6>
-            <input asp-for="Password" style="width:100%" class="w3-border w3-padding" value="Aa123$">
+            <input asp-for="Password" style="width:100%" class="w3-border w3-padding" value="Aa12345$">
             <span asp-validation-for="Password" class="text-danger"></span>
 
 
@@ -35,14 +35,21 @@
             <input asp-for="Phonenumber" style="width:100%" class="w3-border w3-padding" value="03333333">
             <span asp-validation-for="Phonenumber" class="text-danger"></span>
 
-            <br /><br />
+
+            <h6 class="w3-opacity"><label >Choose image</label></h6>
+            <input type="file" name="file" class="w3-button w3-theme ">
+
+            <br />
 
             <button type="submit" class="w3-button w3-theme w3-right">
                 Done
                 <!-- <i class='fas fa-angle-double-right'></i> -->
             </button>
+
+
+
         </form>
-    </div>
+</div>
 </div>
 <br /><br />
 
