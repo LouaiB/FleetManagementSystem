@@ -29,12 +29,27 @@ namespace FleetManagementWebApplication.Models
         public float EndOdometer { get; set; }
 
         [Required]
-        public int NumberOfSpeedings { get; set; } = 0;
+        public float HarshAccelerationAndDeceleration{ get; set; } 
         [Required]
-        public bool NumberOfNoSeatbelts { get; set; }
+        public float HarshBreakingsRate { get; set; }
         [Required]
-        public bool NumberOfHarshbreaks { get; set; }
+        public float HardCorneringRate { get; set; }
+        [Required]
+        public float SpeedingsRate { get; set; } 
+        [Required]
+        public float SeatBeltRate { get; set; }
+        [Required]
+        public float OverRevving { get; set; }
+        [Required]
+        public float OnTimeDeliveryRate { get; set; }
+        [Required]
+        public float FuelConsumptionRate { get; set; }
+        [Required]
+        public float Idling { get; set; }
+         public float PerformanceScore { get; set; }
+        public float ComplianceScore { get; set; }
+        public float SafetyScore{ get; set; }
 
-    
+
     }
 }

@@ -194,6 +194,8 @@ namespace FleetManagementWebApplication.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<float>("ComplianceScore");
+
                     b.Property<long>("DeliveryId");
 
                     b.Property<float>("EndFuelLevel");
@@ -202,11 +204,27 @@ namespace FleetManagementWebApplication.Migrations
 
                     b.Property<DateTime>("EndTime");
 
-                    b.Property<bool>("NumberOfHarshbreaks");
+                    b.Property<float>("FuelConsumptionRate");
 
-                    b.Property<bool>("NumberOfNoSeatbelts");
+                    b.Property<float>("HardCorneringRate");
 
-                    b.Property<int>("NumberOfSpeedings");
+                    b.Property<float>("HarshAccelerationAndDeceleration");
+
+                    b.Property<float>("HarshBreakingsRate");
+
+                    b.Property<float>("Idling");
+
+                    b.Property<float>("OnTimeDeliveryRate");
+
+                    b.Property<float>("OverRevving");
+
+                    b.Property<float>("PerformanceScore");
+
+                    b.Property<float>("SafetyScore");
+
+                    b.Property<float>("SeatBeltRate");
+
+                    b.Property<float>("SpeedingsRate");
 
                     b.Property<float>("StartFuelLevel");
 
@@ -237,6 +255,8 @@ namespace FleetManagementWebApplication.Migrations
 
                     b.Property<long?>("CompanyId");
 
+                    b.Property<string>("Image");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100);
@@ -248,6 +268,10 @@ namespace FleetManagementWebApplication.Migrations
                     b.Property<string>("Phonenumber")
                         .IsRequired()
                         .HasMaxLength(100);
+
+                    b.Property<int>("Rank");
+
+                    b.Property<float>("Score");
 
                     b.Property<string>("Username")
                         .IsRequired()

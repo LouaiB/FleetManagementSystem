@@ -7,6 +7,7 @@
 }
 
 <style>
+
     .btn1 {
         text-align: right;
     }
@@ -29,37 +30,42 @@
             <td>
                 <div class="box effect6 effect6 ">
                     <div class="w3-container w3-padding">
-                        <form asp-controller="Drivers">
 
-                            <table width="100%">
-                                <tr>
-                                    <td rowspan="3">
-                                        <h3>@item.Name   </h3>
-                                        <h6 class="w3-opacity">Username : @item.Username</h6>
-                                        <h6 class="w3-opacity">Birthdate :@item.Birthdate</h6>
-                                        <h6 class="w3-opacity">Address :@item.Address</h6>
-                                        <h6 class="w3-opacity">Phone :@item.Phonenumber </h6>
-                                    </td>
 
-                                    <td class="btn1">
-                                        <button type="submit" class="w3-button w3-theme w3-large sized" formaction="/Drivers/Raiting">Rating</button>
+                        <table width="100%">
+                            <tr>
+                                <td rowspan="3">
+                                    <h3>@item.Name   </h3>
+                                    <h6 class="w3-opacity">Username : @item.Username</h6>
+                                    <h6 class="w3-opacity">Birthdate :@item.Birthdate</h6>
+                                    <h6 class="w3-opacity">Address :@item.Address</h6>
+                                    <h6 class="w3-opacity">Phone :@item.Phonenumber </h6>
+                                </td>
 
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="btn1">
+                                <td class="btn1">
+                                &nbsp;
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="btn1">
+                                    <form asp-controller="Drivers">
+                                        <input type="hidden" name="id" value="@item.Id" />
+
+
                                         <button type="submit" class=" w3-button w3-theme w3-large sized" formaction="/Drivers/Edit"> Edit</button>
-
-                                    </td>
-                                <tr>
-                                    <td class="btn1">
+                                    </form>
+                                </td>
+                            <tr>
+                                <td class="btn1">
+                                    <form asp-controller="Drivers">
+                                        <input type="hidden" name="id" value="@item.Id" />
                                         <button type="submit" class=" w3-button w3-theme w3-large sized" formaction="/Drivers/Delete"> Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </table>
 
-                                    </td>
-                                </tr>
-                            </table>
-                            <input type="hidden" name="id" value="@item.Id" />
-                        </form>
+
                     </div>
                 </div>
 

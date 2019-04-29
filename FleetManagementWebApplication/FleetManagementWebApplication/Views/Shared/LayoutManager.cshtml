@@ -45,7 +45,7 @@
 
         <div class="w3-dropdown-hover w3-hide-small ">
             <button class="w3-button w3-padding-large">Drivers</button>
-            <div class="w3-dropdown-content w3-card-4 w3-bar-block" style="width:280px">
+            <div class="w3-dropdown-content w3-card-4 w3-bar-block" style="width:200px">
                 <a asp-controller="Drivers" asp-action="Create" class="w3-bar-item w3-button">Add a driver</a>
                 <a asp-controller="Drivers" asp-action="Index" class="w3-bar-item w3-button">All drivers</a>
      </div>
@@ -53,7 +53,7 @@
 
         <div class="w3-dropdown-hover w3-hide-small ">
             <button class="w3-button w3-padding-large">Trips</button>
-            <div class="w3-dropdown-content w3-card-4 w3-bar-block" style="width:300px">
+            <div class="w3-dropdown-content w3-card-4 w3-bar-block" style="width:200px">
                 <a href="#" class="w3-bar-item w3-button">Start a trip</a>
                 <a href="#" class="w3-bar-item w3-button">Trips history</a>
 
@@ -62,7 +62,7 @@
 
         <div class="w3-dropdown-hover w3-hide-small ">
             <button class="w3-button w3-padding-large">Bills</button>
-            <div class="w3-dropdown-content w3-card-4 w3-bar-block" style="width:300px">
+            <div class="w3-dropdown-content w3-card-4 w3-bar-block" style="width:200px">
                 <a asp-controller="Bills" asp-action="Create" class="w3-bar-item w3-button">New bill</a>
                 <a asp-controller="Bills" asp-action="Index"  class="w3-bar-item w3-button">All bills</a>
             </div>
@@ -70,11 +70,10 @@
 
         <div class="w3-dropdown-hover w3-hide-small ">
             <button class="w3-button w3-padding-large">Reports</button>
-            <div class="w3-dropdown-content w3-card-4 w3-bar-block" style="width:300px">
-                <a href="#" class="w3-bar-item w3-button">Costs Report</a>
-                <a href="#" class="w3-bar-item w3-button">Drivers performance reports</a>
-                <a href="#" class="w3-bar-item w3-button">Fuel Consumption Report</a>
-              
+            <div class="w3-dropdown-content w3-card-4 w3-bar-block" style="width:200px">
+                <a asp-controller="Reports" asp-action="DriversRanks" class="w3-bar-item w3-button">Drivers Ranks</a>
+                
+
             </div>
         </div>
 
@@ -110,7 +109,7 @@
             <div class="w3-bar-item   w3-right " style="height:53px;padding-bottom:10px">
                 <form defaultbutton="Query" asp-controller="@ViewData["QueryPlaceHolder"]" asp-action="Search" runat="server">
                     <input type="text" name="Query" placeholder="Search @ViewData["QueryPlaceHolder"]"
-                           style="background-color:silver;height:40px;width:260px;padding-left:10px"
+                           style="background-color:silver;height:40px;padding-left:10px"
                            value="@ViewData["Query"]">
                 </form>
             </div>

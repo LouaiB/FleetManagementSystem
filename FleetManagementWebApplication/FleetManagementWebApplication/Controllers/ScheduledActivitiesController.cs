@@ -9,22 +9,22 @@ using FleetManagementWebApplication.Models;
 
 namespace FleetManagementWebApplication.Controllers
 {
-    public class ScheduledActivitiesController : Controller
+    public class ScheduledActivitiesController : FleetController
     {
-        private readonly ApplicationDbContext _context;
+      
 
-        public ScheduledActivitiesController(ApplicationDbContext context)
+        public ScheduledActivitiesController(ApplicationDbContext context):base(context)
         {
-            _context = context;
+            
         }
 
-        // GET: ScheduledActivities
+
         public async Task<IActionResult> Index()
         {
             return View(await _context.ScheduledActivities.ToListAsync());
         }
 
-        // GET: ScheduledActivities/Details/5
+
         public async Task<IActionResult> Details(long? id)
         {
             if (id == null)
@@ -42,15 +42,12 @@ namespace FleetManagementWebApplication.Controllers
             return View(scheduledActivity);
         }
 
-        // GET: ScheduledActivities/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: ScheduledActivities/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+     
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,DueDate")] ScheduledActivity scheduledActivity)
@@ -80,9 +77,6 @@ namespace FleetManagementWebApplication.Controllers
             return View(scheduledActivity);
         }
 
-        // POST: ScheduledActivities/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(long id, [Bind("Id,DueDate")] ScheduledActivity scheduledActivity)

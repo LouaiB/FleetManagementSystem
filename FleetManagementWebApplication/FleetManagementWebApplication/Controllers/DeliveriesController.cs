@@ -9,13 +9,13 @@ using FleetManagementWebApplication.Models;
 
 namespace FleetManagementWebApplication.Controllers
 {
-    public class DeliveriesController : Controller
+    public class DeliveriesController : FleetController
     {
-        private readonly ApplicationDbContext _context;
+        
 
-        public DeliveriesController(ApplicationDbContext context)
+        public DeliveriesController(ApplicationDbContext context):base(context)
         {
-            _context = context;
+            
         }
 
         // GET: Deliveries
