@@ -1,39 +1,166 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using FleetManagementWebAplication.Models;
 using FleetManagementWebApplication.Models;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace FleetManagementWebApplication.Controllers
 {
-    /**
-     * 
-     * !!!!!!!!!!!!!NOTE!!!!!!!!!!!
-     * !
-     * !
-     * !
-     * !
-     * !!!!ALL DATA MUST BE RETURNED AS JSON!!!!
-     * !
-     * !
-     * !
-     * !
-     * !!!!!!!!!!!!!NOTE!!!!!!!!!!!
-     * 
-     * */
-
-
-    public class MapController : Controller
+        public class MapController : FleetController
     {
-        private readonly ApplicationDbContext _context;
-
-        public MapController(ApplicationDbContext context)
+        IHostingEnvironment _environment;
+        public MapController(ApplicationDbContext context, IHostingEnvironment environment):base(context)
         {
-            _context = context;
+            _environment = environment;
         }
+        [HttpGet]
+         public IActionResult Index(long Id=0)
+        {
+            if (!LogedIn())
+                return RedirectToRoute("home");
+            
+            if (Id > 0)
+            {
+      
+                ViewData["NotificationDelivery"] = _context.Deliveries.Where(d => d.Id == Id).Include(d=>d.Client).First();
+                ViewData["NotificationFlag"] = true;
+
+            }
+            MapViewModel viewModel = new MapViewModel();
+
+            
+
+            Company company = _context.Companies.Find(CompanyId);
+
+            viewModel.CompanyId = company.Id;
+            viewModel.CompanyName = company.Name;
+            viewModel.CompanyType = company.Type;
+            viewModel.CompanyAddress = company.Address;
+            viewModel.OrderType = company.OrderType;
+
+            List<Vehicle> activeVehicles = new List<Vehicle>();
+            activeVehicles = _context.Vehicles
+                .Include(v => v.CurrentDriver)
+                .Include(v => v.CurrentDriver.Company)
+                .Where(v => v.isCurrentlyActive)
+                .Where(v => v.Company.Id == CompanyId)
+                .ToList();
+
+            activeVehicles.ForEach(v =>
+            {
+                v.CurrentDriver.Deliveries = _context.Deliveries
+                    .Include(d => d.Client)
+                    .Include(d => d.Company)
+                    .Where(d => (d.Driver == v.CurrentDriver && d.Company == company))
+                    .Where(d => d.Finished == false && d.Started== true)
+                    .ToList();
+
+            });
+
+
+
+
+            viewModel.ActiveVehicles = activeVehicles;
+
+            // Fill out clients
+            viewModel.Clients = _context.Clients
+                .Include(c => c.Deliveries)
+                .ToList();
+                viewModel.MapLocations = _context.MapLocations.Where(m => m.Company.Id == CompanyId).ToArray();
+
+            return View(viewModel);
+        }
+
+        
+       
+
+  
+
+
+
+        public JsonResult CancelDelivery(string vehicleID, string deliveryID)
+        {
+            // Removes a delivery from the DB
+            // This delivery has NOT been completed, but rather assigned to a driver/vehicle but then the supervisor CANCLED it before it reached the destination
+            // Returns true on success
+          
+            bool isSuccess = true;         
+            var delivery = _context.Deliveries.Find(Convert.ToInt64(deliveryID));
+            try
+            {
+                DeliverySummary deliverySummary = _context.DeliverySummaries.Where(s => s.Delivery == delivery).Single();
+                _context.Remove(deliverySummary);
+            }
+            catch (Exception)
+            {
+
+            }
+           
+           _context.Remove(delivery);
+            _context.SaveChanges();
+
+            return Json(new { Result = isSuccess });
+        }
+
+        
+
+
+        [HttpPost]
+        public JsonResult GetValues(string x)
+        {
+            Result r = new Result();
+            r.vehicleID = x;
+            return Json(r);
+        }
+
+        public JsonResult AddDeliveryBySupervisor(
+          string vehicleID,
+          string driverID,
+          string clientID,
+          string startLatitude,
+          string startLongitude,
+          string endLatitude,
+          string endLongitude,
+          string quantity,
+          string date,
+          string sourceCity,
+          string destinationCity
+          )
+        {
+           
+            Delivery newDelivery = new Delivery
+            {
+                Answered = true,
+                SourceLatitude = Double.Parse(startLatitude),
+                SourceLongtitude = Double.Parse(startLongitude),
+                DestinationLatitude = Double.Parse(endLatitude),
+                DestinationLongtitude = Double.Parse(endLongitude),
+                Quantity = Convert.ToInt32(quantity),
+                Company = _context.Companies.Find(CompanyId),
+                Driver = _context.Drivers.Find(Convert.ToInt64(driverID)),
+                Vehicle = _context.Vehicles.Find(Convert.ToInt64(vehicleID)),
+                Client = _context.Clients.Find(Convert.ToInt64(clientID)),
+                Time = DateTime.Now,
+                SourceCity = sourceCity,
+                DestinationCity = destinationCity
+            };
+
+            // Add delivery to corresponding driver and vehicle
+            _context.Add(newDelivery);
+            _context.SaveChanges();
+
+            return Json(new { Result = newDelivery.Id });
+        }
+
+
 
         // Testing [ No need to code anything here ]
         public IActionResult ShowCompanies()
@@ -46,131 +173,204 @@ namespace FleetManagementWebApplication.Controllers
         // Testing [ No need to code anything here ]
         public IActionResult ShowDeliveries()
         {
-            ViewData["Deliveries"] = _context.Deliveries.Where(d => d.Company.Id == 7).ToList();
+            ViewData["Deliveries"] = _context.Deliveries
+                .Include(d => d.Company)
+                .Include(d => d.Driver)
+                .Include(d => d.Vehicle)
+                .Where(d => d.Company.Id == 2)
+                .ToList();
+            return View();
+        }
+        [HttpGet]
+        public IActionResult CreateMapLocation()
+        {
+            if (!LogedIn())
+                return RedirectToRoute("/home");
+           return View();
+        }
+
+        [HttpPost]
+        public IActionResult CreateMapLocation(MapLocation mapLocation, IFormFile file)
+        {
+            if (!LogedIn())
+                return RedirectToRoute("/home");
+
+            var filePath = Path.GetTempFileName();
+
+            string image = "";
+
+            using (FileStream filestream = System.IO.File.Create(_environment.WebRootPath + "\\images\\" + file.FileName))
+            {
+                image = file.FileName;
+
+                file.CopyTo(filestream);
+                filestream.Flush();
+            }
+
+            if (ModelState.IsValid)
+            {
+                mapLocation.Company = _context.Companies.Find(CompanyId);
+                mapLocation.Image = image;
+                _context.MapLocations.Add(mapLocation);
+                _context.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View(mapLocation);
+        }
+
+        [HttpGet]
+        public IActionResult AddClient()
+        {
+            if (!LogedIn())
+                return RedirectToRoute("/home");
             return View();
         }
 
-        public IActionResult Index()
+        [HttpPost]
+        public IActionResult AddClient(AddClient model)
         {
-            MapViewModel viewModel = new MapViewModel();
+            if (!LogedIn())
+                return RedirectToRoute("/home");
 
-            long companyID = 7; // FOR TESTING
-
-            // I want the company object WITH the vehicles it has that are CURRENTLY ACTIVE
-            // Also a vehicle's deliveries list should have its CURRENT deliveries
-            // Alter MapViewModel if needed
-            // "isCurrentlyActive" attribute should be added to the Vehicle table and migrated
-            // Below code is my attempt. Delete it all if you want
-
-            
-            Company company = _context.Companies.Find(companyID);
-
-            // Fill out company details
-            viewModel.CompanyId = company.Id;
-            viewModel.CompanyName = company.Name;
-            viewModel.CompanyType = company.Type;
-            viewModel.CompanyAddress = company.Address;
-
-            List<Vehicle> activeVehicles = new List<Vehicle>();
-            activeVehicles = _context.Vehicles
-                //.Where(v => v.isCurrentlyActive)
-                .Where(v => v.Company.Id == companyID)
-                .Include(v=>v.CurrentDriver)
-                .Take(2)
-                .ToList<Vehicle>();
-          foreach(Vehicle v in activeVehicles)
+            if (ModelState.IsValid)
             {
-                List<Delivery> Deliveries = new List<Delivery>();
-              
-                if (v.CurrentDriver != null)
-                {
-                    Deliveries = _context.Deliveries.Where(d => d.Driver == v.CurrentDriver)
-                                                                                              .Include(d => d.Client)
-                                                                                              .ToList<Delivery>();
-                    v.CurrentDriver.Deliveries = Deliveries;
-                }
-                else
-                {
-                    v.CurrentDriver = new Driver
-                    {
-                        Id = 0,
-                        Name = "No Driver",
-                        Username = "No Driver",
-                        Password = "No Driver",
-                        Birthdate = "No Driver",
-                        Address = "No Driver",
-                        Phonenumber = "No Driver",
-                        Company = company,
-                        Deliveries = Deliveries
-                    };
-                }
-                   
-           
+                Client c = new Client()
+                {Name=model.Name,
+                 Username=model.Username,
+                 Password=model.Password,
+                 Phonenumber=model.Phone
+                };
+                _context.Clients.Add(c);
+                _context.SaveChanges();
 
+                return RedirectToAction("Index");
+            }
+            return View();
+        }
+
+
+        [HttpPost]
+        public JsonResult UpdateDeliveryBySupervisor(string deliveryId,string vehicleId, string driverId)
+        {
+            long id;
+            try
+            {
+                Delivery delivery = _context.Deliveries.Find(Convert.ToInt64(deliveryId));
+                delivery.Driver = _context.Drivers.Find(Convert.ToInt64(driverId));
+                delivery.Vehicle = _context.Vehicles.Find(Convert.ToInt64(vehicleId));            
+                delivery.Answered = true;
+               _context.Update(delivery);
+                _context.SaveChanges();
+                id =delivery.Id;
+            }
+            catch (Exception)
+            {
+                id = 0;
             }
 
-           
-
-        
-            
-            viewModel.ActiveVehicles = activeVehicles;
-            
-
-            return View(viewModel);
+            return Json(new { Result = id });
         }
 
-        
-        public JsonResult AddDeliveryBySupervisor(AddDeliveryModel Model)
-        {
-            // Add new delivery to DB
-            // This action MUST return this new delivery's ID
-            // This parameters are the main ones. Extra ones can be added later if needed (eg quantity, etc.)
-            // Below code is my attempt. Delete it all if you want
 
-            long newDeliveryID = 100; // whatever
 
-           
-            Delivery newDelivery = new Delivery();
-            newDelivery.Answered = true;
-            newDelivery.SourceLatitude = Double.Parse(Model.startLatitude);
-            newDelivery.SourceLongtitude = Double.Parse(Model.startLongitude);
-            newDelivery.DestinationLatitude = Double.Parse(Model.endLatitude);
-            newDelivery.DestinationLongtitude = Double.Parse(Model.endLongitude);
-            newDelivery.Quantity = 10; // Testing
-            //newDelivery.Time = DateTime.Parse(orderTime);
-
-            newDelivery.Company = _context.Companies.Find((long)7); // Testing
-            newDelivery.Driver = _context.Drivers.Find(Model.driverID); 
-            newDelivery.Vehicle = _context.Vehicles.Find(Model.vehicleID);
-            _context.SaveChanges();
-
-            // Add delivery to corresponding driver and vehicle
-            _context.Vehicles.Find(Model.vehicleID).Deliveries.Add(newDelivery);
-            _context.Drivers.Find(Model.driverID).Deliveries.Add(newDelivery);
-            _context.SaveChanges();
-            
-
-            return Json(new { Result = newDeliveryID });
-        }
-
-        public JsonResult CancelDelivery(long vehicleID, long deliveryID)
-        {
-            // Removes a delivery from the DB
-            // This delivery has NOT been completed, but rather assigner to a driver/vehicle but then the supervisor CANCLED it before it reached the destination
-            // Returns true on success
-
-            bool isSuccess = true; // whatever
-
-            return Json(new { Result = isSuccess });
-        }
 
         public JsonResult GetVehicles(bool isActive)
         {
+            long companyID = (long)HttpContext.Session.GetInt32("CompanyId"); // FOR TESTING
+            Company company = _context.Companies.Find(companyID);
+
             // Get all active vehicles (with their current deliveries if exist)
+            List<Vehicle> activeVehicles = new List<Vehicle>();
+            activeVehicles = _context.Vehicles
+                .Include(v => v.CurrentDriver)
+                .Include(v => v.CurrentDriver.Company)
+                .Where(v => v.isCurrentlyActive)
+                .Where(v => v.Company.Id == companyID)
+                .ToList();
 
-              
+            activeVehicles.ForEach(v =>
+            {
+                v.CurrentDriver.Deliveries = _context.Deliveries
+                    .Include(d => d.Client)
+                    .Include(d => d.Company)
+                    .Where(d => (d.Driver == v.CurrentDriver && d.Company == company))
+                    .Where(d => d.Finished == false && d.Started == true)
+                    .ToList();
+            });
 
-            return Json(new { /* DATA */ });
+            // Create JSON result string
+            string json = "[";
+            activeVehicles.ForEach(v => {
+                json += "{";
+                json += "\"Id\": \"" + v.Id + "\",";
+                json += "\"Latitude\": \"" + v.Latitude + "\",";
+                json += "\"Longtitude\": \"" + v.Longtitude + "\",";
+                json += "\"Make\": \"" + v.Make + "\",";
+                json += "\"Model\": \"" + v.Model + "\",";
+                json += "\"LicensePlate\": \"" + v.LicensePlate + "\",";
+                json += "\"CurrentDriverId\": \"" + v.CurrentDriver.Id + "\",";
+                json += "\"CurrentDriverName\": \"" + v.CurrentDriver.Name + "\",";
+                json += "\"CurrentDriverPhonenumber\": \"" + v.CurrentDriver.Phonenumber + "\",";
+                json += "\"CurrentDriverBirthdate\": \"" + v.CurrentDriver.Birthdate + "\",";
+
+                json += "\"Deliveries\": [";
+                v.Deliveries?.ForEach(d => {
+                    json += "{";
+                    json += "\"deliveryID\": \"" + d.Id + "\",";
+                    json += "\"SourceLatitude\": \"" + d.SourceLatitude + "\",";
+                    json += "\"SourceLongtitude\": \"" + d.SourceLongtitude + "\",";
+                    json += "\"DestinationLatitude\": \"" + d.DestinationLatitude + "\",";
+                    json += "\"DestinationLongtitude\": \"" + d.DestinationLongtitude + "\",";
+                    json += "\"SourceCity\": \"" + d.SourceCity + "\",";
+                    json += "\"DestinationCity\": \"" + d.DestinationCity + "\",";
+                    json += "\"info\": {";
+                    json += "\"customerName\": \"" + d.Client.Name + "\",";
+                    json += "\"customerEmail\": \"" + d.Client.Username + "\",";
+                    json += "\"quantity\": \"" + d.Quantity + "\",";
+                    json += "\"orderTime\": \"" + d.Time + "\"";
+                    json += "}";
+
+                    json += "},";
+                });
+                json = json.TrimEnd(',');
+                json += "]";
+
+                json += "},";
+            });
+            json = json.TrimEnd(',');
+            json += "]";
+
+            return Json(new { Result = json });
         }
+        [HttpGet]
+        public IActionResult AutomaticResponse()
+        {
+            if (!LogedIn())
+                return RedirectToRoute("Home");
+            Company company = _context.Companies.Find(CompanyId);
+           ViewData["switch"] = company.AutomaticResponse;
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SwitchMode(bool AutomaticResponse = false)
+        {
+            if (!LogedIn())
+                return RedirectToRoute("Home");
+            Company company = _context.Companies.Find(CompanyId);
+            company.AutomaticResponse = AutomaticResponse;
+            _context.Update(company);
+            _context.SaveChanges();
+            return RedirectToRoute("Home");
+        }
+
+
+
+public class Result
+        {
+            public string vehicleID;
+        }
+       
     }
 }

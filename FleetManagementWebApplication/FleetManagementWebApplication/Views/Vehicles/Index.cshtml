@@ -27,7 +27,7 @@
                       <div class="box effect6 w3-left">
 
                           <div class="w3-container w3-padding">
-                              <form asp-controller="VehiclesDetails">
+                              <form asp-controller="VehiclesDetails" method="get">
                                   <h3>@Vehicles[i].Make    @Vehicles[i].Model</h3>
                                   <h6 class="w3-opacity"><span style="background-color:silver">LicensePlate :@Vehicles[i].LicensePlate</span></h6>
                                   <table width="100%">
@@ -40,12 +40,12 @@
                                           </td>
 
                                           <td>
-                                              <button type="submit" class="w3-button w3-theme w3-large sized" formaction="/VehiclesDetails/Index"> Configuration</button>
+                                              <button type="submit" class="w3-button w3-theme w3-large sized" formaction="/VehiclesDetails/Index"> Maintenance</button>
                                               <input type="hidden" name="id" value="@Vehicles[i].Id" />
                                           </td>
                                       </tr>
-                                      <tr><td><button type="submit" class="w3-button w3-theme w3-large sized" formaction="/Vehicles/GetEdit"> Edit or delete</button></td></tr>
-                                      <tr><td><button type="submit" class="w3-button w3-theme w3-large sized">Track on map </button></td></tr>
+                                      <tr><td><button type="submit" class="w3-button w3-theme w3-large sized" formaction="/Vehicles/GetEdit"> Edit </button></td></tr>
+                                      <tr><td><button type="submit" class="w3-button w3-theme w3-large sized" formaction="/Vehicles/GetDelete">Delete </button></td></tr>
                                   </table>
 
                               </form>
@@ -73,12 +73,12 @@
                                                   <h6 class="w3-opacity">Fuel Level : @Vehicles[i + 1].FuelLevel Litres</h6>
                                               </td>
                                               <td>
-                                                  <button type="submit" class="w3-button w3-theme w3-large sized" formaction="/VehiclesDetails/Index"> Configuration  </button>
+                                                  <button type="submit" class="w3-button w3-theme w3-large sized" formaction="/VehiclesDetails/Index"> Maintenance  </button>
                                                   <input type="hidden" name="id" value="@Vehicles[i+1].Id" />
                                               </td>
                                           </tr>
-                                          <tr><td><button type="submit" class="w3-button w3-theme w3-large sized" formaction="/Vehicles/GetEdit"> Edit or delete</button></td></tr>
-                                          <tr><td><button type="submit" class="w3-button w3-theme w3-large sized">Track on map </button></td></tr>
+                                          <tr><td><button type="submit" class="w3-button w3-theme w3-large sized" formaction="/Vehicles/GetEdit"> Edit </button></td></tr>
+                                          <tr><td><button type="submit" class="w3-button w3-theme w3-large sized" formaction="/Vehicles/GetDelete">Delete </button></td></tr>
                                       </table>
 
                                   </form>
@@ -114,12 +114,12 @@
                                                   <h6 class="w3-opacity">Fuel Level : @Vehicles[i + 2].FuelLevel  Litres</h6>
                                               </td>
                                               <td>
-                                                  <button type="submit" class="w3-button w3-theme w3-large sized" formaction="/VehiclesDetails/Index"> Configuration  </button>
+                                                  <button type="submit" class="w3-button w3-theme w3-large sized" formaction="/VehiclesDetails/Index"> Maintenance  </button>
                                                   <input type="hidden" name="id" value="@Vehicles[i+2].Id" />
                                               </td>
                                           </tr>
-                                          <tr><td><button type="submit" class="w3-button w3-theme w3-large sized" formaction="/Vehicles/GetEdit"> Edit or delete </button></td></tr>
-                                          <tr><td><button type="submit" class="w3-button w3-theme w3-large sized">Track on map </button></td></tr>
+                                          <tr><td><button type="submit" class="w3-button w3-theme w3-large sized" formaction="/Vehicles/GetEdit"> Edit </button></td></tr>
+                                          <tr><td><button type="submit" class="w3-button w3-theme w3-large sized" formaction="/Vehicles/GetDelete">Delete </button></td></tr>
                                       </table>
 
                                   </form>

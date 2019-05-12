@@ -26,6 +26,11 @@ namespace FleetApi1.Models
        public float Odometer { get; set; }
         [Required]
         public bool EngineRunning { get; set; }
-        
+
+
+        public double Longtitude { get; set; }
+        public double Latitude { get; set; }
+
+
     }
 }

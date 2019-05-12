@@ -12,9 +12,11 @@ namespace FleetApi1.Controllers
     {
         // GET api/values
         [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
+        public Result Get()
         {
-            return new string[] { "value1", "value2" };
+            Result r = new Result();
+            r.x = 888;
+            return r;
         }
 
         // GET api/values/5
@@ -41,5 +43,10 @@ namespace FleetApi1.Controllers
         public void Delete(int id)
         {
         }
+        public class Result
+        {
+            public int x;
+        }
     }
+
 }

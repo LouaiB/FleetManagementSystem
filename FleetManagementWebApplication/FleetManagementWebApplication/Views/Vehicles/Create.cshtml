@@ -36,7 +36,8 @@
             <span asp-validation-for="Model" class="text-danger"></span>
 
             <h6 class="w3-opacity">Purchase Date :</h6>
-            <input asp-for="purchaseDate" style="width:100%" class="w3-border w3-padding" value="2/3/2019">
+            <input asp-for="purchaseDate" style="width:100%" class="w3-border w3-padding" 
+                   value="@DateTime.Now.Date.ToString("yyyy-MM-dd")" type="date" >
             <span asp-validation-for="purchaseDate" class="text-danger"></span>
             <hr>
             <h3>Specifications</h3>

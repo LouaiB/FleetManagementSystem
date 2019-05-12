@@ -20,7 +20,7 @@ namespace FleetManagementWebApplication.Controllers
 
 
 
-        [HttpPost]
+      
         public async Task<IActionResult> Index(int id = 0)
         {
             if (!LogedIn())

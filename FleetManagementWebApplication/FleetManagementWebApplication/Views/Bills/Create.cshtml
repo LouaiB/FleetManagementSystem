@@ -13,7 +13,7 @@
             <form asp-action="Create" autocomplete="off">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <h6 class="w3-opacity">Service:</h6>
-                <input asp-for="Service" list="Services" style="width:100%" class="w3-border w3-padding" />
+                <input asp-for="Service" list="Services" style="width:100%" class="w3-border w3-padding" placeholder="Service type"/>
                 <datalist id="Services">
                     @foreach (string s in Services)
                     {
@@ -23,16 +23,16 @@
                 </datalist>
                 <span asp-validation-for="Service" class="text-danger"></span>
                 <h6 class="w3-opacity">Date:</h6>
-                <input asp-for="DateTime" value="@DateTime.Now" style="width:100%" class="w3-border w3-padding" />
+                <input asp-for="DateTime" value="@DateTime.Now.Date.ToString("yyyy-MM-dd")" type="date"  style="width:100%" class="w3-border w3-padding" />
                 <span asp-validation-for="DateTime" class="text-danger"></span>
                 <h6 class="w3-opacity">Vehicle:</h6>
                 <select name="VehicleSelect" asp-items="@Vehicles" style="width:100%" class="w3-border w3-padding"></select>
 
                 <h6 class="w3-opacity">Provider:</h6>
-                <input asp-for="Provider" style="width:100%" class="w3-border w3-padding" />
+                <input asp-for="Provider" style="width:100%" class="w3-border w3-padding" placeholder="Provider's name" />
                 <span asp-validation-for="Provider" class="text-danger"></span>
                 <h6 class="w3-opacity">Cost:</h6>
-                <input asp-for="Cost" style="width:100%" class="w3-border w3-padding" />
+                <input asp-for="Cost" style="width:100%" class="w3-border w3-padding" placeholder="Cost in dollars" /> 
                 <span asp-validation-for="Cost" class="text-danger"></span>
                 <br /> <br />
                 <button type="submit" class="w3-button w3-theme w3-right">
@@ -43,7 +43,8 @@
 
         </div>
     </div>
-
+<br>
+<br />
 
 
 <style>

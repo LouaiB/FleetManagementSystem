@@ -1,0 +1,140 @@
+﻿@using System.Linq
+@{
+    ViewData["Title"] = "Drivers Evolution";
+    Layout = "~/Views/Shared/LayoutManager.cshtml";
+
+    int[] months=(int[])ViewData["months"];
+    float[] optimFuel=(float[])ViewData["optimFuel"];
+    float[] actFuel=(float[])ViewData["actFuel"];
+    float[] score=(float[])ViewData["score"];
+    if (actFuel.Length>0)
+    {
+        float max=actFuel.Max() ;
+        for(int i=0;i<score.Length;i++)
+        {
+            score[i]=(score[i]*max)/5;
+        }
+    }
+
+    var XMonths = Newtonsoft.Json.JsonConvert.SerializeObject(months);
+    var YOptim = Newtonsoft.Json.JsonConvert.SerializeObject(optimFuel);
+    var YAct = Newtonsoft.Json.JsonConvert.SerializeObject(actFuel);
+    var YScore = Newtonsoft.Json.JsonConvert.SerializeObject(score);
+
+
+}
+<head>
+    <title>Drivers Evolution</title>
+
+    <link rel="stylesheet" href="~/css/Style.css" />
+    <title>Combo Bar-Line Chart</title>
+    <script src="https://www.chartjs.org/samples/latest/utils.js"></script>
+    <script src="https://www.chartjs.org/dist/2.8.0/Chart.min.js"></script>
+
+    <style>
+        canvas {
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+        }
+    </style>
+</head>
+
+
+<body>
+< <div class="box effect6" style="width:80%">
+    <form asp-controller="Reports" asp-action="FuelConsumption" method="get">
+        <table width="90%">
+            <tr>
+                <td><h3>Fuel Consumption </h3></td>
+                <td align="right">
+                    <input type="number" name="year" />
+                </td>
+                
+                <td>
+                    <input type="submit" value="GO" />
+                </td>
+            </tr>
+        </table>
+    </form>
+    <div class="w3-container w3-padding">
+
+        <div>
+            <canvas id="canvas"></canvas>
+        </div>
+
+        <script>
+                var MonthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'November', 'December'];
+                var Months =@XMonths;
+                var Labels = Array(Months.length);
+                for (var i = 0; i < Months.length; i++) {
+                    Labels[i] = MonthNames[Months[i]-1];
+                 }
+                var chartData = {
+                    labels: Labels,
+                    datasets: [{
+                        type: 'line',
+                        label: 'Drivers performance',
+                        borderColor: window.chartColors.blue,
+                        borderWidth: 2,
+                        fill: false,
+                        data:@YScore
+                    }, {
+                        type: 'bar',
+                        label: 'Optimal fuel consumption',
+                        backgroundColor: window.chartColors.red,
+                        data: @YOptim,
+                        borderColor: 'white',
+                        borderWidth: 2,
+
+
+
+                    }, {
+                        type: 'bar',
+                        label: 'Actual fuel consumption',
+                        backgroundColor: window.chartColors.green,
+                        data:@YAct
+                    }]
+
+                };
+                window.onload = function () {
+                    var ctx = document.getElementById('canvas').getContext('2d');
+                    window.myMixedChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: chartData,
+                        options: {
+                            responsive: true,
+                            title: {
+                                display: false,
+                                text: 'Fuel Consumption Graph'
+                            },
+                            tooltips: {
+                                mode: 'index',
+                                intersect: true
+                            },
+                            plugins: {
+                                datalabels: {
+                                    anchor: 'end',
+                                    align: 'top',
+                                    formatter: Math.round,
+                                    font: {
+                                        weight: 'bold'
+                                    }
+                                }
+                            }
+
+                        }
+                    });
+                };
+
+
+        </script>
+
+
+
+
+    </div>
+</div>
+<br />
+<br />
+</body>

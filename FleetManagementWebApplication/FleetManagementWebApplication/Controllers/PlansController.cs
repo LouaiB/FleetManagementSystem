@@ -16,8 +16,6 @@ namespace FleetManagementWebApplication.Controllers
 
         public PlansController(ApplicationDbContext context):base(context)
         {
-            
-            
         }
 
         // GET: Plans
@@ -25,8 +23,23 @@ namespace FleetManagementWebApplication.Controllers
         {
             if (!LogedIn())
                 return RedirectToRoute("Home");
-           
-            return View(await _context.Plan.Include(p=>p.Vehicles).Include(p=>p.Activities).ToListAsync());
+            long[] PlanIds;
+            try
+            {
+                 PlanIds = (from v in _context.Vehicles
+                                  where v.Company.Id == CompanyId && v.Plan!=null
+                                  select v.Plan.Id).Distinct().ToArray<long>();
+            }
+            catch (Exception)
+            {
+                PlanIds = new long[] { };
+            }
+
+            return View(await _context.Plan
+                .Where(p=>PlanIds.Contains(p.Id))
+                .Include(p=>p.Vehicles)
+                .Include(p=>p.Activities)
+                .ToListAsync());
         }
 
        

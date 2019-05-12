@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FleetApi1.Models;
+using System.Net;
+using Newtonsoft.Json.Linq;
 
 namespace FleetApi1.Controllers
 {
@@ -22,9 +24,29 @@ namespace FleetApi1.Controllers
         [HttpPost]
         public async Task<ActionResult<Result>> StartDeliverySummary(StartDeliveryModel Start)
         {
+            Delivery delivery = _context.Deliveries.Where(d=>d.Id==Start.DeliveryId)
+                                                            .Include(d=>d.Vehicle).First();
+            delivery.Started = true;
+
+            using (var webClient = new WebClient())
+            {
+                string url = "https://matrix.route.api.here.com/routing/7.2/calculatematrix.json"
+                                   + "?app_id=ORWs1MBbnXAyzlgdPGpw"
+                                    + "&app_code=ftEQwIdOxSdxiRv6pd1Rvw";
+                url += "&start0" + "=" + delivery.SourceLatitude + "," + delivery.SourceLongtitude;
+                url += "&destination0=" + delivery.DestinationLatitude + "," + delivery.DestinationLongtitude;
+                url += "&summaryAttributes=distance,traveltime&mode=fastest;car;traffic:disabled";
+                var rawJSON = webClient.DownloadStringTaskAsync(url).Result;
+                JObject rss = JObject.Parse(rawJSON);
+                delivery.OptimalDistance = (float)rss["response"]["matrixEntry"][0]["summary"]["distance"] / 1000;
+                delivery.OptimalTime = (int)rss["response"]["matrixEntry"][0]["summary"]["travelTime"] / 60;
+            }
+            delivery.OptimalFuelConsumption = delivery.OptimalDistance * delivery.Vehicle.FuelConsumption;
+
+
             DeliverySummary summary = new DeliverySummary()
             {
-                Delivery = _context.Deliveries.Find(Start.DeliveryId),
+                Delivery = delivery,
                 StartTime = Start.StartTime,
                 EndTime = Start.StartTime,
                 StartFuelLevel = Start.StartFuelLevel,
@@ -41,7 +63,16 @@ namespace FleetApi1.Controllers
                 SpeedingsRate=5,
                 SeatBeltRate=5
             };
+            Vehicle V = delivery.Vehicle;
+            if (V != null)
+            {
+                V.Latitude = Start.Latitude;
+                V.Longtitude = Start.Longtitude;
+                V.isCurrentlyActive = true;
+            }
+            _context.Deliveries.Update(delivery);
             _context.DeliverySummaries.Add(summary);
+            _context.Vehicles.Update(V);
             await _context.SaveChangesAsync();
 
             return new Result(summary.Id);
@@ -52,7 +83,19 @@ namespace FleetApi1.Controllers
         {
             try
             {
-                DeliverySummary summary = _context.DeliverySummaries.Find(info.DeliverySummaryId);
+                DeliverySummary summary = _context.DeliverySummaries
+                                                                .Where(s=>s.Id==info.DeliverySummaryId)
+                                                                .Include(s=>s.Delivery)
+                                                                .ThenInclude(d=>d.Vehicle)
+                                                                .First();
+
+                Vehicle V = summary.Delivery.Vehicle;
+                if (V != null)
+                {
+                    V.Latitude = info.Latitude;
+                    V.Longtitude = info.Longtitude;
+                }
+
                 if (info.HardCornering)
                 {
                     summary.HardCorneringRate--;
@@ -91,6 +134,7 @@ namespace FleetApi1.Controllers
                 summary.EndOdometer = info.Odometer;
 
                 _context.DeliverySummaries.Update(summary);
+                _context.Vehicles.Update(V);
                 await _context.SaveChangesAsync();
                 return new Result1(true);
 
@@ -107,7 +151,7 @@ namespace FleetApi1.Controllers
            
             DeliverySummary summary = _context.DeliverySummaries
                                                                         .Where(d=>d.Id==finish.DeliverySummaryId).Include(d => d.Delivery).Single();
-
+            summary.Delivery.Finished = true;
             Driver driver = _context.Deliveries.Where(d => d.Id == summary.Delivery.Id)
                                                                            .Include(d=>d.Driver).First().Driver;
             Company company = _context.Drivers.Where(d => d.Id == driver.Id).Include(d => d.Company).First().Company;
@@ -157,6 +201,7 @@ namespace FleetApi1.Controllers
 
 
             _context.DeliverySummaries.Update(summary);
+            //_context.Deliveries.Update(summary.Delivery);
             _context.Drivers.Update(driver);
             _context.SaveChanges();
 

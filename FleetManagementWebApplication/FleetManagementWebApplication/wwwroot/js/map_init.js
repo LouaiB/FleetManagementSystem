@@ -1,24 +1,24 @@
 /////////////////// INITIALIZATIONS /////////////////////////////////////////////
+//Step 1: initialize communication with the platform
 
-const platform = new H.service.Platform({
-    'app_id': 'PPcEKXNq6kadvIsmP1XN',
-    'app_code': 'Qc4RhaYV67Iul6tmr3xdVg'
+var platform = new H.service.Platform({
+        'app_id': 'ORWs1MBbnXAyzlgdPGpw',
+    'app_code': 'ftEQwIdOxSdxiRv6pd1Rvw',
+    useHTTPS: true
+});
+var pixelRatio = window.devicePixelRatio || 1;
+var defaultLayers = platform.createDefaultLayers({
+    tileSize: pixelRatio === 1 ? 256 : 512,
+    ppi: pixelRatio === 1 ? undefined : 320
 });
 
-// Obtain the default map types from the platform object:
-const defaultLayers = platform.createDefaultLayers();
-
-// Instantiate (and display) a map object:
-const map = new H.Map(
-    document.querySelector("#mapContainer"),
-    defaultLayers.normal.map,
-    {
-        zoom: 12,
-        center: { lat: 33.81, lng: 35.53 }
-    }
-);
-
-// Create the default UI:
+//Step 2: initialize a map
+var map = new H.Map(document.getElementById('mapContainer'),
+    defaultLayers.normal.map, {
+        center: { lat: 33.8263, lng: 36.3431 },
+        zoom: 8,
+        pixelRatio: pixelRatio
+    });
 const ui = H.ui.UI.createDefault(map, defaultLayers);
 
 // Enable the event system on the map instance:
@@ -26,7 +26,6 @@ const mapEvents = new H.mapevents.MapEvents(map);
 
 // Instantiate the default behavior, providing the mapEvents object (move around, etc.)
 const behavior = new H.mapevents.Behavior(mapEvents);
-
 
 ////////////////////////////////// COORD SHOWER //////////////////////////////////////
 map.addEventListener('pointerdown', e => {
@@ -44,103 +43,41 @@ map.addEventListener('pointerdown', e => {
 
     switch (choice) {
         case "none": return;
-        //case "coords": document.querySelector("#coords").innerHTML = `Lat: ${coord.lat}\nLng: ${coord.lng}`; break;
         case "source": setStart(coord); break;
         case "destination": setEnd(coord); break;
     }
 });
+/*
+var platform = new H.service.Platform({
+    'app_id': 'ORWs1MBbnXAyzlgdPGpw',
+    'app_code': 'ftEQwIdOxSdxiRv6pd1Rvw',
+    useHTTPS: true
+});
+// Retrieve the target element for the map:
+var targetElement = document.getElementById('mapContainer');
 
+// Get the default map types from the platform object:
+var defaultLayers = platform.createDefaultLayers();
+
+// Instantiate the map:
+var map = new H.Map(
+    document.getElementById('mapContainer'),
+    defaultLayers.normal.map,
+    {
+        zoom: 10,
+        center: { lat: 52.51, lng: 13.4 }
+    });
+*/
 setInterval(() => {
     fixNameTagPositions();
 }, 5);
-
-
-//map.addEventListener('drag', evt => fixNameTagPositions());
-
-
-////////////////////////////////// FUNCTIONS //////////////////////////////////////////////
-/**
- *  TASKS AND PROBLEMS:
- *      add name tags above vehicles and centers
- * 
- *  PROPERTIES:
- *      displayedVehicles[]
- *      displayedCenters[]
- *      startPicker[]
- *      endPicker[]
- * 
- *  FUNCTIONS:
- *      addVehicleToMap(vehicleID, latitude, longitude, currentRoute)
- *      updateVehicleInMap(vehicleID, latitude, longitude)
- *      removeVehicleFromMap(vehicleID)
- *      addRouteToMap(vehicleID, route)
- *      removeRouteFromMap(vehicleID)
- *      getDeliveryTimeLeft(vehicleID)
- *      getRouteTime(route)
- *      addCenterToMap(centerID, centerName, latitude, longitude)
- *      RemoveCenterFromMap(centerID)
- *      setStart(coord)
- *      setEnd(coord)
- *      getDriverDestination(driver)
- *      findOptimalDriverForNewDelivery(startLatitude, startLongitude)
- *      addWaypointToVehicle(vehicleID, latitude, longitude)
- *      addDelivery()
- *      addDeliveryToVehicle(vehicleID, delivery)
- *      finishDelivery(vehicleID, deliveryID)
- * 
- */
-
-/**
- * EXAMPLES OF DATA THAT MAP TAKES (JSON)
- * VEHICLE 1:
- * {
- *     "vehicleID": 123,
- *     "longitude": 35.57,
- *     "latitude": 33.26,
- *     "currentDriver": kazakaza (obj, id, whatever),
- *     "deliveries": 
- *     [
- *         {
-               "deliveryID": 57,
-               "info": whatever info about delivery (customer name, etc.),
-               "startLatitude": 36.7,
-               "startLongitude": 32.6,
-               "endLatitude": 45.98,
-               "endLongitude": 36.89
-           },
-           {
-               "deliveryID": 93,
-               "info": whatever info about delivery (customer name, etc.),
-               "startLatitude": 36.77,
-               "startLongitude": 33.65,
-               "endLatitude": 35.55,
-               "endLongitude": 32.98
-           },
-           .
-           .
-           .
- *     ]
- * }
- * 
- * VEHICLE 2:
- * {
- *     "vehicleID": 65,
- *     "longitude": 34.27,
- *     "latitude": 32.76,
- *     "currentDriver": kazakaza (obj, id, whatever),
- *     "deliveries": null
- * }
- * 
- * etc.
- * More data can be added as needed
- */
-
-
-
 let displayedVehicles = [];
 let displayedCenters = [];
 let startPicker = [];
 let endPicker = [];
+let clientsList = [];
+var startCity = "";
+var endCity = "";
 
 async function addVehicleToMap(vehicleID, latitude, longitude, vehicleInfo, currentDriver, deliveries) {
     console.log("-------------------- IN ADD VEHICLE --------------------");
@@ -231,10 +168,9 @@ function removeVehicleFromMap(vehicleID) // Does NOT remove its routes though
     });
 }
 
-//---------------------//
-
-
 function addRouteToMap(vehicleID, route) {
+
+  
     console.log("-------------------- IN ADD ROUTE --------------------");
     let routingParameters = {
         'mode': 'fastest;car',
@@ -245,13 +181,7 @@ function addRouteToMap(vehicleID, route) {
         routingParameters[waypoint] = `geo!${route[waypoint].latitude},${route[waypoint].longitude}`;
     }
 
-    // Get an instance of the routing service:
     const router = platform.getRoutingService();
-
-
-    // Call calculateRoute() with the routing parameters,
-    // the callback and an error callback function (called if a
-    // communication error occurs):
     router.calculateRoute(routingParameters,
         function (result) {
             let route,
@@ -259,8 +189,9 @@ function addRouteToMap(vehicleID, route) {
                 startPoint,
                 endPoint,
                 linestring;
-
+          
             if (result.response.route) {
+
                 // Pick the first route from the response:
                 route = result.response.route[0];
                 // Pick the route's shape:
@@ -274,7 +205,7 @@ function addRouteToMap(vehicleID, route) {
                     var parts = point.split(',');
                     linestring.pushLatLngAlt(parts[0], parts[1]);
                 });
-
+                
                 // Retrieve the mapped positions of the requested waypoints:
                 startPoint = route.waypoint[0].mappedPosition;
                 endPoint = route.waypoint[route.waypoint.length - 1].mappedPosition;
@@ -324,6 +255,7 @@ function addRouteToMap(vehicleID, route) {
                 }
 
                 // Add the route polyline and the two markers to the map:
+                //alert("drawing route");
                 map.addObjects([routeLine, startMarker, endMarker]);
                 if (stopMarkers.length > 0)
                     map.addObjects(stopMarkers);
@@ -343,7 +275,6 @@ function addRouteToMap(vehicleID, route) {
 
 
 }
-
 
 function removeRouteFromMap(vehicleID) {
     console.log("--------------------- IN REMOVE ROUTE --------------------");
@@ -371,6 +302,7 @@ function removeRouteFromMap(vehicleID) {
 
 async function updateVehicleRoute(vehicleID, deliveries) {
     console.log("--------------------- IN UPDATE ROUTE --------------------");
+    console.log(deliveries);
     //if(displayedVehicles[vehicleID].route == null) return;
 
     const vehicleLatitude = displayedVehicles[vehicleID].latitude;
@@ -474,10 +406,9 @@ function getRouteTime(route) {
     });
 }
 
-// ------------------------ //
-function addCenterToMap(centerID, centerName, latitude, longitude) {
+function addCenterToMap(centerID, centerName, latitude, longitude,image) {
     // Create a marker icon from an image URL for the warehouse
-    const icon = new H.map.Icon('/images/warehouse.png');
+    const icon = new H.map.Icon('/images/'+image);
     const marker = new H.map.Marker({ lat: latitude, lng: longitude }, { icon: icon });
     map.addObject(marker);
 
@@ -487,10 +418,13 @@ function addCenterToMap(centerID, centerName, latitude, longitude) {
     // Add to array of displayed vehicles
     displayedCenters[centerID] = {
         "centerID": centerID,
+        "centerName": centerName,
         "longitude": longitude,
         "latitude": latitude,
+        "image": image,
         "marker": marker,
     };
+    fixNameTagPositions();
 
 }
 
@@ -500,9 +434,6 @@ function RemoveCenterFromMap(centerID) {
     displayedCenters[centerID].latitude = null;
     displayedCenters[centerID].longitude = null;
 }
-
-// ------------------------ //
-
 function setStart(coord) {
     // Check if an icon already exists to remove it
     try {
@@ -522,8 +453,24 @@ function setStart(coord) {
     // Set values to input boxes in the html page (for testing only probably)
     document.querySelector("#startLatitudeOptRouteInput").value = coord.lat;
     document.querySelector("#startLongitudeOptRouteInput").value = coord.lng;
-}
 
+    let url1 = `https://nominatim.openstreetmap.org/reverse?format=json&lon=${coord.lng}&lat=${coord.lat}`;
+    var jsonPromise1 = $.getJSON(url1);
+
+    jsonPromise1.done(function (data) {
+
+        if (data.address.hasOwnProperty('city'))
+            startCity = data.address.city;
+        else
+            startCity = data.address.state.split(" ")[0];
+        alert(startCity);
+    });
+    jsonPromise1.fail(function (reason) {
+        alert("Error");
+    });
+
+
+}
 function setEnd(coord) {
     // Check if an icon already exists to remove it
     try {
@@ -539,14 +486,27 @@ function setEnd(coord) {
     endPicker.latitude = coord.lat;
     endPicker.longitude = coord.lng;
     endPicker.marker = marker;
-
+    
     // Set values to input boxes in the html page (for testing only probably)
     document.querySelector("#endLatitudeOptRouteInput").value = coord.lat;
     document.querySelector("#endLongitudeOptRouteInput").value = coord.lng;
+
+    let url1 = `https://nominatim.openstreetmap.org/reverse?format=json&lon=${coord.lng}&lat=${coord.lat}`;
+    var jsonPromise1 = $.getJSON(url1);
+
+    jsonPromise1.done(function (data) {
+
+        if (data.address.hasOwnProperty('city'))
+            endCity=data.address.city;
+        else
+            endCity = data.address.state.split(" ")[0];
+        alert(endCity);
+    });
+    jsonPromise1.fail(function (reason) {
+        alert("Failed1");
+    });
+
 }
-
-// ----------- //
-
 function getDriverDestination(driver) {
     let destinationWaypoint = null;
 
@@ -556,11 +516,10 @@ function getDriverDestination(driver) {
 
     return destinationWaypoint;
 }
-
 async function findOptimalDriverForNewDelivery(startLatitude, startLongitude) {
     console.log("--------------------- IN FIND OPT --------------------");
     let driversResponseTime = [];
-
+  
     for (driver in displayedVehicles) {
         driversResponseTime[driver] = {};
 
@@ -578,12 +537,15 @@ async function findOptimalDriverForNewDelivery(startLatitude, startLongitude) {
             "waypoint0": { "latitude": driverCurrentDestination.latitude, "longitude": driverCurrentDestination.longitude },
             "waypoint1": { "latitude": startLatitude, "longitude": startLongitude }
         }
+      
 
         const deliveryTimeLeft = await getDeliveryTimeLeft(driver);
+      
         const finishTillStartTime = await getRouteTime(finishTillStartRoute);
+      
         driversResponseTime[driver].responseTime = deliveryTimeLeft + finishTillStartTime;
     }
-
+    
     console.log("---------------------- GOT OUT OF LOOP ---------------------------")
     let shortestTime = Infinity;
     let optimalDriver = null;
@@ -602,7 +564,6 @@ async function findOptimalDriverForNewDelivery(startLatitude, startLongitude) {
         resolve(optimalDriver);
     });
 }
-
 async function addWaypointToVehicle(vehicleID, latitude, longitude) {
     console.log("--------------------- IN ADD WAYPOINT --------------------");
 
@@ -625,7 +586,6 @@ async function addWaypointToVehicle(vehicleID, latitude, longitude) {
         resolve(flag);
     });
 }
-
 async function addDeliveryToVehicle(vehicleID, delivery) {
     console.log("--------------------- IN ADD DELIVERY TO VEH --------------------");
 
@@ -641,162 +601,100 @@ async function addDeliveryToVehicle(vehicleID, delivery) {
     });
 }
 
-/*
-async function addDelivery()
-{
-    console.log("--------------------- IN ADD DELIVERY --------------------");
-    const startLatitude = document.querySelector("#startLatitudeOptRouteInput").value;
-    const startLongitude = document.querySelector("#startLongitudeOptRouteInput").value;
-    const endLatitude = document.querySelector("#endLatitudeOptRouteInput").value;
-    const endLongitude = document.querySelector("#endLongitudeOptRouteInput").value;
-    //const deliveryID = parseInt(document.querySelector("#deliveryIdInput").value);
-    const customerName = document.querySelector("#customerNameInput").value;
-    const customerPhone = document.querySelector("#customerPhoneInput").value;
-    const deliveryType = document.querySelector("#deliveryTypeInput").value;
-    const vehicleChoice = document.querySelector("#deliveryVehicleSelect").value;
-
-    if(!isFinite(startLatitude) || !isFinite(startLongitude) || !isFinite(endLatitude) || !isFinite(endLongitude)) return;
-
-    let optDriver = null;
-    let vehicleID = null;
-    if(vehicleChoice == 'auto'){
+async function addDelivery() {
+    
+        console.log("--------------------- IN ADD DELIVERY --------------------");
+        const startLatitude = document.querySelector("#startLatitudeOptRouteInput").value;
+        const startLongitude = document.querySelector("#startLongitudeOptRouteInput").value;
+        const endLatitude = document.querySelector("#endLatitudeOptRouteInput").value;
+        const endLongitude = document.querySelector("#endLongitudeOptRouteInput").value;
+        var deliveryQuantity = "" + document.querySelector("#deliveryQuantity").value;
+        const vehicleChoice = document.querySelector("#deliveryVehicleSelect").value;
+        const clientID = document.querySelector("#clientInput").value;
+  
+        if (!isFinite(startLatitude) || !isFinite(startLongitude) || !isFinite(endLatitude) || !isFinite(endLongitude)) {
+          
+            return;
+        }
+    
+        let optDriver = null;
+        let vehicleID = null;
+    if (vehicleChoice == 'auto') {
+        
         optDriver = await findOptimalDriverForNewDelivery(startLatitude, startLongitude);
-        vehicleID = optDriver.driverID;
-    } else {
-        optDriver = displayedVehicles[vehicleChoice];
-        vehicleID = optDriver.vehicleID;
-    }
-
-    let deliveryID = -10;
-
-    //TODO
-    ///////////// AJAX add delivery to DB and get delivery ID /////////////
-    const ajaxPostRequestJSON = {
-        vehicleID: `${vehicleID}`,
-        driverID: displayedVehicles[vehicleID].currentDriver.driverID,
-        startLatitude: startLatitude,
-        startLongitude: startLongitude,
-        endLatitude: endLatitude,
-        endLongitude: endLongitude,
+        
+            vehicleID = optDriver.driverID;
+        } else {
+            optDriver = displayedVehicles[vehicleChoice];
+            vehicleID = optDriver.vehicleID;
     }
     
-    let result = await addDeliveryToDB(ajaxPostRequestJSON);
-    let flag2 = getDeliveryTimeLeft(vehicleID);
-    console.log("AJAX RETURNED:");
-    console.log(result);
 
-    deliveryID = result;
-    if (deliveryID > -100) {
-        console.log("NEW DELIVERY ADDED! ID = " + deliveryID);
-
-        //////////////////////////////////////////////////////////////////////
-
-        const delivery = {
-            "deliveryID": deliveryID,
-            "startLatitude": startLatitude,
-            "startLongitude": startLongitude,
-            "endLatitude": endLatitude,
-            "endLongitude": endLongitude,
-            "info": {
-                "customerName": customerName,
-                "customerPhone": customerPhone,
-                "deliveryType": deliveryType,
-                "orderTime": Date.now()
-            }
-        }
-
-        let flag = await addDeliveryToVehicle(vehicleID, delivery);
-
-        if (flag) {
-            showVehicleDetails(vehicleID);
-            unsetSelectors();
-        }
+    if (notificationDeliveryId > 0) {
+        
+      updateDeliveryInDb(vehicleID);
+       
+     
     }
     else {
-        console.log("Delivery ID is smaller than -100");
+        const ajaxPostRequestJSON = {
+            vehicleID: `${vehicleID}`,
+            driverID: `${displayedVehicles[vehicleID].currentDriver.driverID}`,
+            clientID: `${clientID}`,
+            startLatitude: `${startLatitude}`,
+            startLongitude: `${startLongitude}`,
+            endLatitude: `${endLatitude}`,
+            endLongitude: `${endLongitude}`,
+            quantity: `${deliveryQuantity}`,
+            date: `${Date.now()}`,
+            sourceCity: `${startCity}`,
+            destinationCity: `${endCity}`
+
+        };
+
+        addDeliveryToDB(ajaxPostRequestJSON, vehicleID, startLatitude, startLongitude, endLatitude, endLongitude, deliveryQuantity);
     }
+        const route = {
+            "waypoint0": { "latitude": startLatitude, "longitude": startLongitude },
+            "waypoint1": { "latitude": endLatitude, "longitude": endLongitude }
+        }
+        addRouteToMap(null, route);
+    
 }
 
-function addDeliveryToDB(ajaxPostRequestJSON)
-{
-    console.log(ajaxPostRequestJSON);
+async function addDeliveryToDB(ajaxPostRequestJSON, vehicleID, startLatitude, startLongitude, endLatitude, endLongitude, deliveryQuantity) {
+   // console.log(ajaxPostRequestJSON);
+    
     $.ajax({
         type: "POST",
         url: "/Map/AddDeliveryBySupervisor",
         data: ajaxPostRequestJSON,
-        //contentType: "application/json",
-
-        success: function (result) {
-            return new Promise(resolve => {
-                resolve(result.result);
-            });
-        }
-    });
-}
-*/
-
-async function addDelivery() {
-    console.log("--------------------- IN ADD DELIVERY --------------------");
-    const startLatitude = document.querySelector("#startLatitudeOptRouteInput").value;
-    const startLongitude = document.querySelector("#startLongitudeOptRouteInput").value;
-    const endLatitude = document.querySelector("#endLatitudeOptRouteInput").value;
-    const endLongitude = document.querySelector("#endLongitudeOptRouteInput").value;
-    //const deliveryID = parseInt(document.querySelector("#deliveryIdInput").value);
-    const customerName = document.querySelector("#customerNameInput").value;
-    const customerPhone = document.querySelector("#customerPhoneInput").value;
-    const deliveryType = document.querySelector("#deliveryTypeInput").value;
-    const vehicleChoice = document.querySelector("#deliveryVehicleSelect").value;
-
-    if (!isFinite(startLatitude) || !isFinite(startLongitude) || !isFinite(endLatitude) || !isFinite(endLongitude)) return;
-
-    let optDriver = null;
-    let vehicleID = null;
-    if (vehicleChoice == 'auto') {
-        optDriver = await findOptimalDriverForNewDelivery(startLatitude, startLongitude);
-        vehicleID = optDriver.driverID;
-    } else {
-        optDriver = displayedVehicles[vehicleChoice];
-        vehicleID = optDriver.vehicleID;
-    }
-
-    //TODO
-    ///////////// AJAX add delivery to DB and get delivery ID /////////////
-    const ajaxPostRequestJSON = `{
-        vehicleID: ${vehicleID},
-        driverID: ${displayedVehicles[vehicleID].currentDriver.driverID},
-        startLatitude: ${startLatitude},
-        startLongitude: ${startLongitude},
-        endLatitude: ${endLatitude},
-        endLongitude: ${endLongitude}
-    }`
-
-    addDeliveryToDB(ajaxPostRequestJSON, vehicleID, startLatitude, startLongitude, endLatitude, endLongitude, customerName, customerPhone, deliveryType, Date.now());
-}
-
-async function addDeliveryToDB(ajaxPostRequestJSON, vehicleID, startLatitude, startLongitude, endLatitude, endLongitude, customerName, customerPhone, deliveryType, date) {
-    console.log(ajaxPostRequestJSON);
-    $.ajax({
-        type: "POST",
-        url: "http://abdullahhaidar92-001-site1.etempurl.com/api/Deliveries/AddDeliveryBySupervisor",
-        //url: "/Map/AddDeliveryBySupervisor",
-        accepts: "application/json",
-        contentType: "application/json; charset=utf-8",
-        data: ajaxPostRequestJSON,
-
         success: async function (result) {
-            // Add delivery to client side map and displayed vehicles array
+    
+            alert("Delivery Added \n with Id : " + result.result);
+
             console.log("AJAX ADD DELIVERY RESULT:");
             console.log(result);
+            let client;
+            clientsList.forEach(c => {
+                if (c.ID == ajaxPostRequestJSON.clientID) {
+                    client = c;
+                    return;
+                }
+            })
+
             const delivery = {
-                "deliveryID": result,
+                "deliveryID": result.result,
                 "startLatitude": startLatitude,
                 "startLongitude": startLongitude,
                 "endLatitude": endLatitude,
                 "endLongitude": endLongitude,
+                "sourceCity": ajaxPostRequestJSON.sourceCity,
+                "destinationCity": ajaxPostRequestJSON.destinationCity,
                 "info": {
-                    "customerName": customerName,
-                    "customerPhone": customerPhone,
-                    "deliveryType": deliveryType,
+                    "customerName": client.Name,
+                    "customerEmail": client.Email,
+                    "deliveryQuantity": deliveryQuantity,
                     "orderTime": date
                 }
             }
@@ -809,12 +707,26 @@ async function addDeliveryToDB(ajaxPostRequestJSON, vehicleID, startLatitude, st
             }
         }
     });
+
+
+   
+
+
 }
 
 async function cancelDelivery(vehicleID, deliveryID) {
     console.log("--------------------- IN CANCEL DELIVERY --------------------");
     deliveries = displayedVehicles[vehicleID].deliveries;
-    const delivery = deliveries[deliveryID];
+    let newDeliveries = [];
+    deliveries.forEach(d => {
+        if (d.deliveryID != deliveryID) {
+            newDeliveries.push(d);
+        }
+    });
+    delete deliveries[deliveryID];
+    if (arrayLength(deliveries) == 0) {
+        deliveries = [];
+    }
 
     //TODO
     ///////////// AJAX remove delivery from DB /////////////
@@ -829,12 +741,7 @@ async function cancelDelivery(vehicleID, deliveryID) {
         data: ajaxPostRequestJSON,
 
         success: async function (result) {
-            delete deliveries[deliveryID];
-            if (arrayLength(deliveries) == 0) {
-                deliveries = [];
-            }
-
-            let flag = await updateVehicleRoute(vehicleID, deliveries);
+            let flag = await updateVehicleRoute(vehicleID, newDeliveries);
             if (flag) showVehicleDetails(vehicleID);
             console.log("--------------------- OUT CANCEL DELIVERY --------------------");
         }
@@ -844,13 +751,20 @@ async function cancelDelivery(vehicleID, deliveryID) {
 }
 
 function finishDelivery(vehicleID, deliveryID) {
+    console.log("---- IN FINISH DELIVERY ----");
     deliveries = displayedVehicles[vehicleID].deliveries;
+    let newDeliveries = [];
+    deliveries.forEach(d => {
+        if (d.deliveryID != deliveryID) {
+            newDeliveries.push(d);
+        }
+    });
     delete deliveries[deliveryID];
     if (arrayLength(deliveries) == 0) {
         deliveries = null;
     }
 
-    updateVehicleRoute(vehicleID, deliveries);
+    updateVehicleRoute(vehicleID, newDeliveries);
 }
 
 function finishDeliveryClicked() {
@@ -873,7 +787,6 @@ function arrayLength(array) {
     return length;
 }
 
-///////////////////////////////////// CONTROL PANEL /////////////////////////////////////////
 function focusMap(latitude, longitude) {
     map.setCenter({ lat: latitude, lng: longitude }, true);
 }
@@ -942,10 +855,11 @@ function showVehicleDetails(vehicleID) {
 
             inner += '<table class="table" border=2>';
             inner += '<tr><td>Delivery ID</td><td>' + del.deliveryID + '</td></tr>';
-            inner += '<tr><td>Delivery Type</td><td>' + del.info.deliveryType + '</td></tr>';
+            inner += '<tr><td>From -> To</td><td>' + del.sourceCity + ' -> ' + del.destinationCity + '</td></tr>';
+            inner += '<tr><td>Quantity</td><td>' + del.info.quantity + '</td></tr>';
             inner += '<tr><td>Customer Name</td><td>' + del.info.customerName + '</td></tr>';
-            inner += '<tr><td>Customer Phone Number</td><td>' + del.info.customerPhone + '</td></tr>';
-            inner += '<tr><td>Ordered at</td><td>' + new Date(del.info.orderTime).toString() + '</td></tr>';
+            inner += '<tr><td>Customer Email</td><td>' + del.info.customerEmail + '</td></tr>';
+            inner += '<tr><td>Ordered at</td><td>' + del.info.orderTime + '</td></tr>';
             inner += '<tr><td colspan=2><button onclick="cancelDelivery(' + vehicle.vehicleID + ',' + del.deliveryID + ')" class="btn btn-danger">Cancle Delivery</button></td></tr>';
             inner += '</table>';
 
@@ -1007,17 +921,17 @@ function fillVehicleList(vehicles) {
         inner += '<li class="list-group-item" id="vehicle-list-item">';
         inner += '<div class="row">';
 
-        inner += '<div class="col-lg-2">';
-        inner += '<img width="60px" src="' + veh.currentDriver.avatar + '" />';
+        inner += '<div class="col-lg-3">';
+        inner += '<img width="70px" src="' + veh.currentDriver.avatar + '" />';
         inner += '</div>';
 
-        inner += '<div class="col-lg-10">';
+        inner += '<div class="col-lg-9">';
         inner += 'Driver Name: ' + veh.currentDriver.name + '<br>';
         inner += 'Driver ID: ' + veh.currentDriver.driverID + '<br>';
         inner += 'Vehicle ID: ' + veh.vehicleID + '<br>';
         inner += '<div class="btn-group">';
-        inner += '<button onclick="focusMap(' + veh.latitude + ',' + veh.longitude + ')" class="btn btn-primary btn-sm">Show in Map</button>';
-        inner += '<button onclick="showVehicleDetails(' + veh.vehicleID + ')" class="btn btn-primary btn-sm">Details</button>';
+        inner += '<button onclick="focusMap(' + veh.latitude + ',' + veh.longitude + ')" class="btn btn-primary btn-sm" style="margin-top:8px;margin-right:5px;margin-left:10px;">Show in Map</button>';
+        inner += '<button onclick="showVehicleDetails(' + veh.vehicleID + ')" class="btn btn-primary btn-sm" style="margin-top:8px">Details</button>';
         inner += '</div>';
         inner += '</div>';
 
@@ -1027,6 +941,7 @@ function fillVehicleList(vehicles) {
 
     list.innerHTML = inner;
 }
+
 
 function getVehiclesSM() {
     let result = [];
@@ -1040,8 +955,8 @@ function getVehiclesSM() {
     return result;
 }
 
-/* ----------------- */
 const mapDOM = document.querySelector("#mapContainer");
+
 function createNameTag(id, text) {
     let span = document.createElement("span");
     span.appendChild(document.createTextNode(text));;
@@ -1050,9 +965,10 @@ function createNameTag(id, text) {
     span.style.left = 0 + 'px';
     span.style.zIndex = "10";
     span.style.position = "absolute";
-    span.style.backgroundColor = "#000000";
-    span.style.fontSize = "20px";
-    span.style.color = "#ffffff";
+    //span.style.backgroundColor = "#000000";
+    span.style.fontSize = "12px";
+    span.style.fontWeight = "bold";
+    span.style.color = "#000";
     span.style.visibility = "hidden";
     document.querySelector("body").appendChild(span);
     console.log(span);
@@ -1079,8 +995,8 @@ function updateNameTagPosition(id, x, y) {
 
     if (isInsideMap(x, y)) {
         span.style.visibility = "visible";
-        span.style.top = (y + 160) + 'px';
-        span.style.left = x + 'px';
+        span.style.top = (y +60) + 'px';
+        span.style.left = (x-40) + 'px';
     }
     else {
         span.style.visibility = "hidden";
@@ -1090,7 +1006,6 @@ function updateNameTagPosition(id, x, y) {
 
 
 }
-
 
 function isInsideMap(x, y) {
     let mapX1 = mapDOM.clientLeft;
@@ -1103,25 +1018,12 @@ function isInsideMap(x, y) {
     else return false;
 }
 
-/////////////////////////////////////////// DATA HANDLING //////////////////////////////////////////////
+    function addVehicles(vehicles) {
 
-function addVehicles(vehicles) {
+    }
 
-}
-
-// ------------------- //
-/**
- * USING AJAX
- * ----------
- * 
- * Step 1: Get active vehicles
- * Step 2: Loop through vehicles gotten
- * Step 3: If vehicle is displayed here, update position and add/remove deliveries if needed
- *      Else, add vehicle to map
- * Step 4: Loop thorugh displayed vehicles
- * Step 5: If vehicle isn't in gotten vehicles list anymore, remove it from map
- */
-function refetchAndRefresh() {
+async function refetchAndRefresh() {
+    
     //TODO
     ///////////// AJAX get vehicles from DB /////////////
     const ajaxPostRequestJSON = {
@@ -1132,16 +1034,18 @@ function refetchAndRefresh() {
         type: "POST",
         url: "/Map/GetVehicles",
         data: ajaxPostRequestJSON,
-
+        error: () => { console.log("Failed to get update") },
         success: async function (result) {
+           // console.log(JSON.parse(result.result));
+
             ////// Steps 2 -> 5 HERE /////
-            const vList = result.result;
+            const vList = JSON.parse(result.result);
             for (veh in vList) { // Step 2
                 // Step 3
                 let v = vList[veh];
                 if (displayedVehicles[v.Id]) { // This vehicle is currently displayed, update it
-                    updateVehicleInMap(v.Id, v.Latitude, v.Longtitude);
-                    updateVehicleDeliveries(v.Id, v.Deliveries);
+                    let flag = await updateVehicleInMap(v.Id, v.Latitude, v.Longtitude);
+                    if (flag) await updateVehicleDeliveries(v.Id, v.Deliveries);
                 }
                 else { // This vehicle is not currently displayed, add it
                     let vDelList = [];
@@ -1150,43 +1054,46 @@ function refetchAndRefresh() {
                         for (del in v.Deliveries) {
                             let d = v.Deliveries[del];
 
-                            let aDel = {
-                                "deliveryID": `${d.Id}`,
+                            vDelList.push({
+                                "deliveryID": `${d.deliveryID}`,
                                 "startLatitude": `${d.SourceLatitude}`,
                                 "startLongitude": `${d.SourceLongtitude}`,
                                 "endLatitude": `${d.DestinationLatitude}`,
                                 "endLongitude": `${d.DestinationLongtitude}`,
+                                "sourceCity": `${d.SourceCity}`,
+                                "destinationCity": `${d.DestinationCity}`,
                                 "info": {
-                                    "customerName": `${d.Client.Name}`,
-                                    "customerPhone": `${d.Client.Phonenumber}`,
-                                    "deliveryType": `${d.Company.OrderType}`,
-                                    "orderTime": `${d.Time}`
+                                    "customerName": `${d.info.customerName}`,
+                                    "customerEmail": `${d.info.customerEmail}`,
+                                    "quantity": `${d.info.quantity}`,
+                                    "orderTime": `${d.info.orderTime}`
                                 }
-                            };
+                            });
 
-                            vDelList.push(aDel);
                         }
+
                     }
 
-                    addVehicleToMap(v.Id, v.Latitude, v.Longtitude,
+                    let flag = await addVehicleToMap(v.Id, v.Latitude, v.Longtitude,
                         {
                             "model": `${v.Make}`,
                             "year": `${v.Model}`,
                             "plateNo": `${v.LicensePlate}`
                         },
                         {
-                            "driverID": `${v.CurrentDriver.Id}`,
-                            "name": `${v.CurrentDriver.Name}`,
+                            "driverID": `${v.CurrentDriverId}`,
+                            "name": `${v.CurrentDriverName}`,
                             "avatar": "/images/avatar1.jpg",
-                            "phone": `${v.CurrentDriver.Phonenumber}`,
+                            "phone": `${v.CurrentDriverPhonenumber}`,
                             "email": "In DB but not attributed to Driver table",
-                            "birthdate": `${v.CurrentDriver.Birthdate}`
+                            "birthdate": `${v.CurrentDriverBirthdate}`
                         },
                         vDelList
                     );
-
+                    if (flag) await fillVehicleList(displayedVehicles);
                 }
             }
+
 
             for (veh in displayedVehicles) { // Step 4
                 // Step 5
@@ -1200,8 +1107,8 @@ function refetchAndRefresh() {
                 }
                 if (!active) {
                     removeRouteFromMap(v.vehicleID);
-                    removeVehicleFromMap(v.vehicleID);
-                    document.removeChild(document.querySelector(`#tag${v.vehicleID}`));
+                    const flag = await removeVehicleFromMap(v.vehicleID);
+                    if (flag) fillVehicleList(displayedVehicles);
                 }
             }
 
@@ -1209,18 +1116,24 @@ function refetchAndRefresh() {
         }
     });
     ///////////////////////////////////////////////////////
+    
 }
 
 function updateVehicleDeliveries(vehicleID, deliveries) {
     // Remove any finished deliveries
+    console.log("---- IN UPDATE VEHICLE DELIVERIES ----");
     for (del in displayedVehicles[vehicleID].deliveries) {
         let d = displayedVehicles[vehicleID].deliveries[del];
+        console.log("D:");
+        console.log(d);
 
         let active = false;
         for (del2 in deliveries) {
             let d2 = deliveries[del2];
 
-            if (d.deliveryID == d2.Id) { active = true; break; }
+            console.log("js == c# ?");
+            console.log(d.deliveryID + " == " + d2.deliveryID + " ? ");
+            if (d.deliveryID == d2.deliveryID) { active = true; break; }
         }
         if (!active) {
             finishDelivery(vehicleID, d.deliveryID);
@@ -1235,57 +1148,194 @@ function updateVehicleDeliveries(vehicleID, deliveries) {
         for (del2 in displayedVehicles[vehicleID].deliveries) {
             let d2 = displayedVehicles[vehicleID].deliveries[del2];
 
-            if (d2.deliveryID == d.Id) { shown = true; break; }
+            if (d2.deliveryID == d.deliveryID) { shown = true; break; }
         }
         if (!shown) {
-            addDeliveryToVehicle(vehicleID, d);
+            let newDelivery = {
+                "deliveryID": `${d.deliveryID}`,
+                "startLatitude": `${d.SourceLatitude}`,
+                "startLongitude": `${d.SourceLongtitude}`,
+                "endLatitude": `${d.DestinationLatitude}`,
+                "endLongitude": `${d.DestinationLongtitude}`,
+                "sourceCity": `${d.SourceCity}`,
+                "destinationCity": `${d.DestinationCity}`,
+                "info": {
+                    "customerName": `${d.info.customerName}`,
+                    "customerEmail": `${d.info.customerEmail}`,
+                    "quantity": `${d.info.quantity}`,
+                    "orderTime": `${d.info.orderTime}`
+                }
+            };
+            addDeliveryToVehicle(vehicleID, newDelivery);
         }
     }
 }
-///////////////////////////////////// TESTING ///////////////////////////////////////////////
-
-//addVehicleToMap(0, 33.5519220493377, 35.4101220493377, { "model": "Toyota", "year": "2008", "plateNo": "123456" }, { "driverID": 10, "name": "Sekkekkyuu AE3803", "avatar": "/images/avatar1.jpg", "phone": "70 123-456", "email": "sekkekkyuu@cells.com", "birthdate": "21/03/2001"}, null);
-//
-//addVehicleToMap(1, 33.8146220493377, 35.5346220493377, { "model": "Reno", "year": "2001", "plateNo": "654321" }, { "driverID": 11, "name": "Kesshouban Platelets", "avatar": "/images/avatar2.jpg", "phone": "70 111-222", "email": "platelets@cells.com", "birthdate": "27/11/2004"}, null); 
-//                                                        /*{"waypoint0": {"latitude": 33.8146220493377, "longitude": 35.5346220493377},
-//                                                        "waypoint1": {"latitude": 33.8459014629188, "longitude": 36.4040816354307},
-//                                                        "waypoint2": {"latitude": 33.3387648721153, "longitude": 35.3572225308744}});*/
-//addVehicleToMap(2, 33.4766220493377, 35.4856220493377, { "model": "Honda", "year": "2011", "plateNo": "112233" }, { "driverID": 12, "name": "Macrophage", "avatar": "/images/avatar3.jpg", "phone": "70 233-987", "email": "macrophage@cells.com", "birthdate": "09/09/1995"}, null);
-//addVehicleToMap(3, 33.2132220493377, 35.3540220493377, { "model": "Toyota", "year": "2009", "plateNo": "789345" }, { "driverID": 13, "name": "Kousankyuu Eosinophil", "avatar": "/images/avatar4.jpg", "phone": "70 257-998", "email": "kousankyuu@cells.com", "birthdate": "11/05/2000"}, null);
-//addVehicleToMap(4, 34.0707220493377, 36.0714220493377, { "model": "Toyota", "year": "2005", "plateNo": "135864" }, { "driverID": 14, "name": "Hakkekkyuu U-1146", "avatar": "/images/avatar5.jpg", "phone": "70 222-387", "email": "hakkekkyuu@cells.com", "birthdate": "01/02/1991"}, null); 
-//                                                        /*{"waypoint0": {"latitude": 34.0707220493377, "longitude": 36.0714220493377},
-//                                                        "waypoint1": {"latitude": 33.2132220493377, "longitude": 35.3540220493377}});*/
-//
-addCenterToMap(0, "Center Zero", 33.4766220493377, 35.4856220493377);
-addCenterToMap(1, "Center One", 33.2132220493377, 35.3540220493377);
-addCenterToMap(2, "Center Two", 34.0707220493377, 36.0714220493377);
-
-//addWaypointToVehicle(1, 33.28061430221, 36.02684622371);
 
 
-const shift = 0.0002;
-/*
-setInterval( () => {
-    updateVehicleInMap(0, displayedVehicles[0].latitude + shift, displayedVehicles[0].longitude + shift);
-    updateVehicleInMap(1, displayedVehicles[1].latitude + shift, displayedVehicles[1].longitude + shift);
-    updateVehicleInMap(2, displayedVehicles[2].latitude + shift, displayedVehicles[2].longitude);
-    updateVehicleInMap(3, displayedVehicles[3].latitude + shift, displayedVehicles[3].longitude + shift);
-    updateVehicleInMap(4, displayedVehicles[4].latitude + shift, displayedVehicles[4].longitude);
+    const shift = 0.0002;
 
-    //addWaypointToVehicle(4, 33.28061430221, 36.02684622371);
 
-    //console.log(displayedVehicles[1]);
-    //removeRouteFromMap(1);
 
-    //removeRouteFromMap(4);
-    //RemoveCenterFromMap(1);
-    //removeVehicleFromMap(2);
-}, 1 * 5 * 1000);
-*/
+function setStart1(latitude,longitude) {
+   
 
-//getDeliveryTimeLeft(1);
+    // Create a start marker icon from an image URL for the start position
+    const icon = new H.map.Icon('/images/start.png');
+    const marker = new H.map.Marker({ lat:latitude, lng: longitude }, { icon: icon });
+    map.addObject(marker);
 
-fillVehicleList(displayedVehicles);
+    // Save to startPicker object
+    startPicker.latitude = latitude;
+    startPicker.longitude =longitude;
+    startPicker.marker = marker;
+
+    // Set values to input boxes in the html page (for testing only probably)
+    document.querySelector("#startLatitudeOptRouteInput").value = latitude;
+    document.querySelector("#startLongitudeOptRouteInput").value = longitude;
+
+   
+
+
+}
+
+function setEnd1(latitude, longitude) {
+    // Check if an icon already exists to remove it
+   
+
+    // Create a start marker icon from an image URL for the start position
+    const icon = new H.map.Icon('/images/end.png');
+    const marker = new H.map.Marker({ lat: latitude, lng: longitude }, { icon: icon });
+    map.addObject(marker);
+
+    // Save to startPicker object
+    startPicker.latitude = latitude;
+    startPicker.longitude = longitude;
+    startPicker.marker = marker;
+
+    // Set values to input boxes in the html page (for testing only probably)
+    document.querySelector("#endLatitudeOptRouteInput").value = latitude;
+    document.querySelector("#endLongitudeOptRouteInput").value = longitude;
+
+
+
+
+}
+
+function showCentersSidepane() {
+    const centersListDOM = document.querySelector("#centers-list");
+
+    centersListDOM.innerHTML = "";
+
+    let inner = "";
+
+    for (center in displayedCenters) {
+        let c = displayedCenters[center];
+
+        inner += '<li class="list-group-item" id="center-list-item">';
+        inner += '<div class="row">';
+
+        inner += '<div class="col-lg-3">';
+        inner += '<img width="70px" src="/images/' + c.image + '" />';
+        inner += '</div>';
+
+        inner += '<div class="col-lg-9">';
+        inner += 'Center Name: ' + c.centerName + '<br>';
+        inner += 'Center ID: ' + c.centerID + '<br>';
+        inner += '<div class="btn-group">';
+        inner += '<button onclick="focusMap(' + c.latitude + ',' + c.longitude + ')" class="btn btn-primary btn-sm"  style="margin-top:8px;margin-right:5px;margin-left:10px;">Show in Map</button>';
+        inner += '<br><button onclick="setStart({\'lat\':\'' + c.latitude + '\', \'lng\':\'' + c.longitude + '\'})" class="btn btn-primary btn-sm"  style="margin-top:8px;margin-right:5px;margin-left:10px;" >Set as start</button>';
+        inner += '<button onclick="setEnd({\'lat\':\'' + c.latitude + '\', \'lng\':\'' + c.longitude + '\'})" class="btn btn-primary btn-sm"  style="margin-top:8px" >Set as end</button>';
+        inner += '</div>';
+        inner += '</div>';
+
+        inner += '</div>';
+        inner += "</li>";
+    }
+
+    centersListDOM.innerHTML = inner;
+}
+
+
+function addRouteToMap1() {
+    
+    var routingParameters = {
+        // The routing mode:
+        'mode': 'fastest;car',
+        // The start point of the route:
+        'waypoint0': 'geo!33.832,35.5129893',
+        // The end point of the route:
+        'waypoint1': 'geo!33.54139,35.37048',
+        // To retrieve the shape of the route we choose the route
+        // representation mode 'display'
+        'representation': 'display'
+    };
+
+    // Define a callback function to process the routing response:
+    var onResult = function (result) {
+        var route,
+            routeShape,
+            startPoint,
+            endPoint,
+            linestring;
+        if (result.response.route) {
+            // Pick the first route from the response:
+            route = result.response.route[0];
+            // Pick the route's shape:
+            routeShape = route.shape;
+
+            // Create a linestring to use as a point source for the route line
+            linestring = new H.geo.LineString();
+
+            // Push all the points in the shape into the linestring:
+            routeShape.forEach(function (point) {
+                var parts = point.split(',');
+                linestring.pushLatLngAlt(parts[0], parts[1]);
+            });
+
+            // Retrieve the mapped positions of the requested waypoints:
+            startPoint = route.waypoint[0].mappedPosition;
+            endPoint = route.waypoint[1].mappedPosition;
+
+            // Create a polyline to display the route:
+            var routeLine = new H.map.Polyline(linestring, {
+                style: { strokeColor: 'blue', lineWidth: 10 },
+                arrows: { fillColor: 'white', frequency: 2, width: 0.8, length: 0.7 }
+            });
+
+
+            // Create a marker for the start point:
+            var startMarker = new H.map.Marker({
+                lat: startPoint.latitude,
+                lng: startPoint.longitude
+            });
+
+            // Create a marker for the end point:
+            var endMarker = new H.map.Marker({
+                lat: endPoint.latitude,
+                lng: endPoint.longitude
+            });
+
+            // Add the route polyline and the two markers to the map:
+            map.addObjects([routeLine, startMarker, endMarker]);
+
+            // Set the map's viewport to make the whole route visible:
+            map.setViewBounds(routeLine.getBounds());
+        }
+    };
+
+    // Get an instance of the routing service:
+    var router = platform.getRoutingService();
+
+    // Call calculateRoute() with the routing parameters,
+    // the callback and an error callback function (called if a
+    // communication error occurs):
+    router.calculateRoute(routingParameters, onResult,
+        function (error) {
+            alert(error.message);
+        });
+
+}
+
 
 
 

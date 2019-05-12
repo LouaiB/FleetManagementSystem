@@ -1,0 +1,221 @@
+﻿@model FleetManagementWebApplication.Models.MapLocation
+@{
+    ViewData["Title"] = "Create Plan";
+    Layout = "LayoutManager";
+}
+    <head>
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+        <link rel="stylesheet" type="text/css" href="https://js.api.here.com/v3/3.0/mapsjs-ui.css?dp-version=1549984893" />
+        <script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-core.js"></script>
+        <script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-service.js"></script>
+        <script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-ui.js"></script>
+        <script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-mapevents.js"></script>
+
+    </head>
+
+<div class="box effect6">
+
+    <div class="w3-container ">
+        <form asp-controller="Map" asp-action="CreateMapLocation" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <table width="100%">
+                <tr>
+                    <td style="width:25%">
+                        <h3>Create Map Location</h3>
+                    </td>
+                    <td rowspan="5" style="padding-left:20px;">
+                        <div id="map" style="width: 100%; height: 500px; background: grey" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+
+                        <h6 class="w3-opacity"> Name :</h6>
+                        <input asp-for="Name" style="width:100%" class="w3-border w3-padding" value="Center One">
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h6 class="w3-opacity"> Type :</h6>
+                        <input asp-for="Type" style="width:100%" class="w3-border w3-padding" value="Warehouse">
+                        <span asp-validation-for="Type" class="text-danger"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h6 class="w3-opacity"> Latitude:</h6>
+                        <input  asp-for="Latitude" style="width:100%" class="w3-border w3-padding"value="Select from map" >
+                        <span asp-validation-for="Latitude" class="text-danger"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h6 class="w3-opacity"> Longtitude :</h6>
+
+                        <input asp-for="Longtitude" style="width:100%" class="w3-border w3-padding" value="Select from map">
+                        <span asp-validation-for="Longtitude" class="text-danger"></span>
+
+                        <h6 class="w3-opacity"><label>Choose image</label></h6>
+                        <input type="file" name="file" class="button2 " >
+
+                        <button type="submit" class="  button1 w3-left" style="margin-top:3px">
+                            Save
+                        </button>
+
+                    </td>
+                </tr>
+            </table>
+</form>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+<script type="text/javascript" charset="UTF-8">
+
+/**
+ * An event listener is added to listen to tap events on the map.
+ * Clicking on the map displays an alert box containing the latitude and longitude
+ * of the location pressed.
+ *
+   A HERE Map instance within the application
+ */
+
+@Html.Raw("/*@param  {H.Map} map */")   
+function setUpClickListener(map) {
+  // Attach an event listener to map display
+  // obtain the coordinates and display in an alert box.
+  map.addEventListener('tap', function (evt) {
+    var coord = map.screenToGeo(evt.currentPointer.viewportX,
+            evt.currentPointer.viewportY);
+
+      document.getElementById("Latitude").value =coord.lat.toFixed(4) ;
+        document.getElementById("Longtitude").value = coord.lng.toFixed(4);
+
+  });
+}
+
+
+
+/**
+ * Boilerplate map initialization code starts below:
+ */
+
+//Step 1: initialize communication with the platform
+var platform = new H.service.Platform({
+  app_id: 'devportal-demo-20180625',
+  app_code: '9v2BkviRwi9Ot26kp2IysQ',
+  useHTTPS: true
+});
+var pixelRatio = window.devicePixelRatio || 1;
+var defaultLayers = platform.createDefaultLayers({
+  tileSize: pixelRatio === 1 ? 256 : 512,
+  ppi: pixelRatio === 1 ? undefined : 320
+});
+
+//Step 2: initialize a map
+var map = new H.Map(document.getElementById('map'),
+  defaultLayers.normal.map,{
+  center: {lat:33.8263, lng:36.3431},
+  zoom: 8,
+  pixelRatio: pixelRatio
+});
+
+//Step 3: make the map interactive
+// MapEvents enables the event system
+// Behavior implements default interactions for pan/zoom (also on mobile touch environments)
+var behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
+
+setUpClickListener(map);
+</script>
+
+<style>
+
+    .button1 {
+        background-color:dodgerblue ;
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+         font-weight: bold;
+       
+        
+        transition-duration: 0.4s;
+        cursor: pointer;
+    }
+        .button2{
+        background-color:dodgerblue ; 
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+       cursor: pointer;
+    }
+
+
+
+        .button1:hover {
+            background-color: cornflowerblue;
+           
+            font-weight: bold;
+        }
+
+    html, body, h1, h2, h3, h4, h5 {
+        font-family: "Open Sans", sans-serif
+    }
+
+    body {
+        background: #ccc
+    }
+
+    .box {
+        text-align: left;
+        position: relative;
+        padding: 5px 30px;
+        width: 80%;
+      background: #FFF;
+    }
+
+    .effect6 {
+        position: relative;
+        -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+        -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+        box-shadow: 0 1px 40px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+    }
+
+        .effect6:before, .effect6:after {
+            content: "";
+            position: absolute;
+            z-index: -1;
+            -webkit-box-shadow: 0 0 20px rgba(0,0,0,0.8);
+            -moz-box-shadow: 0 0 20px rgba(0,0,0,0.8);
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            top: 10%;
+            bottom: 0;
+            left: 10px;
+            right: 10px;
+            -moz-border-radius: 100px / 10px;
+            border-radius: 100px / 10px;
+        }
+
+        .effect6:after {
+            right: 10px;
+            left: auto;
+            -webkit-transform: skew(8deg) rotate(3deg);
+            -moz-transform: skew(8deg) rotate(3deg);
+            -ms-transform: skew(8deg) rotate(3deg);
+            -o-transform: skew(8deg) rotate(3deg);
+            transform: skew(8deg) rotate(3deg);
+        }
+</style>

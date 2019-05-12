@@ -17,7 +17,7 @@ namespace FleetManagementWebApplication.Models
                 notifications.Add(new Notification(
                                                     "New order from " + d.SourceCity + " to " + d.DestinationCity,
                                                     d.Id,
-                                                    "Trips"));
+                                                    "Map"));
             DateTime dateTime = DateTime.Now.AddDays(5);
             foreach (ScheduledActivity a in _context.ScheduledActivities.Where(a => a.CompanyId == CompanyId && a.DueDate <= dateTime)
                                                                        .Include(a => a.Vehicle).Include(a => a.Activity).ToList<ScheduledActivity>())

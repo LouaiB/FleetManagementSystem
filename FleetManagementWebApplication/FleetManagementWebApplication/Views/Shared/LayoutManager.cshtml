@@ -19,6 +19,7 @@
     .box{
         margin: 10px auto;
     }
+   
 </style>
 @{ 
     Notification[] Notifications = (Notification[])ViewData["Notifications"];
@@ -26,36 +27,49 @@
     {
         Notifications = new Notification[0];
     }
+    long exclude = 0;
+    int N = Notifications.Length;
+    if (ViewData["notificationId"] != null)
+    {
+        exclude = (long)ViewData["notificationId"];
+        N--;
+    }
+
 }
 <!-- Navbar -->
 <div>
     <div class="w3-bar w3-theme-d2 w3-left-align w3-large">
-        <a href="/Home" class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-padding-large w3-hover-white w3-large w3-theme-d2" href="javascript:void(0);" onclick="openNav()"><i class="fa fa-bars"></i></a>
-        <a href="/Home" class="w3-bar-item w3-button w3-padding-large w3-theme-d4"><i class="fa fa-home w3-margin-right"></i>@ViewData["CompanyName"]</a>
+        <a  class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-padding-large w3-hover-white w3-large w3-theme-d2" 
+           href="javascript:void(0);" onclick="openNav()"
+           style="text-decoration:none;" ><i class="fa fa-bars"></i></a>
+        <a href="/Home" class="w3-bar-item w3-button w3-padding-large w3-theme-d4"
+           style="text-decoration:none;" ><i class="fa fa-home w3-margin-right"></i>@ViewData["CompanyName"]</a>
 
         <div class="w3-dropdown-hover w3-hide-small ">
             <button class="w3-button w3-padding-large">Vehicles</button>
             <div class="w3-dropdown-content w3-card-4 w3-bar-block" style="width:270px">
-                <a asp-controller="Vehicles" asp-action="Create" class="w3-bar-item w3-button">Add a vehicle</a>
-                <a asp-controller="Vehicles" asp-action="Index" class="w3-bar-item w3-button">Manage vehicles</a>
-                <a asp-controller="Plans" asp-action="Create" class="w3-bar-item w3-button">Create maintenance plan</a>
-                <a asp-controller="Plans" asp-action="Index" class="w3-bar-item w3-button">Manage maintenance plans</a>
+                <a asp-controller="Vehicles" asp-action="Create" class="w3-bar-item w3-button" style="text-decoration:none;">Add a vehicle</a>
+                <a asp-controller="Vehicles" asp-action="Index" class="w3-bar-item w3-button" style="text-decoration:none;">Manage vehicles</a>
+                <a asp-controller="Plans" asp-action="Create" class="w3-bar-item w3-button" style="text-decoration:none;">Create maintenance plan</a>
+                <a asp-controller="Plans" asp-action="Index" class="w3-bar-item w3-button" style="text-decoration:none;">Manage maintenance plans</a>
             </div>
         </div>
 
         <div class="w3-dropdown-hover w3-hide-small ">
             <button class="w3-button w3-padding-large">Drivers</button>
             <div class="w3-dropdown-content w3-card-4 w3-bar-block" style="width:200px">
-                <a asp-controller="Drivers" asp-action="Create" class="w3-bar-item w3-button">Add a driver</a>
-                <a asp-controller="Drivers" asp-action="Index" class="w3-bar-item w3-button">All drivers</a>
+                <a asp-controller="Drivers" asp-action="Create" class="w3-bar-item w3-button" style="text-decoration:none;">Add a driver</a>
+                <a asp-controller="Drivers" asp-action="Index" class="w3-bar-item w3-button" style="text-decoration:none;">All drivers</a>
      </div>
         </div>
 
         <div class="w3-dropdown-hover w3-hide-small ">
             <button class="w3-button w3-padding-large">Trips</button>
-            <div class="w3-dropdown-content w3-card-4 w3-bar-block" style="width:200px">
-                <a href="#" class="w3-bar-item w3-button">Start a trip</a>
-                <a href="#" class="w3-bar-item w3-button">Trips history</a>
+            <div class="w3-dropdown-content w3-card-4 w3-bar-block" style="width:230px">
+                <a asp-controller="Map" asp-action="Index" class="w3-bar-item w3-button" style="text-decoration:none;">Map</a>
+                <a asp-controller="Map" asp-action="CreateMapLocation" class="w3-bar-item w3-button" style="text-decoration:none;">Add map location</a>
+                <a asp-controller="Map" asp-action="AddClient" class="w3-bar-item w3-button" style="text-decoration:none;">Add Client</a>
+                <a asp-controller="Map" asp-action="AutomaticResponse" class="w3-bar-item w3-button" style="text-decoration:none;">Automatic Response</a>
 
             </div>
         </div>
@@ -63,35 +77,41 @@
         <div class="w3-dropdown-hover w3-hide-small ">
             <button class="w3-button w3-padding-large">Bills</button>
             <div class="w3-dropdown-content w3-card-4 w3-bar-block" style="width:200px">
-                <a asp-controller="Bills" asp-action="Create" class="w3-bar-item w3-button">New bill</a>
-                <a asp-controller="Bills" asp-action="Index"  class="w3-bar-item w3-button">All bills</a>
+                <a asp-controller="Bills" asp-action="Create" class="w3-bar-item w3-button" style="text-decoration:none;">New bill</a>
+                <a asp-controller="Bills" asp-action="Index"  class="w3-bar-item w3-button" style="text-decoration:none;">All bills</a>
             </div>
         </div>
 
         <div class="w3-dropdown-hover w3-hide-small ">
             <button class="w3-button w3-padding-large">Reports</button>
             <div class="w3-dropdown-content w3-card-4 w3-bar-block" style="width:200px">
-                <a asp-controller="Reports" asp-action="DriversRanks" class="w3-bar-item w3-button">Drivers Ranks</a>
-                
-
+                <a asp-controller="Reports" asp-action="DriversRanks" class="w3-bar-item w3-button" style="text-decoration:none;">Drivers Ranks</a>
+                <a asp-controller="Reports" asp-action="DriversEvolution" class="w3-bar-item w3-button" style="text-decoration:none;">Drivers Evolution</a>
+                <a asp-controller="Reports" asp-action="Costs" class="w3-bar-item w3-button" style="text-decoration:none;">Costs Evolution</a>
+                <a asp-controller="Reports" asp-action="FuelConsumption" class="w3-bar-item w3-button" style="text-decoration:none;">Fuel Consumption</a>
             </div>
         </div>
 
             <div class="w3-dropdown-hover w3-hide-small w3-left">
                 <button class="w3-button w3-padding-large">
                     <i class="fa fa-bell"></i>
-                    @if (Notifications.Length > 0)
+                    @if (N > 0)
                     {
-                        <span class="w3-badge w3-right w3-small w3-green">@Notifications.Length</span>
+                        <span class="w3-badge w3-right w3-small w3-green">@N</span>
                     }
                     </button>
                 <div class="w3-dropdown-content w3-card-4 w3-bar-block">
                     @foreach (Notification n in Notifications)
                     {
-                        <form asp-controller="@n.Controller" asp-action="Index">
-                            <input type="hidden" value="@n.Id" name="Id" />
-                            <input type="submit" class="w3-bar-item w3-button" value="@n.Title" />
-                        </form>
+                        if (n.Id != exclude)
+                        {
+                            <form asp-controller="@n.Controller" asp-action="Index" method="get">
+                                <input type="hidden" value="@n.Id" name="Id" />
+                                <input type="submit" class="w3-bar-item w3-button" value="@n.Title" />
+                            </form>
+
+                        }
+
                     }
 
                 </div>
@@ -101,15 +121,15 @@
             <div class="w3-dropdown-hover w3-hide-small w3-right">
                 <button class="w3-button w3-padding-large">&nbsp;&nbsp;&nbsp;<i class="fa fa-user"></i>&nbsp;&nbsp;&nbsp;@ViewData["Name"]</button>
                 <div class="w3-dropdown-content w3-card-4 w3-bar-block" style="width:220px">
-                    <a asp-controller="Managers" asp-action="Edit" class="w3-bar-item w3-button ">Edit</a>
-                    <a asp-controller="Managers" asp-action="LogOut" class="w3-bar-item w3-button ">Log out</a>
-                    <a asp-controller="Managers" asp-action="Delete" class="w3-bar-item w3-button ">Delete</a>
+                    <a asp-controller="Managers" asp-action="Edit" class="w3-bar-item w3-button " style="text-decoration:none;" >Edit</a>
+                    <a asp-controller="Managers" asp-action="LogOut" class="w3-bar-item w3-button " style="text-decoration:none;">Log out</a>
+                    <a asp-controller="Managers" asp-action="Delete" class="w3-bar-item w3-button " style="text-decoration:none;">Delete</a>
                 </div>
             </div>
-            <div class="w3-bar-item   w3-right " style="height:53px;padding-bottom:10px">
+            <div class="   w3-right " style="height:53px;padding-top:8px">
                 <form defaultbutton="Query" asp-controller="@ViewData["QueryPlaceHolder"]" asp-action="Search" runat="server">
                     <input type="text" name="Query" placeholder="Search @ViewData["QueryPlaceHolder"]"
-                           style="background-color:silver;height:40px;padding-left:10px"
+                           style="background-color:silver;color:black;height:40px;padding-left:10px"
                            value="@ViewData["Query"]">
                 </form>
             </div>

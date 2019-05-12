@@ -1,0 +1,148 @@
+﻿
+@{
+    ViewData["Title"] = "Drivers Evolution";
+    Layout = "~/Views/Shared/LayoutManager.cshtml";
+    DateTime[] Date = (DateTime[])ViewData["Date"];
+    float[] Performance = (float[])ViewData["Performance"];
+    float[] Compliance = (float[])ViewData["Compliance"];
+    float[] Safety = (float[])ViewData["Safety"];
+    int[] Years = new int[Date.Length];
+    int[] Months = new int[Date.Length];
+    int[] Days = new int[Date.Length];
+    DateTime d;
+    for (int i = 0; i < Date.Length; i++)
+    {
+        d = Date[i];
+        Years[i] = d.Year;
+        Months[i] = d.Month;
+        Days[i] = d.Day;
+    }
+    var d1 = ViewData["d1"];
+    var d2 = ViewData["d2"];
+
+
+    var YPerformance = Newtonsoft.Json.JsonConvert.SerializeObject(Performance);
+    var YSafety = Newtonsoft.Json.JsonConvert.SerializeObject(Safety);
+    var YCompliance = Newtonsoft.Json.JsonConvert.SerializeObject(Compliance);
+    var XDays = Newtonsoft.Json.JsonConvert.SerializeObject(Days);
+    var XMonths = Newtonsoft.Json.JsonConvert.SerializeObject(Months);
+    var XYears = Newtonsoft.Json.JsonConvert.SerializeObject(Years);
+
+
+    //ViewData["Title"] = "Bar Chart";
+}
+<head>
+    <title>Drivers Evolution</title>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.bundle.js"></script>
+    <link rel="stylesheet" href="~/css/Style.css" />
+
+</head>
+
+<style>
+    input[type='date'] {
+        width: 80%
+    }
+</style>
+
+<body>
+    <div class="box effect6" style="width:80%">
+        <form asp-controller="Reports" asp-action="DriversEvolution" method="get">
+            <table width="90%">
+                <tr>
+                    <td><h3>Drivers Evolution</h3></td>
+                    <td align="right">
+                        <input type="date" name="d1" value="@d1" />
+                    </td>
+                    <td align="right"><input type="date" name="d2" value="@d2" /></td>
+                    <td>
+                        <input type="submit" value="GO" />
+                    </td>
+                </tr>
+            </table>
+        </form>
+        <div class="w3-container w3-padding">
+
+            <canvas id="chartCanvas"></canvas>
+
+            <script>
+                var Days =@XDays;
+                var Months =@XMonths;
+                var Years =@XYears;
+                var dates = Array(Months.length);
+                for (var i = 0; i < dates.length; i++) {
+                    dates[i] = new Date(Years[i], Months[i], Days[i]);
+                }
+
+                const ctx = document.getElementById('chartCanvas').getContext('2d');
+                const data = {
+                    // Labels should be Date objects
+                    labels:dates,
+                    datasets: [{
+                        fill: false,
+                        label: 'Perormane Score',
+                        data:@YPerformance,
+                        borderColor: 'red',
+                        backgroundColor: 'red'
+                    },
+                    {
+                        fill: false,
+                        label: 'Compliance Score',
+                        data: @YCompliance,
+                        borderColor: 'blue',
+                        backgroundColor: 'blue'
+
+                    },
+                    {
+                        fill: false,
+                        label: 'Safety Score',
+                        data: @YSafety,
+                        borderColor: 'green',
+                        backgroundColor: 'green'
+
+                    }]
+                }
+                const options = {
+                    type: 'line',
+                    data: data,
+                    options: {
+                        fill: false,
+                        responsive: true,
+                        scales: {
+                            xAxes: [{
+                                type: 'time',
+                                display: true,
+
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: "Date",
+                                },
+                                minRotation: 30
+                            }],
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true,
+                                },
+                                display: true,
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: "Page Views",
+                                }
+                            }]
+                        }
+                    }
+                }
+                const chart = new Chart(ctx, options);
+
+
+
+
+            </script>
+
+
+        </div>
+    </div>
+    <br />
+    <br />
+</body>

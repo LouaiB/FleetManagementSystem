@@ -177,7 +177,7 @@ namespace FleetManagementWebApplication.Controllers
             return View(vehicle);
         }
 
-        public async Task<IActionResult> Delete(long? id)
+        public async Task<IActionResult> GetDelete(long? id)
         {
             if (!LogedIn())
                 return RedirectToRoute("Home");
@@ -203,7 +203,15 @@ namespace FleetManagementWebApplication.Controllers
         {
             if (!LogedIn())
                 return RedirectToRoute("Home");  
+
             var vehicle = await _context.Vehicles.FindAsync(id);
+            _context.ScheduledActivities.RemoveRange(_context.ScheduledActivities.Where(a => a.Vehicle == vehicle));
+            _context.Bills.RemoveRange(_context.Bills.Where(a => a.Vehicle == vehicle));
+            Delivery[] deliveries=_context.Deliveries.Where(d => d.Vehicle == vehicle).ToArray();
+              long[] Ids= deliveries.Select(d => d.Id).ToArray();
+            _context.DeliverySummaries
+              .RemoveRange(_context.DeliverySummaries.Where(s => Ids.Contains(s.Delivery.Id)));
+            _context.Deliveries.RemoveRange(deliveries);
             _context.Vehicles.Remove(vehicle);
             await _context.SaveChangesAsync();
             

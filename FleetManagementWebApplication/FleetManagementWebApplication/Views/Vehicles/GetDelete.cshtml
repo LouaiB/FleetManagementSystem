@@ -1,0 +1,67 @@
+﻿@model FleetManagementWebApplication.Models.Vehicle
+
+@{
+    Layout = "LayoutManager";
+    ViewData["Title"] = "Delete";
+}
+<style>
+
+    .box {
+        text-align: left;
+        position: relative;
+        top: 40px;
+        padding: 10px 30px;
+        width: 60%;
+        padding-bottom: 40px;
+        background: #FFF;
+    }
+</style>
+<div class="box effect6">
+    <h3>Delete</h3>
+
+    <div class="w3-container w3-padding">
+
+
+        <h3>Are you sure you want to delete this?</h3>
+        <div>
+           
+            <hr />
+            <table>
+                <tr>
+                    <td>  @Html.DisplayNameFor(model => model.LicensePlate)</td>
+                    <td>    @Html.DisplayFor(model => model.LicensePlate)</td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.DisplayNameFor(model => model.Make) </td>
+                    <td>       @Html.DisplayFor(model => model.Make)</td>
+                </tr>
+                <tr>
+                    <td>   @Html.DisplayNameFor(model => model.Model)</td>
+                    <td>    @Html.DisplayFor(model => model.Model)</td>
+                </tr>
+                <tr>
+                    <td>  @Html.DisplayNameFor(model => model.purchaseDate)</td>
+                    <td>    @Html.DisplayFor(model => model.purchaseDate)</td>
+                </tr>
+                <tr>
+                    <td>  @Html.DisplayNameFor(model => model.EmissionsCO2)</td>
+                    <td>    @Html.DisplayFor(model => model.EmissionsCO2) G/KM</td>
+                </tr>
+                <tr>
+                    <td>  @Html.DisplayNameFor(model => model.FuelConsumption)</td>
+                    <td>    @Html.DisplayFor(model => model.FuelConsumption) L/KM</td>
+                </tr>
+            </table>
+          
+
+         
+            <br />
+            <form asp-action="Delete">
+                <input type="hidden" asp-for="Id" />
+                <input type="submit" value="Delete" class="btn btn-danger" /> |
+                <a asp-action="Index">Back to List</a>
+            </form>
+        </div>
+        </div>
+    </div>

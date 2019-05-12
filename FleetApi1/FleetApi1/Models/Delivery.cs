@@ -42,5 +42,9 @@ namespace FleetApi1.Models
         public int OptimalTime { get; set; }
         public float OptimalFuelConsumption { get; set; }
 
+
+
+
+
     }
 }

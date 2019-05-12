@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FleetManagementWebAplication.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -23,8 +24,14 @@ namespace FleetManagementWebApplication.Models
         [StringLength(100)]
         public string CompanyType { get; set; }
 
+        public string OrderType { get; set; }
+
         [Required]
         public List<Vehicle> ActiveVehicles { get; set; }
 
+        public List<Client> Clients { get; set; }
+
+
+        public MapLocation[] MapLocations { get; set; }
     }
 }

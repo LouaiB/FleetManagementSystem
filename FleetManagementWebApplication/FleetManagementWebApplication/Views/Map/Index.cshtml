@@ -1,7 +1,34 @@
 ﻿@model MapViewModel
 @{
-    ViewData["Title"] = "Index";
+    Layout = "LayoutManager";
+    ViewData["Title"] = "Map";
+    Delivery notificationDelivery = (Delivery)ViewData["NotificationDelivery"];
+    bool notificationFlag = false;
+
+    int Q = 0;
+    string Name = "";
+    string Email = "";
+    string ClientId = "";
+
+    if (notificationDelivery != null)
+    {
+
+        notificationFlag = true;
+        ViewData["notificationId"] = notificationDelivery.Id;
+        Q = notificationDelivery.Quantity;
+        Name = notificationDelivery.Client.Name;
+        Email = notificationDelivery.Client.Username;
+        ClientId = ""+notificationDelivery.Client.Id;
+    }
+
+
+
+
+
 }
+
+
+
 
 <html>
 <head>
@@ -12,6 +39,17 @@
     <link rel="stylesheet" type="text/css" href="/css/component.css" />
     <link rel="stylesheet" type="text/css" href="/css/content.css" />
     <script src="/js/modernizr.custom.js"></script>
+
+
+
+
+
+
+
+
+
+
+
 
     <meta name="viewport" content="initial-scale=1.0, width=device-width" />
     <script src="https://js.api.here.com/v3/3.0/mapsjs-core.js"
@@ -28,14 +66,12 @@
           href="https://js.api.here.com/v3/3.0/mapsjs-ui.css" />
 
     <style>
-        body {
-        }
 
         #map {
-            margin-left: 30px;
-            margin-right: 30px;
-            margin-top: 60px;
-            height: 90vh;
+            margin-left: 0px;
+            margin-right: 0px;
+            margin-top: 0px;
+            height: 92vh;
             z-index: 1;
         }
 
@@ -58,7 +94,7 @@
             padding-left: 0px;
             margin-bottom: 0px;
             padding-bottom: 0px;
-            height: 87%;
+            height: 93%;
         }
 
         #underbar {
@@ -88,6 +124,7 @@
             overflow-y: auto;
             height: inherit;
             border: solid 5px #18121e;
+            border-left: 2px;
         }
 
             #vehicles-list-col > h3 {
@@ -113,7 +150,7 @@
             background-color: #f3f3f3;
         }
 
-            #underbar .btn-primary, #vehicle-list-item .btn-primary {
+            #underbar .btn-primary, #vehicle-list-item .btn-primary, #center-list-item .btn-primary {
                 background-color: #814942;
                 border: solid 1px #4d2621;
             }
@@ -172,17 +209,70 @@
             #driver-details-sidepane > ul > li > h2 {
                 color: #18121e;
             }
+
+        #center-list {
+            margin-bottom: 0px;
+            overflow-y: scroll;
+        }
+
+        #center-list-item {
+            background-color: #f3f3f3;
+        }
+
+
+        @@-webkit-keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @@-moz-keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @@keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .fade-in {
+            opacity: 0; /* make things invisible upon start */
+            -webkit-animation: fadeIn ease-in 1; /* call our keyframe named fadeIn, use animattion ease-in and repeat it only 1 time */
+            -moz-animation: fadeIn ease-in 1;
+            animation: fadeIn ease-in 1;
+            -webkit-animation-fill-mode: forwards; /* this makes sure that after animation is done we remain at the last keyframe value (opacity: 1)*/
+            -moz-animation-fill-mode: forwards;
+            animation-fill-mode: forwards;
+            -webkit-animation-duration: 0.3s;
+            -moz-animation-duration: 0.3s;
+            animation-duration: 0.3s;
+        }
     </style>
 
 </head>
 
 <body>
-    <br /><br /><br />
-    <h1>@Model.CompanyName : @Model.CompanyType</h1>
+
 
     <div id="map" class="row">
-        <div class="col-lg-8" id="map-and-underbar-col">
-            <h3 id="map-title">Map</h3>
+
+        <div class="col-lg-9" id="map-and-underbar-col">
+            <!--   <h3 id="map-title">Map</h3> -->
             <div id="mapContainer"></div>
             <div id="underbar" class="row">
                 <div class="col-lg-6" id="click-section">
@@ -194,8 +284,8 @@
                         <label class="radio-inline" style="font-size: medium"><input type="radio" id="clickType" name="clickType" value="destination">Destination</label>
                     </div>
                 </div>
-                <div class="col-lg-2">
-                    <button class="btn btn-primary" onclick="unsetSelectors()" style="font-size: large; margin-top: 5px; height: 75%">Unset S/D</button>
+                <div class="col-lg-2" style="vertical-align:middle">
+                    <button class="btn btn-primary" onclick="unsetSelectors()" style="font-size: large; height: 75%">Unset S/D</button>
                 </div>
                 <div class="col-lg-1"></div>
                 <div class="col-lg-3">
@@ -207,15 +297,21 @@
                                     <span class="icon icon-close">Close the dialog</span>
                                     <h2 style="color: whitesmoke">Add Delivery</h2>
                                     <form>
+
                                         <p>
                                             <label>Delivery Vehicle</label>
                                             <select class="form-control" id="deliveryVehicleSelect"></select>
                                         </p>
-                                        <p><label>Customer Name</label><input type="text" id="customerNameInput" /></p>
-                                        <p><label>Customer Phone Number</label><input type="text" id="customerPhoneInput" /></p>
-                                        <p><label>Delivery Type</label><input type="text" id="deliveryTypeInput" /></p>
-                                        <p><label>Delivery ID (testing)</label><input type="text" id="deliveryIdInput" /></p>
-                                        <p><button onclick="addDelivery()" id="deliverBtn">Deliver</button></p>
+                                        <div id="ChangeFromNotification">
+                                            <p><label>Quantity</label><input type="text" id="deliveryQuantity" /></p>
+                                            <p>
+                                                <label>Client</label>
+                                                <button onclick="showClientsBox()">Select Client</button>
+                                                <input type="hidden" id="clientInput" />
+                                                <h4 id="selectedClientSpan"></h4>
+                                            </p>
+                                            </div>
+                                            <p><button onclick="addDelivery();" id="deliverBtn">Deliver</button></p>
                                     </form>
                                 </div>
                             </div>
@@ -225,10 +321,14 @@
 
             </div>
         </div>
-        <div class="col-lg-4" id="vehicles-list-col">
+        <div class="col-lg-3" id="vehicles-list-col">
             <h3>Active Vehicles</h3>
-            <div id="vehicles" class="list-group" height="75vh">
+            <div id="vehicles" class="list-group" height="50vh">
                 <ul id="vehicles-list" class="list-group"></ul>
+            </div>
+            <h3>Centers</h3>
+            <div id="centers" height="25vh">
+                <ul id="centers-list" class="list-group"></ul>
             </div>
         </div>
     </div>
@@ -256,6 +356,18 @@
     <input type="hidden" id="endLatitudeOptRouteInput" />
     <input type="hidden" id="endLongitudeOptRouteInput" />
 
+
+    <script type="text/javascript">
+        var notificationDeliveryId = 0;
+
+    </script>
+    @if (notificationDelivery != null)
+    {
+        <script type="text/javascript">
+    notificationDeliveryId=@notificationDelivery.Id;
+        </script>
+
+    }
 
     <script src="/js/classie.js"></script>
     <script src="/js/uiMorphingButton_fixed.js"></script>
@@ -327,13 +439,17 @@
 
 
 
+
     </script>
+
 
 
     <script src="/js/map_init.js"></script>
     <script type="text/javascript">
         let vehicleDeliveriesList = [];
     </script>
+
+    <button onclick="addRouteToMap1();">Test</button>
 
     @foreach (var v in (List<Vehicle>)Model.ActiveVehicles)
     {
@@ -344,43 +460,141 @@
         {
             @foreach (var d in v.CurrentDriver.Deliveries)
             {
+                @if (d.Driver == null || d.Driver.Id != v.CurrentDriver.Id || d.Company == null || d.Company.Id != v.CurrentDriver.Company.Id) { continue; }
                 <script type="text/javascript">
-                    let aDelivery = {
-                        "deliveryID": "@d.Id",
-                        "startLatitude": "@d.SourceLatitude",
-                        "startLongitude": "@d.SourceLongtitude",
-                        "endLatitude": "@d.DestinationLatitude",
-                        "endLongitude": "@d.DestinationLongtitude",
-                        "info": {
-                            "customerName": "@d.Client.Name",
-                            "customerPhone": "@d.Client.Phonenumber",
-                            "deliveryType": "@d.Company.OrderType",
-                            "orderTime": "@d.Time"
-                        }
-                    };
-
-                    vehicleDeliveriesList.push(aDelivery);
+        vehicleDeliveriesList.push({
+            "deliveryID": "@d.Id",
+            "startLatitude": "@d.SourceLatitude",
+            "startLongitude": "@d.SourceLongtitude",
+            "endLatitude": "@d.DestinationLatitude",
+            "endLongitude": "@d.DestinationLongtitude",
+            "info": {
+                "customerName": "@d.Client.Name",
+                "customerEmail": "@d.Client.Username",
+                "deliveryType": "@d.Company.OrderType",
+                "orderTime": "@d.Time"
+            }
+        });
                 </script>
             }
         }
 
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        @foreach (var m in (MapLocation[])Model.MapLocations)
+        {
+            if (m.Name == null || m.Image == null)
+            {
+                continue;
+            }
+            <script type="text/javascript">
+        addCenterToMap(@m.Id, "@m.Name", @m.Latitude, @m.Longtitude, "@m.Image");
+
+            </script>
+        }
+
+
+
+
+
+        @if (notificationDelivery != null)
+        {
+            <script type="text/javascript">
+            
+                    notificationDeliveryId =@notificationDelivery.Id;
+    deliveryId = "" + notificationDeliveryId;
+            </script>
+        }
+
+        @if (notificationDelivery != null)
+        {
+            <script type="text/javascript">
+                        async function updateDeliveryInDb(vehicleId) {
+                            
+
+
+                            
+                            const startLongitude = "@notificationDelivery.SourceLongtitude";
+                            const startLatitude = "@notificationDelivery.SourceLatitude";
+                            const endLatitude = "@notificationDelivery.SourceLatitude";
+                            const endLongitude = "@notificationDelivery.SourceLongtitude";
+                            const ajaxPostRequestJSON = {
+                deliveryId: `${notificationDeliveryId}`,
+                vehicleId: `${vehicleId}`,
+                driverId: `${displayedVehicles[vehicleId].currentDriver.driverID}`
+                            };
+                            alert("Inside Update");
+                                   notificationDeliveryId = 0;
+                            changeDialogue();
+                            $.ajax({
+                                type: "POST",
+                                url: "/Map/UpdateDeliveryBySupervisor",
+                                data: ajaxPostRequestJSON,
+                                success: async function (result) {
+                                    alert("Delivery Added \n Delivery Id : " + result.result + "\n Vehicle Id : " + vehicleId);
+                                    let client;
+                                    clientsList.forEach(c => {
+                                        if (c.ID == ajaxPostRequestJSON.clientID) {
+                                            client = c;
+                                            return;
+                                        }
+                                    });
+                              
+
+
+                                    const delivery = {
+                                        "deliveryID": @notificationDelivery.Id,
+                                        "startLatitude": startLatitude,
+                                        "startLongitude": startLongitude,
+                                        "endLatitude": endLatitude,
+                                        "endLongitude": endLongitude,
+                                        "sourceCity": @notificationDelivery.SourceCity,
+                                        "destinationCity":@notificationDelivery.DestinationCity,
+                                        "info": {
+                                            "customerName": client.Name,
+                                            "customerEmail": client.Email,
+                                            "deliveryQuantity": @notificationDelivery.Quantity,
+                                            "orderTime": "@notificationDelivery.Time"
+                                            }
+                                    };
+
+
+                                             unsetSelectors();
+                                        let flag = await addDeliveryToVehicle(vehicleId, delivery);
+
+                                  if (flag) {
+                                      showVehicleDetails(vehicleId);
+
+                                }
+                               
+                                     }
+                             });
+                           
+        }
+
+            </script>
+        }
+
+
+     
+
         <script type="text/javascript">
-            addVehicleToMap(@v.Id, @v.Latitude, @v.Longtitude,
-                {
-                    "model": "@v.Make",
-                    "year": "@v.Model",
-                    "plateNo": "@v.LicensePlate"
-                },
-                {
-                    "driverID": "@v.CurrentDriver.Id",
-                    "name": "@v.CurrentDriver.Name",
-                    "avatar": "/images/avatar1.jpg",
-                    "phone": "@v.CurrentDriver.Phonenumber",
-                    "email": "In DB but not attributed to Driver table",
-                    "birthdate": "@v.CurrentDriver.Birthdate"
-                },
-                vehicleDeliveriesList
-            );
+        addVehicleToMap(@v.Id, @v.Latitude, @v.Longtitude,
+            {
+                "model": "@v.Make",
+                "year": "@v.Model",
+                "plateNo": "@v.LicensePlate",
+                "FuelConsumption": "@v.FuelConsumption"
+            },
+            {
+                "driverID": "@v.CurrentDriver.Id",
+                "name": "@v.CurrentDriver.Name",
+                "avatar": "/images/avatar1.jpg",
+                "phone": "@v.CurrentDriver.Phonenumber",
+                "email": "In DB but not attributed to Driver table",
+                "birthdate": "@v.CurrentDriver.Birthdate"
+            },
+            vehicleDeliveriesList
+        );
         </script>
 
     }
@@ -404,6 +618,105 @@
 
         sel.innerHTML = inner;
     </script>
+
+
+    @foreach (var c in Model.Clients)
+    {
+        <script type="text/javascript">
+        clientsList.push({
+            ID: "@c.Id",
+            Name: "@c.Name",
+            Email: "@c.Username"
+        });
+        </script>
+    }
+
+    <script type="text/javascript">
+        showCentersSidepane();
+        function showClientsBox() {
+            let tab = document.createElement("div");
+            tab.id = "clients_tab";
+            tab.style.position = "fixed";
+            tab.style.width = "700px";
+            tab.style.top = "200px";
+            tab.style.left = "300px";
+            tab.style.border = "solid 5px grey";
+            tab.style.backgroundColor = "#fafafa";
+            tab.style.color = "black";
+            tab.style.padding = "20px";
+            tab.style.fontSize = "17px";
+            tab.style.zIndex = "10000";
+            tab.classList.add("fade-in");
+
+            let inner = '<table class="table"><tr><th>Name</td><th>Email</th><th>Choose</th></tr>';
+            clientsList.forEach(c => {
+                inner += '<tr>';
+
+                inner += `<td>${c.Name}</td>`;
+                inner += `<td>${c.Email}</td>`;
+                inner += `<td><button onclick="selectClient(${c.ID}, '${c.Name}', '${c.Email}')" class="btn btn-primary">Select</button></td>`;
+
+                inner += '</tr>';
+            });
+            inner += "</table>";
+
+            tab.innerHTML = inner;
+            document.body.appendChild(tab);
+        }
+
+        function selectClient(clientID, name, email) {
+            const clientInput = document.querySelector("#clientInput");
+            const selectedClientSpan = document.querySelector("#selectedClientSpan");
+
+            clientInput.value = clientID;
+            selectedClientSpan.innerHTML = name + " | " + email;
+            closeClientsBox();
+        }
+
+        function closeClientsBox() {
+            const tab = document.querySelector("#clients_tab");
+            document.body.removeChild(tab);
+        }
+
+
+
+
+        var prev = "";
+    function changeDialogue() {
+       
+            var inside = "";
+       
+        if (notificationDeliveryId > 0) {
+             prev = document.getElementById("ChangeFromNotification").innerHTML;
+            inside += " <p><label> Number of @Model.OrderType</label > ";
+            inside += " <input type='text' id='deliveryQuantity' value='@Q' disabled /> </p>";
+            inside += " <p><label>Client Name</label>";
+            inside += "<input type='text' value='@Name'  disabled />";
+            inside += "<label>Client Email</label> <input type='text' value='@Email'  <p>";
+            inside+= "<input type='hidden'  id='clientInput'  value='@ClientId'/>";
+            document.getElementById("ChangeFromNotification").innerHTML = inside;
+        }
+        else {
+               document.getElementById("ChangeFromNotification").innerHTML = prev;
+        }
+          
+
+        }
+
+
+    </script>
+
+
+    @if (notificationFlag)
+    {
+        <script type="text/javascript">
+
+        setStart1(@notificationDelivery.SourceLatitude , @notificationDelivery.SourceLongtitude);
+    setEnd1(@notificationDelivery.DestinationLatitude , @notificationDelivery.DestinationLongtitude);
+    notificationDeliveryId =""+ @notificationDelivery.Id;
+            changeDialogue();
+        </script>
+    }
 
 </body>
 </html>

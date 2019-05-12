@@ -12,5 +12,9 @@ namespace FleetApi1.Models
         public DateTime StartTime { get; set; }
        public float StartFuelLevel { get; set; }
         public float StartOdometer { get; set; }
+
+        public double Longtitude { get; set; }
+        public double Latitude { get; set; }
+
     }
 }

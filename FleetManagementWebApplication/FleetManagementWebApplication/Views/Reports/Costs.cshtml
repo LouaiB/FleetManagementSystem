@@ -1,0 +1,91 @@
+﻿@{
+    ViewData["Title"] = "Drivers Evolution";
+    Layout = "~/Views/Shared/LayoutManager.cshtml";
+string[] services = (string[])ViewData["services"];
+    float[] costs = (float[])ViewData["costs"];
+var YCosts = Newtonsoft.Json.JsonConvert.SerializeObject(costs);
+    var XServices= Newtonsoft.Json.JsonConvert.SerializeObject(services);
+}
+<!-- Styles -->
+<style>
+    #chartdiv {
+        width: 100%;
+        height: 500px;
+    }
+
+    input[type='date'] {
+        width: 80%
+    }
+</style>
+
+<!-- Resources -->
+<script src="https://www.amcharts.com/lib/4/core.js"></script>
+<script src="https://www.amcharts.com/lib/4/charts.js"></script>
+<script src="https://www.amcharts.com/lib/4/themes/material.js"></script>
+<script src="https://www.amcharts.com/lib/4/themes/animated.js"></script>
+<link rel="stylesheet" href="~/css/Style.css" />
+
+
+<body>
+    <div class="box effect6" style="width:80%">
+        <form asp-controller="Reports" asp-action="Costs" method="get">
+            <table width="90%">
+                <tr>
+                    <td><h3>Costs Evalution </h3></td>
+                    <td align="right">
+                        <input type="date" name="d1" />
+                    </td>
+                    <td align="right"><input type="date" name="d2" /></td>
+                    <td>
+                        <input type="submit" value="GO" />
+                    </td>
+                </tr>
+            </table>
+        </form>
+        <div class="w3-container w3-padding">
+
+            @if(costs.Length==0)
+            {
+            <center><h4 style="color:darkcyan">Nothing to show</h4></center>
+            }
+            <!-- Chart code -->
+            <script>
+                
+                am4core.ready(function () {
+
+                    // Themes begin
+                    am4core.useTheme(am4themes_animated);
+                    am4core.useTheme(am4themes_material);
+                    // Themes end
+
+                    var chart = am4core.create("chartdiv", am4charts.PieChart3D);
+                    chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
+
+                    chart.legend = new am4charts.Legend();
+                    var services = @Html.Raw(XServices);
+                    var costs =@YCosts;
+                    
+                    chart.data = Array(services.length);
+                    for (var i = 0; i < services.length; i++) {
+                        chart.data[i] =
+                            {
+                                service: services[i],
+                                cost: costs[i]
+                            }
+                            ;
+                    }
+                    var series = chart.series.push(new am4charts.PieSeries3D());
+                    series.dataFields.value = "cost";
+                    series.dataFields.category = "service";
+         
+                }); // end am4core.ready()
+            </script>
+
+            <!-- HTML -->
+            <div id="chartdiv"></div>
+
+        </div>
+    </div>
+    <br />
+    <br />
+</body>

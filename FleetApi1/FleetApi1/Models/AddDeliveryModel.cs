@@ -13,5 +13,11 @@ namespace FleetApi1.Models
        public string startLongitude { get; set; }
        public string endLatitude { get; set; }
         public string endLongitude { get; set; }
+        public long quantity { get; set; }
+        public long optimalDistance { get; set; }
+        public long optimalTime { get; set; }
+        public long optimalFuelConsumption { get; set; }
+   
+        
     }
 }
