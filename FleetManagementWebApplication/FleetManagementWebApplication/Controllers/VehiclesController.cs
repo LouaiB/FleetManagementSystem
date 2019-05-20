@@ -27,7 +27,7 @@ namespace FleetManagementWebApplication.Controllers
           
             ViewData["type"] = HttpContext.Session.GetString("OrderType");
                        
-            return View(await _context.Vehicles.Where(v => v.Company.Id == CompanyId).ToListAsync());
+            return View(await _context.Vehicles.Where(v => v.Company.Id == CompanyId).Include(v=>v.CurrentDriver).ToListAsync());
    
         }
 

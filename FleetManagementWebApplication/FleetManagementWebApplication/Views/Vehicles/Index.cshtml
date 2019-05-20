@@ -34,8 +34,27 @@
                                       <tr>
                                           <td rowspan="3">
 
-                                              <h6 class="w3-opacity">Odometer : @Vehicles[i].Odometer Km</h6>
-                                              <h6 class="w3-opacity">PayLoad : @Vehicles[i].PayLoad @ViewData["type"]</h6>
+                                              @if (Vehicles[i].isCurrentlyActive)
+                                              {
+                                                  <h6  style="color:green">
+                                                      Active
+                                                  </h6>
+                                              }
+                                              else
+                                              { <h6 style="color:red">
+                                                      Inactive
+                                                  </h6>
+
+                                              }
+                                              @if (Vehicles[i].CurrentDriver != null)
+                                              {
+                                                  <h6 class="w3-opacity">Driver : @Vehicles[i].CurrentDriver.Name </h6>
+                                              }
+                                              else
+                                              {
+                                                  <h6 class="w3-opacity">Driver : No Driver</h6>
+                                              }
+
                                               <h6 class="w3-opacity">Fuel Level : @Vehicles[i].FuelLevel Litres</h6>
                                           </td>
 
@@ -68,9 +87,28 @@
                                           <tr>
                                               <td rowspan="3">
 
-                                                  <h6 class="w3-opacity">Odometer : @Vehicles[i + 1].Odometer Km</h6>
-                                                  <h6 class="w3-opacity">PayLoad : @Vehicles[i + 1].PayLoad @ViewData["type"]</h6>
-                                                  <h6 class="w3-opacity">Fuel Level : @Vehicles[i + 1].FuelLevel Litres</h6>
+                                                  @if (Vehicles[i+1].isCurrentlyActive)
+                                                  {
+                                                      <h6 style="color:green">
+                                                          Active
+                                                      </h6>
+                                                  }
+                                                  else
+                                                  { <h6 style="color:red">
+                                                          Inactive
+                                                      </h6>
+
+                                                  }
+                                                  @if (Vehicles[i+1].CurrentDriver != null)
+                                                  {
+                                                      <h6 class="w3-opacity">Driver : @Vehicles[i+1].CurrentDriver.Name </h6>
+                                                  }
+                                                  else
+                                                  {
+                                                      <h6 class="w3-opacity">Driver : No Driver</h6>
+                                                  }
+
+                                                  <h6 class="w3-opacity">Fuel Level : @Vehicles[i+1].FuelLevel Litres</h6>
                                               </td>
                                               <td>
                                                   <button type="submit" class="w3-button w3-theme w3-large sized" formaction="/VehiclesDetails/Index"> Maintenance  </button>
@@ -108,10 +146,28 @@
                                       <table width="100%">
                                           <tr>
                                               <td rowspan="3">
+                                                  @if (Vehicles[i+2].isCurrentlyActive)
+                                                  {
+                                                      <h6 style="color:green">
+                                                          Active
+                                                      </h6>
+                                                  }
+                                                  else
+                                                  { <h6 style="color:red">
+                                                          Inactive
+                                                      </h6>
 
-                                                  <h6 class="w3-opacity">Odometer : @Vehicles[i + 2].Odometer Km</h6>
-                                                  <h6 class="w3-opacity">PayLoad : @Vehicles[i + 2].PayLoad @ViewData["type"]</h6>
-                                                  <h6 class="w3-opacity">Fuel Level : @Vehicles[i + 2].FuelLevel  Litres</h6>
+                                                  }
+                                                  @if (Vehicles[i+2].CurrentDriver != null)
+                                                  {
+                                                      <h6 class="w3-opacity">Driver : @Vehicles[i+2].CurrentDriver.Name </h6>
+                                                  }
+                                                  else
+                                                  {
+                                                      <h6 class="w3-opacity">Driver : No Driver</h6>
+                                                  }
+
+                                                  <h6 class="w3-opacity">Fuel Level : @Vehicles[i+2].FuelLevel Litres</h6>
                                               </td>
                                               <td>
                                                   <button type="submit" class="w3-button w3-theme w3-large sized" formaction="/VehiclesDetails/Index"> Maintenance  </button>

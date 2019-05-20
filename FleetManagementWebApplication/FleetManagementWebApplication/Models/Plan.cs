@@ -15,6 +15,7 @@ namespace FleetManagementWebApplication.Models
         public string Name { get; set; }
         public List<Activity> Activities { get; set; }
         public List<Vehicle> Vehicles { get; set; }
+        public Company Company { get; set; }
 
 
     }

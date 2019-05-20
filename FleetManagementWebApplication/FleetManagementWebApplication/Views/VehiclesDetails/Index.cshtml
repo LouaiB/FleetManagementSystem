@@ -1,8 +1,12 @@
 ﻿@model FleetManagementWebApplication.Models.Vehicle
 
+
 @{
     ViewData["Title"] = "Details";
     Layout = "LayoutVehicle";
+    SelectListItem[] plans = (SelectListItem[])ViewData["plans"];
+     SelectListItem[] drivers = (SelectListItem[])ViewData["drivers"];
+
 }
 <h1>Properties</h1>
 <h5>License Plate : @Model.LicensePlate</h5>
@@ -13,17 +17,107 @@
 <h5>Pay Load : @Model.PayLoad Passengers</h5>
 <h5>Emission CO2 : @Model.EmissionsCO2 G/Km</h5>
 <h5>Fuel Consumption : @Model.FuelConsumption Litres/Km</h5>
-@if (Model.Plan != null)
-{
-<form asp-controller="Plans" asp-action="Details">
-    <h5>
-        Plan :
-        <button style="background-color:white;border:none;color:blue">@Model.Plan.Name</button>
-        <input type="hidden" name="id" value="@Model.Plan.Id" />
-    </h5>
+
+<form asp-controller="VehiclesDetails">
+    <div style="font-size:19px;background-color:rgb(240,240,240);padding:20px 20px;border-radius:20px;width:500px">
+        <div id="row1">
+            @if (Model.Plan != null)
+            {
+                <span style="width:300px;">
+                    Plan : @Model.Plan.Name
+                </span>
+            }
+            else
+            {
+                <span style="width:300px;">
+                    Plan : No Plan
+                </span>
+            }
+            <a style="border:none;color:blue;cursor:pointer;margin-left:15px;" onclick="ChangePlan();">Change</a>
+        </div>
+
+        <div id="row2" style="display:none">
+            <span style="width:300px;">
+                Plan : <select name="plan" asp-items="@plans"></select>
+            </span>
+            <button i style="background-color:rgb(240,240,240);;border:none;color:green;cursor:pointer;margin-left:15px;" 
+                    formaction="/VehiclesDetails/UpdatePlan">Save</button>
+        </div>
+
+        <div id="row3">
+            @if (Model.CurrentDriver != null)
+            {
+                <span style="width:300px;">
+                    Driver : @Model.CurrentDriver.Name
+                </span>
+            }
+            else
+            {
+                <span>
+                    Driver : No Driver
+                </span>
+            }
+
+            <a style="border:none;color:blue;cursor:pointer;margin-left:15px;" onclick="ChangeDriver();">Change</a>
+        </div>
+
+
+        <div id="row4" style="display:none">
+            <span td >
+                Driver : <select name="driver" asp-items="@drivers"></select>
+            </span>
+            <button i style="background-color:rgb(240,240,240);border:none;color:green;cursor:pointer;margin-left:15px;" 
+                    formaction="/VehiclesDetails/UpdateDriver">Save</button>
+        </div>
+
+
+        <div id="row5">
+            @if (Model.isCurrentlyActive)
+            {
+                <span >
+                    Status : Active
+                </span>
+            }
+            else
+            {
+                <span>
+                    Status : Inactive
+                </span>
+            }
+            <a style="border:none;color:blue;cursor:pointer;margin-left:15px;" onclick="ChangeStatus();">Change</a>
+        </div>
+
+        <div id="row6" style="display:none">
+            <span >
+                Status : <select name="status">
+                    <option value="active">
+                        Active
+                    </option>
+                    <option value="inactive">
+                        Inactive
+                    </option>
+                </select>
+            </span>
+            <button i style="background-color:rgb(240,240,240);border:none;color:green;cursor:pointer;margin-left:15px;" formaction="/VehiclesDetails/UpdateStatus">Save</button>
+        </div>
+
+        <input type="hidden" name="id" value="@Model.Id" />
+    </div>
 </form>
-}
-else
-{
-<h5>No Plan</h5>
-}
+
+<script type="text/javascript">
+   
+
+    function ChangeStatus() {
+        $('#row5').hide();
+        $('#row6').show();
+    }
+    function ChangePlan() {
+        $('#row1').hide();
+        $('#row2').show();
+    }
+    function ChangeDriver() {
+        $('#row3').hide();
+        $('#row4').show();
+    }
+</script>

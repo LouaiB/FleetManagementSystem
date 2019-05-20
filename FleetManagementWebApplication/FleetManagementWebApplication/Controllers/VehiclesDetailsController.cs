@@ -33,13 +33,16 @@ namespace FleetManagementWebApplication.Controllers
             Vehicle vehicle = null;
             try
             {
-               vehicle  = _context.Vehicles.Where(m => m.Id == id).Include(m => m.Plan).Single<Vehicle>();
+               vehicle  = _context.Vehicles.Where(m => m.Id == id)
+                    .Include(m => m.Plan).Include(d=>d.CurrentDriver).Single<Vehicle>();
             }catch(Exception)
             {
                 return NotFound();
             }
             ViewData["Id"] = id;
             ViewData["one"] = " v-btn-selected ";
+            ViewData["plans"] = getPlans();
+            ViewData["drivers"] = getDrivers();
             return View(vehicle);
         }
 
@@ -101,10 +104,89 @@ namespace FleetManagementWebApplication.Controllers
            Delivery[] deliveries = _context.Deliveries.Where(d=> d.Vehicle.Id == id && d.Finished==true).Include(d=>d.Driver).ToArray<Delivery>();
             return View(deliveries);
         }
-        
 
+        public async Task<IActionResult> UpdateStatus(long id,string status)
+        {
+            if (!LogedIn())
+                return RedirectToRoute("Home");
+            Vehicle V = _context.Vehicles.Include(v => v.CurrentDriver).Include(v => v.Plan).Where(d => d.Id == id).First();
+            if (status == "active")
+                V.isCurrentlyActive = true;
+            else
+                V.isCurrentlyActive = false;
+            _context.Update(V);
+            _context.SaveChanges();
+            ViewData["Id"] = id;
+            ViewData["one"] = " v-btn-selected ";
+            ViewData["plans"] = getPlans();
+            ViewData["drivers"] = getDrivers();
+            return View("~/Views/VehiclesDetails/Index.cshtml", V);
         }
+
+        public async Task<IActionResult> UpdatePlan(long id, long plan=0)
+        {
+            if (!LogedIn())
+                return RedirectToRoute("Home");
+            Vehicle V = _context.Vehicles.Include(v => v.CurrentDriver).Include(v => v.Plan).Where(d => d.Id == id).First();
+            if (plan > 0)
+            {
+                Plan p = _context.Plan.Find(plan);
+                V.Plan = p;
+                _context.Update(V);
+                _context.SaveChanges();
+            }
+            ViewData["Id"] = id;
+            ViewData["one"] = " v-btn-selected ";
+            ViewData["plans"] = getPlans();
+            ViewData["drivers"] = getDrivers();
+            return View("~/Views/VehiclesDetails/Index.cshtml", V);
+        }
+
+        public async Task<IActionResult> UpdateDriver(long id, long driver=0)
+        {
+            if (!LogedIn())
+                return RedirectToRoute("Home");
+            Vehicle V = _context.Vehicles.Include(v => v.CurrentDriver).Include(v => v.Plan).Where(d => d.Id == id).First();
+            if (driver > 0)
+            {
+                Driver p = _context.Drivers.Find(driver);
+                V.CurrentDriver = p;
+                _context.Update(V);
+                _context.SaveChanges();
+            }
+
+            ViewData["Id"] = id;
+            ViewData["one"] = " v-btn-selected ";
+            ViewData["plans"] = getPlans();
+            ViewData["drivers"] = getDrivers();
+
+            return View("~/Views/VehiclesDetails/Index.cshtml", V);
+        }
+
+        public SelectListItem[] getPlans()
+        {
+            Plan[] plans = _context.Plan.Where(p => p.Company.Id == CompanyId).ToArray();
+            SelectListItem[] items = new SelectListItem[plans.Length];
+            for(int i = 0; i < plans.Length; i++)
+            {
+                items[i] = new SelectListItem() { Value = ""+plans[i].Id, Text = plans[i].Name };
+            }
+            return items;
+        }
+
+        public SelectListItem[] getDrivers()
+        {
+            Driver[] drivers = _context.Drivers.Where(p => p.Company.Id == CompanyId).ToArray();
+            SelectListItem[] items = new SelectListItem[drivers.Length];
+            for (int i = 0; i < drivers.Length; i++)
+            {
+                items[i] = new SelectListItem() { Value = "" + drivers[i].Id, Text = drivers[i].Name };
+            }
+            return items;
+        }
+
     }
+}
 
  
 

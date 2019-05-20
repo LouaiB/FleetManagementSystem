@@ -80,6 +80,7 @@ namespace FleetManagementWebApplication.Controllers
                 return RedirectToRoute("Home");
             Plan plan = new Plan();
             plan.Name = PlanName;
+            plan.Company = _context.Companies.Find(CompanyId);
             _context.Add(plan);
             _context.SaveChanges();
             plan.Activities = new List<Activity>();
@@ -178,21 +179,7 @@ namespace FleetManagementWebApplication.Controllers
             return RedirectToAction("Index") ;
         }
         
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Plan plan)
-        {
-            if (!LogedIn())
-                return RedirectToRoute("Home");
-          
-            if (ModelState.IsValid)
-            {
-                _context.Add(plan);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(plan);
-        }
+
 
         
         // GET: Plans/Delete/5
