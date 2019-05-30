@@ -1,0 +1,87 @@
+﻿@model IEnumerable<FleetManagementWebApplication.Models.Client>
+
+@{
+    ViewData["Title"] = "Clients";
+    Layout = "~/Views/Shared/LayoutManager.cshtml";
+}
+<div class="box-wrapper">
+    <div class="box effect6">
+        <h3>Clients</h3>
+        <div class="w3-container w3-padding">
+            <center> 
+                <table width="90%" style="padding:10px 10px">
+                    <tr>
+                        <th>Name</th>
+                        <th>Username</th>
+                        <th>Birthdate</th>
+                        <th>Phone</th>
+                        <th>Address</th>
+                        <th></th>
+                    </tr>
+                    @foreach (var item in Model)
+                    {
+                <tr>
+                    <td>
+                        @item.Name
+                    </td>
+                    <td>
+                        @item.Username
+                    </td>
+                    <td>
+                        @item.Birthdate
+                    </td>
+                    <td>
+                        @item.Phonenumber
+                    </td>
+                    <td>
+                        @item.Address
+                    </td>
+                    <td>
+                        <form asp-controller="Deliveries" asp-action="ClientsDeliveries">
+                            <button class=" btn-primary">Deliveries</button>
+                            <input type="hidden" name="Id" value="@item.Id" />
+                        </form>
+                    </td>
+                </tr>
+                    }
+
+                </table>
+
+            </center>
+        </div>
+    </div>
+</div>
+
+
+<style>
+    tr, th {
+        text-align: left
+    }
+
+    th {
+        background-color: green;
+        color: white;
+        padding: 2px 10px;
+    }
+
+
+    td {
+       background-color: rgba(0,0,0,0.1);
+        padding-left: 10px;
+    }
+
+
+
+
+
+  
+
+    .box {
+       
+        top: 12px;
+     
+        width: 95%;
+     
+      
+    }
+</style>

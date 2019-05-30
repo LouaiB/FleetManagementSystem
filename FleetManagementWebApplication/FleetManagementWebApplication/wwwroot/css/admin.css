@@ -1,0 +1,207 @@
+﻿input[type="text"], input[type="number"], input[type="date"], input[type="datetime"],
+select, input[type="password"], input[type="email"] {
+    border-radius: 20px;
+}
+select {
+    -moz-appearance: none;
+    text-indent: 0.01px;
+    text-overflow: "";
+    font-size: 50px;
+}
+.wordwrap {
+    white-space: pre-wrap; /* CSS3 */
+    white-space: -moz-pre-wrap; /* Firefox */
+    white-space: -pre-wrap; /* Opera <7 */
+    white-space: -o-pre-wrap; /* Opera 7 */
+    word-wrap: break-word; /* IE */
+}
+.ss {
+    border-radius: 20px;
+}
+
+    .ss:focus {
+        outline: 0;
+        color: #000;
+        color: rgba(0,0,0,0);
+        text-shadow: 0 0 0 #000;
+    }
+.box {
+    text-align: left;
+    position: relative;  
+    padding: 10px 30px;   
+    padding-bottom: 40px;
+    background: #FFF;
+    display:inline-block;
+}
+.box-wrapper {
+    text-align: center;
+}
+.search-box {
+    text-align: left;
+    position: relative;
+    top: 0px;
+    width: 100%;
+  padding-bottom:20px;
+    background: #FFF;
+    border:1px solid grey;
+    border-radius: 10px;
+}
+.search-header {
+    position: relative;
+    margin-left: 0px;
+    margin-right: 0px;
+   font-size:22px;
+    padding:5px 10px;
+    border: 1px solid grey;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+.resize{
+
+}
+.search-body {
+    text-align: left;
+    position: relative;  
+    width: 100%; 
+    background: #FFF;
+    padding:5px 5px;
+}
+.btn-search {
+    font-size: 20px;
+    padding: 8px 30px;
+    color: white;
+    border: 4px solid rgba(0, 255, 0, 0.5);
+    border-radius:10px;
+    display: inline-block;
+    outline-width: 0px;
+}
+.fleet-container {
+    width: 100%;
+    padding-left: 15px;
+
+}
+.vehicle-entry {
+    text-align: left;
+    position: relative;
+    top: 0px;
+    width: 100%;
+
+    padding:10px 10px;
+    background: #FFF;
+    border: 1px solid grey;
+    border-radius: 10px;
+    min-height: 200px;
+    margin-bottom:15px;
+}
+.vehicles-container {
+    position: relative;
+    margin-right: 40px;
+    margin-left: 15px;
+    margin-top: 3px;
+    padding-bottom: 20px;
+ 
+}
+
+.vehicle-img {
+    height:100px;
+    width:100px;
+    border-radius:80px;
+
+}
+.vehicle-entry-header{
+    padding-left:20px;
+     
+}
+.btn-green,.btn-blue,.btn-red{
+    border-radius:30px;
+    font-size:15px;
+    border:initial;
+    margin-bottom:2.5px;
+    width:115px;
+}
+.btn-green{
+    background-color:green;
+    color:white;
+}
+.btn-blue {
+    background-color: blue;
+    color: white;
+}
+.btn-red {
+    background-color: red;
+    color: white;
+}
+.pt-img {
+    margin-left: 9%;
+    width: 80%;
+    border-radius: 40px;
+    height: 200px;
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+
+.inputfile {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+
+    .inputfile + label {
+        font-size: 18px;
+        padding: 5px 12px;
+        color: white;
+        background-color: rgba(100, 100, 150, 1);
+        border-radius:20px;
+        display: inline-block;
+    }
+
+        .inputfile:focus + label,
+        .inputfile + label:hover {
+            background-color: rgba(100, 100, 150, 0.8);
+        }
+
+.btn-save {
+    background-color: green;
+    color: white;
+    padding: 10px 30px;
+    font-size: 20px;
+    border:none;
+}
+
+.btn-save:hover{
+    background-color:forestgreen;
+    color:white;
+}
+
+.a-cancel:link, .a-cancel:visited {
+    background-color: red;
+    color: white;
+    padding: 10px 30px;
+    font-size: 20px;
+    border: none;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.a-cancel:hover, .a-cancel:active {
+    background-color: #f44336;
+}
+.text-danger {
+    color: red;
+    font-weight: 13px;
+}
+.well {
+    min-height: 20px;
+    padding: 19px;
+    margin-bottom: 20px;
+    background-color: #f0f0f0;
+    border: 1px solid #e3e3e3;
+    border-radius: 20px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
+}

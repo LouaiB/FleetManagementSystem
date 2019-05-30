@@ -1,78 +1,135 @@
 ﻿@model FleetManagementWebApplication.Models.Vehicle
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit Vehicle";
     Layout = "LayoutManager";
 }
-
 <style>
+
     .box {
-        text-align: left;
-        position: relative;
-        top: 40px;
-        padding: 10px 30px;
-        width: 60%;
-       padding-bottom:40px;
-        background: #FFF;
-  
+        width: 95%;
+        top: 12px;
     }
-
 </style>
-<div class="box effect6">
-    <h3>Registeration</h3>
-
-    <div class="w3-container w3-padding">
-        <form asp-controller="Vehicles" asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-            <h6 class="w3-opacity">LicensePlate :</h6>
-            <input asp-for="LicensePlate" style="width:100%" class="w3-border w3-padding" value="@Model.LicensePlate">
-            <span asp-validation-for="LicensePlate" class="text-danger"></span>
-            <h6 class="w3-opacity"><label asp-for="Make"></label></h6>
-            <input asp-for="Make" style="width:100%" class="w3-border w3-padding" value="@Model.Make">
-            <span asp-validation-for="Make" class="text-danger"></span>
-            <span asp-validation-for="Make" class="text-danger"></span>
-
-            <h6 class="w3-opacity"><label asp-for="Model"></label></h6>
-            <input asp-for="Model" style="width:100%" class="w3-border w3-padding" value="@Model.Model">
-            <span asp-validation-for="Model" class="text-danger"></span>
-
-            <h6 class="w3-opacity">Purchase Date :</h6>
-            <input asp-for="purchaseDate" style="width:100%" class="w3-border w3-padding" value="@Model.purchaseDate">
-            <span asp-validation-for="purchaseDate" class="text-danger"></span>
-            <hr>
-            <h3>Specifications</h3>
-            <h6 class="w3-opacity"><label asp-for="Odometer"></label></h6>
-            <input asp-for="Odometer" style="width:85%" class="w3-border w3-padding" value="@Model.Odometer">&nbsp;&nbsp;&nbsp;&nbsp;Km
-            <span asp-validation-for="Odometer" class="text-danger"></span>
-
-            <h6 class="w3-opacity"><label asp-for="PayLoad"></label></h6>
-            <input asp-for="PayLoad" style="width:85%" class="w3-border w3-padding" value="@Model.PayLoad">&nbsp;&nbsp;&nbsp;&nbsp;@ViewData["type"]
-            <span asp-validation-for="PayLoad" class="text-danger"></span>
-
-            <h6 class="w3-opacity"><label asp-for="EmissionsCO2"></label></h6>
-            <input asp-for="EmissionsCO2" style="width:85%" class="w3-border w3-padding" value="@Model.EmissionsCO2" /> &nbsp;&nbsp;&nbsp;&nbsp;G/Km
-            <span asp-validation-for="EmissionsCO2" class="text-danger"></span>
-
-            <h6 class="w3-opacity"><label asp-for="FuelConsumption"></label></h6>
-            <input asp-for="FuelConsumption" style="width:85%" class="w3-border w3-padding" value="@Model.FuelConsumption">&nbsp;&nbsp;&nbsp;&nbsp;Litres/Km
-            <span asp-validation-for="FuelConsumption" class="text-danger"></span>
-
-            <br /><br /><br />
-
-            <center>
-                <button type="submit" class="w3-button w3-theme w3-large">
+<form asp-controller="Vehicles" asp-action="Edit" enctype="multipart/form-data">
+    <div class="box-wrapper" width="100%">
+        <div class="box effect6">
+            <div width="100%">
+                <div style="display:inline-block"><h2>Edit Vehicle</h2></div>
+                <input type="hidden" name="id" value="@Model.Id" />
+                <button type="submit" class="btn-save" style="float:right;margin-top:5px;">
                     Save
                     <!-- <i class='fas fa-angle-double-right'></i> -->
                 </button>
-            </center>
-            <input type="hidden" name="id" value="@Model.Id" />
-        </form>
+            </div>
+
+
+            <div class="w3-container w3-padding">
+
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="row" style="padding-top:20px;">
+                    <div class="col-lg-4">
+                        <h4>General Properties</h4>
+                        <hr style="width:200px;" />
+                        <h6 class="w3-opacity">LicensePlate :</h6>
+                        <input asp-for="LicensePlate" style="width:70%" class="w3-border w3-padding" value="@Model.LicensePlate">
+                        <span asp-validation-for="LicensePlate" class="text-danger"></span>
+                        <h6 class="w3-opacity"><label asp-for="Make"></label></h6>
+                        <input asp-for="Make" style="width:70%" class="w3-border w3-padding" value="@Model.Make">
+                        <span asp-validation-for="Make" class="text-danger"></span>
+                        <span asp-validation-for="Make" class="text-danger"></span>
+
+                        <h6 class="w3-opacity"><label asp-for="Model"></label></h6>
+                        <input asp-for="Model" style="width:70%" class="w3-border w3-padding" value="@Model.Model">
+                        <span asp-validation-for="Model" class="text-danger"></span>
+
+                        <h6 class="w3-opacity">Purchase Date :</h6>
+                        <input asp-for="purchaseDate" style="width:70%" class="w3-border w3-padding" value="@Model.purchaseDate">
+                        <span asp-validation-for="purchaseDate" class="text-danger"></span>
+
+                    </div>
+                    <div class="col-lg-4">
+                        <h4>Specifications </h4>
+                        <hr style="width:200px;" />
+                        <h6 class="w3-opacity"><label>Last Odometer </label></h6>
+                        <input asp-for="Odometer" style="width:70%" class="w3-border w3-padding" type="number" value="@Model.Odometer"><span style="padding-left:5%;">Km</span>
+                        <span asp-validation-for="Odometer" class="text-danger"></span>
+                        <h6 class="w3-opacity"><label asp-for="PayLoad"></label></h6>
+                        <input asp-for="PayLoad" style="width:70%" class="w3-border w3-padding" value="@Model.PayLoad"><span style="padding-left:5%;">@ViewData["type"]</span>
+                        <h6 class="w3-opacity"><label asp-for="EmissionsCO2"></label></h6>
+                        <input asp-for="EmissionsCO2" style="width:70%" class="w3-border w3-padding" value="@Model.EmissionsCO2"><span style="padding-left:5%;">G/Km</span>
+                        <span asp-validation-for="EmissionsCO2" class="text-danger"></span>
+                        <h6 class="w3-opacity"><label asp-for="FuelConsumption"></label></h6>
+                        <input asp-for="FuelConsumption" style="width:70%" class="w3-border w3-padding" value="@Model.FuelConsumption"><span style="padding-left:5%;">Litres/KM</span>
+                        <span asp-validation-for="FuelConsumption" class="text-danger"></span>
+
+
+                    </div>
+
+
+
+                    <div class="col-lg-4">
+                        <h4>Photo </h4>
+                        <hr style="width:200px;" />
+                        <br />
+                        <div class="form-group">
+                            <div class="pt-img">
+                                <img id="blah" src="~/images/bmw1.jpg" width="100%" height="100%" style="border-radius:40px;" />
+                            </div>
+                            <br />
+                            <center>
+                                <br />
+                                <input type='file' onchange="readURL(this);" name="file" id="file" class="inputfile" />
+
+                                <label for="file">Choose a file</label>
+                            </center>
+
+                        </div>
+
+
+
+
+                    </div>
+                </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            </div>
+        </div>
 
     </div>
-</div>
+
+</form>
+
+
 <br />
 <br />
+<script>
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#blah')
+                    .attr('src', e.target.result)
+                    ;
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

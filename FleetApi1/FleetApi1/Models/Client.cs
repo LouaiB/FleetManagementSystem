@@ -1,14 +1,15 @@
-﻿using FleetApi1.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace FleetManagementWebAplication.Models
+namespace FleetApi1.Models
 {
     public class Client
     {
+
         [Required]
         public long Id { get; set; }
         [Required]
@@ -26,6 +27,7 @@ namespace FleetManagementWebAplication.Models
         public string Address { get; set; }
         [StringLength(20)]
         public string Phonenumber { get; set; }
+        public Company Company { get; set; }
         public List<Delivery> Deliveries { get; set; }
 
 
@@ -33,5 +35,3 @@ namespace FleetManagementWebAplication.Models
 
     }
 }
-
-

@@ -7,16 +7,18 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FleetManagementWebApplication.Models;
 using Microsoft.AspNetCore.Http;
+using System.IO;
+using Microsoft.AspNetCore.Hosting;
 
 namespace FleetManagementWebApplication.Controllers
 {
     public class VehiclesController : FleetController
     {
-      
-        public  VehiclesController(ApplicationDbContext context)
+        IHostingEnvironment _environment;
+        public  VehiclesController(ApplicationDbContext context, IHostingEnvironment environment)
             :base(context)
         {
-         
+            _environment = environment;
         }
 
         // GET: Vehicles
@@ -24,42 +26,55 @@ namespace FleetManagementWebApplication.Controllers
         {
             if (!LogedIn())
                 return RedirectToRoute("Home");
-          
-            ViewData["type"] = HttpContext.Session.GetString("OrderType");
-                       
-            return View(await _context.Vehicles.Where(v => v.Company.Id == CompanyId).Include(v=>v.CurrentDriver).ToListAsync());
+
+            VehiclesIndexModel model = new VehiclesIndexModel();
+            model.FillSelectListDrivers(_context,CompanyId);
+            model.FillVehicles(_context, CompanyId);
+            return View(model);
    
         }
 
-        public async Task<IActionResult> Search(string Query="")
-        {
-            if (!LogedIn())
-                return RedirectToRoute("Home");
-          
-            ViewData["type"] = HttpContext.Session.GetString("OrderType");
+        public async Task<IActionResult> Search(string Model="" ,string Make="", string LicensePlate="" ,long SelectDriverId=0,int Status=0)
+        { 
             
+            if (!LogedIn())                                           
+                return RedirectToRoute("Home");
+            VehiclesIndexModel model = new VehiclesIndexModel
+            {
+                Model=Model,
+                Make=Make,
+                LicensePlate=LicensePlate,
+                SelectDriverId=SelectDriverId,
+                Status=Status
+            };
+            var infoQuery = _context.Vehicles.Include(v=>v.CurrentDriver).Where(v => v.Company.Id == CompanyId);
 
-            if (Query == null)
-                return View("/Views/Vehicles/Index.cshtml",await _context.Vehicles.Where(v => v.Company.Id == CompanyId).ToListAsync());
-            string[] query = Query.Split(" ");
-
-            var infoQuery = (
-                          from v in _context.Vehicles
-                          where v.Company.Id == CompanyId && (v.Model == query[0] || v.Make == query[0] || v.LicensePlate == query[0])
-                          select v);
-            if (query.Length > 1)
-                infoQuery = infoQuery.Intersect
-                       (from v in _context.Vehicles
-                        where v.Company.Id == CompanyId && (v.Model == query[1] || v.Make == query[1] || v.LicensePlate == query[1])
-                        select v);
-            if (query.Length > 2)
-                infoQuery = infoQuery.Intersect
-                       (from v in _context.Vehicles
-                        where v.Company.Id == CompanyId && (v.Model == query[2] || v.Make == query[2] || v.LicensePlate == query[2])
-                        select v);
-
-                ViewData["Query"] = Query; 
-            return View("/Views/Vehicles/Index.cshtml",infoQuery.ToList<Vehicle>());
+            if (model.LicensePlate != null)
+            {
+                infoQuery = infoQuery.Where(v => v.LicensePlate == model.LicensePlate);
+                return View("/Views/Vehicles/Index.cshtml", infoQuery.ToList<Vehicle>());
+            }
+               
+            if (model.Make != null)
+                infoQuery = infoQuery.Where(v => v.Make == model.Make);
+            if (model.Model != null)
+                infoQuery = infoQuery.Where(v => v.Model == model.Model);
+            if (model.SelectDriverId!=0)
+                infoQuery = infoQuery.Where(v => v.CurrentDriver.Id == model.SelectDriverId);
+            if (model.Status != 0)
+            {
+                if (model.Status == 1)
+                    infoQuery = infoQuery.Where(v =>v.isCurrentlyActive);
+                else
+                    if (model.Status == 2)
+                        infoQuery = infoQuery.Where(v => v.isOnTheRoad);
+                    else
+                        infoQuery = infoQuery.Where(v => !v.isCurrentlyActive);
+            }
+          
+            model.Vehicles = infoQuery.ToArray();
+            model.FillSelectListDrivers(_context, CompanyId);
+            return View("/Views/Vehicles/Index.cshtml",model);
         }
 
         [HttpPost]
@@ -100,17 +115,30 @@ namespace FleetManagementWebApplication.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,LicensePlate,Make,Model,purchaseDate,Odometer,PayLoad,EmissionsCO2,FuelConsumption,fuelType,FuelLevel,CurrentLoad")] Vehicle vehicle)
+        public async Task<IActionResult> Create([Bind("Id,LicensePlate,Make,Model,purchaseDate,Odometer,PayLoad,EmissionsCO2,FuelConsumption,fuelType,FuelLevel,CurrentLoad,Icon")] Vehicle vehicle,IFormFile file)
         {
             if (!LogedIn())
                 return RedirectToRoute("Home");
-              
+            var filePath = Path.GetTempFileName();
+
+            string image = "";
+
+            using (FileStream filestream = System.IO.File.Create(_environment.WebRootPath + "\\images\\" + file.FileName))
+            {
+                image = file.FileName;
+                file.CopyTo(filestream);
+                filestream.Flush();
+            }
+
+
+
             ViewData["type"] = HttpContext.Session.GetString("OrderType");
             
             if (ModelState.IsValid)
             {
                
                 vehicle.Company= _context.Companies.FirstOrDefault(c => c.Id == CompanyId);
+                vehicle.Image = image;
                 _context.Add(vehicle);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -141,37 +169,52 @@ namespace FleetManagementWebApplication.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,LicensePlate,Make,Model,purchaseDate,Odometer,PayLoad,EmissionsCO2,FuelConsumption,fuelType,FuelLevel,CurrentLoad")] Vehicle vehicle)
+        public async Task<IActionResult> Edit([Bind("Id,LicensePlate,Make,Model,purchaseDate,Odometer,PayLoad,EmissionsCO2," +
+                                                                              "FuelConsumption")] Vehicle vehicle,IFormFile file)
         {
             if (!LogedIn())
                 return RedirectToRoute("Home");
-            
-            ViewData["type"] = HttpContext.Session.GetString("OrderType");
-            
+            Vehicle v = _context.Vehicles.Find(vehicle.Id);
+            string image =v.Image;
 
-            if (id != vehicle.Id)
+            if (file != null)
+            {
+                var filePath = Path.GetTempFileName();
+
+                using (FileStream filestream = System.IO.File.Create(_environment.WebRootPath + "\\images\\" + file.FileName))
+                {
+                    image = file.FileName;
+                    file.CopyTo(filestream);
+                    filestream.Flush();
+                }
+            }
+            if (!VehicleExists(vehicle.Id))
             {
                 return NotFound();
             }
 
+       
+            v.LicensePlate = vehicle.LicensePlate;
+            v.Make = vehicle.Make;
+            v.Model = vehicle.Model;
+            v.purchaseDate = vehicle.purchaseDate;
+            v.Odometer = vehicle.Odometer;
+            v.PayLoad = vehicle.PayLoad;
+            v.FuelConsumption = vehicle.FuelConsumption;
+            v.EmissionsCO2 = vehicle.EmissionsCO2;
+            v.Image = image;
+           
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(vehicle);
+                    _context.Update(v);
                     _context.SaveChanges();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!VehicleExists(vehicle.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
                 }
+             
                 return RedirectToAction(nameof(Index));
             }
             return View(vehicle);

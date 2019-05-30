@@ -5,31 +5,42 @@
     Layout = "~/Views/Shared/LayoutManager.cshtml";
 }
 <link rel="stylesheet" href="~/css/Style.css" />
-<div class="box effect6">
-    <h3>Drivers Ranks</h3>
-    <div class="w3-container w3-padding">
-        <center>
-            @foreach (Driver d in (Driver[])Model)
-            {
-                <table width="90%" cellspacing="0px" class='table3'>
-                    <tr>
-                        <td style="width:15%;">
-                            <div >
-                                <img src="~/images/@d.Image" width='70' height='70' />
-                            </div>
-                        </td>
-                        <td style="font-size:20px;vertical-align:middle;width:65%;">
+<style>
+       .box{
+            top:20px;
+            width:800px;
+            margin-bottom:50px;
+        }
+</style>
+<div class="box-wrapper">
+    <div class="box effect6">
+        <h3>Drivers Ranks</h3>
+        <div class="w3-container w3-padding">
+            <center>
+                @foreach (Driver d in (Driver[])Model)
+                {
+                    <table width="90%" cellspacing="0px" class='table3'>
+                        <tr>
+                            <td style="width:15%;padding:5px 10px;">
+                                <div>
+                                    <img src="~/images/@d.Image" width='70' height='70' />
+                                </div>
+                            </td>
+                            <td style="font-size:20px;vertical-align:middle;width:65%;padding:10px 20px;">
 
-                            Name : @d.Name
-                            <br />  Score: @d.Score
-                        </td>
-                        <td >
-                            <span class="round">Rank @d.Rank</span><br />
-                        </td>
-                    </tr>
-                </table>
-                <br />
-            }
+                                <span style="color:grey"> Name: </span><span style="color:brown"> @d.Name</span><br />
+                                <span style="color:grey">  Score:  </span> <span style="color:red"> @d.Score</span>
+                            </td>
+                            <td>
+                                <span class="round" style="color:yellow">Rank @d.Rank</span><br />
+                            </td>
+                        </tr>
+                    </table>
+                    <br />
+                }
 
-        </center>
+            </center>
 
+</div>
+</div>
+</div>

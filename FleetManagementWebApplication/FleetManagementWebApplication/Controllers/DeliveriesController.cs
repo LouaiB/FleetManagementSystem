@@ -23,115 +23,48 @@ namespace FleetManagementWebApplication.Controllers
         {
             return View(await _context.Deliveries.ToListAsync());
         }
-
-        // GET: Deliveries/Details/5
-        public async Task<IActionResult> Details(long? id)
+        public async Task<IActionResult> DriversDeliveries(long Id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (!LogedIn())
+                return RedirectToRoute("Home");
 
-            var delivery = await _context.Deliveries
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (delivery == null)
+            List<SelectListItem> Drivers = new List<SelectListItem>();
+            Driver[] drivers = _context.Drivers.Where(d => d.Company.Id == CompanyId).ToArray();
+            foreach (Driver d in drivers)
             {
-                return NotFound();
+                if (d.Id == Id)
+               Drivers.Add(new SelectListItem { Value = "" + d.Id, Text = d.Name + ", username: " + d.Username, Selected =true });
+                else
+               Drivers.Add(new SelectListItem { Value = "" + d.Id, Text =d.Name+", username: "+d.Username });
             }
-
-            return View(delivery);
+            ViewData["drivers"] = Drivers;
+           
+            return View(await _context.Deliveries.Where(d=>d.Driver.Id==Id).Include(d=>d.Client).Include(d=>d.Vehicle).ToListAsync());
         }
 
-        // GET: Deliveries/Create
-        public IActionResult Create()
+
+        public async Task<IActionResult> ClientsDeliveries(long Id)
         {
-            return View();
+            if (!LogedIn())
+                return RedirectToRoute("Home");
+
+            List<SelectListItem> Clients = new List<SelectListItem>();
+            Client[] clients = _context.Deliveries.Where(d => d.Company.Id == CompanyId).Select(d => d.Client)
+                                                         .Union(_context.Clients.Where(c => c.Company.Id == CompanyId)).ToArray();
+            foreach (Client c in clients)
+            {
+                if (c.Id == Id)
+                   Clients.Add(new SelectListItem { Value = "" + c.Id, Text = c.Name + ", username: " + c.Username, Selected = true });
+                else
+                   Clients.Add(new SelectListItem { Value = "" + c.Id, Text = c.Name + ", username: " +c.Username });
+            }
+            ViewData["clients"] = Clients;
+
+            return View(await _context.Deliveries.Where(d => d.Client.Id == Id).Include(d => d.Driver).Include(d => d.Vehicle).ToListAsync());
         }
 
-        // POST: Deliveries/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Time,SourceLongtitude,SourceLatitude,SourceCity,DestinationLongtitude,DestinationLatitude,DestinationCity,Quantity,Answered,Started,Finished,OptimalDistance,OptimalTime,OptimalFuelConsumption")] Delivery delivery)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(delivery);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(delivery);
-        }
 
-        // GET: Deliveries/Edit/5
-        public async Task<IActionResult> Edit(long? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var delivery = await _context.Deliveries.FindAsync(id);
-            if (delivery == null)
-            {
-                return NotFound();
-            }
-            return View(delivery);
-        }
-
-        // POST: Deliveries/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Time,SourceLongtitude,SourceLatitude,SourceCity,DestinationLongtitude,DestinationLatitude,DestinationCity,Quantity,Answered,Started,Finished,OptimalDistance,OptimalTime,OptimalFuelConsumption")] Delivery delivery)
-        {
-            if (id != delivery.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(delivery);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!DeliveryExists(delivery.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(delivery);
-        }
-
-        // GET: Deliveries/Delete/5
-        public async Task<IActionResult> Delete(long? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var delivery = await _context.Deliveries
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (delivery == null)
-            {
-                return NotFound();
-            }
-
-            return View(delivery);
-        }
 
         // POST: Deliveries/Delete/5
         [HttpPost, ActionName("Delete")]

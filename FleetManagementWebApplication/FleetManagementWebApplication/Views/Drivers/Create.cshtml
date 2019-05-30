@@ -4,112 +4,130 @@
     Layout = "LayoutManager";
 }
 
-<div class="box effect6">
-    <h3>Add driver</h3>
+<style>
 
-    <div class="w3-container w3-padding">
-        <form asp-controller="Drivers" asp-action="Create" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <h6 class="w3-opacity">Full Name :</h6>
-            <input asp-for="Name" style="width:100%" class="w3-border w3-padding" value="Hadi Haidar">
-            <span asp-validation-for="Name" class="text-danger"></span>
-            <h6 class="w3-opacity"><label asp-for="Username"></label></h6>
-            <input asp-for="Username" style="width:100%" class="w3-border w3-padding" value="hadi@gmail.com">
-            <span asp-validation-for="Username" class="text-danger"></span>
-            <span class="text-danger">@ViewData["UsernameError"]</span>
-          
-            <h6 class="w3-opacity"><label asp-for="Password"></label></h6>
-            <input asp-for="Password" style="width:100%" class="w3-border w3-padding" value="Aa12345$">
-            <span asp-validation-for="Password" class="text-danger"></span>
+    .box {
+        width: 95%;
+        top: 12px;
+    }
+   .pt-img{
+       width:70%;
+   }
+</style>
+<div class="w3-container w3-padding" >
+    <form asp-controller="Drivers" asp-action="Create" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="box-wrapper" width="100%" >
+            <div class="box effect6">
+                <div width="100%">
+                    <div style="display:inline-block"><h3>New Driver</h3></div>
 
-
-            <h6 class="w3-opacity"><label asp-for="Birthdate"></label></h6>
-            <input asp-for="Birthdate" style="width:100%" class="w3-border w3-padding" 
-                   value="@DateTime.Now.Date.ToString("yyyy-MM-dd")" type="date" >
-            <span asp-validation-for="Birthdate" class="text-danger"></span>
-
-            <h6 class="w3-opacity"><label asp-for="Address"></label></h6>
-            <input asp-for="Address" style="width:100%" class="w3-border w3-padding" value="Beirut">
-            <span asp-validation-for="Address" class="text-danger"></span>
-
-            <h6 class="w3-opacity"><label asp-for="Phonenumber"></label></h6>
-            <input asp-for="Phonenumber" style="width:100%" class="w3-border w3-padding" value="03333333">
-            <span asp-validation-for="Phonenumber" class="text-danger"></span>
+                    <button type="submit" class="btn-save" style="float:right;margin-top:5px;">
+                        Save
+                        <!-- <i class='fas fa-angle-double-right'></i> -->
+                    </button>
+                </div>
 
 
-            <h6 class="w3-opacity"><label >Choose image</label></h6>
-            <input type="file" name="file" class="w3-button w3-theme ">
+                <div class="w3-container w3-padding" >
 
-            <br />
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <button type="submit" class="w3-button w3-theme w3-right">
-                Done
-                <!-- <i class='fas fa-angle-double-right'></i> -->
-            </button>
+                    <div class="row" style="padding-top:20px;padding-bottom:50px;">
+                        <div class="col-lg-4">
+                            <h4>Account Information</h4>
+                            <hr style="width:200px;" />
+                            <h6 class="w3-opacity">Full Name :</h6>
+                            <input asp-for="Name" style="width:80%" class="w3-border w3-padding" value="Hadi Haidar">
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                            <h6 class="w3-opacity"><label asp-for="Username"></label></h6>
+                            <input asp-for="Username" style="width:80%" class="w3-border w3-padding" value="hadi@gmail.com">
+                            <span asp-validation-for="Username" class="text-danger"></span>
+                            <span class="text-danger">@ViewData["UsernameError"]</span>
+
+                            <h6 class="w3-opacity"><label asp-for="Password"></label></h6>
+                            <input asp-for="Password" style="width:80%" class="w3-border w3-padding" value="Aa12345$">
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-lg-4">
+                            <h4>Personal Information</h4>
+                            <hr style="width:200px;" />
+                            <h6 class="w3-opacity"><label asp-for="Birthdate"></label></h6>
+                            <input asp-for="Birthdate" style="width:80%" class="w3-border w3-padding"
+                                   value="@DateTime.Now.Date.ToString("yyyy-MM-dd")" type="date">
+                            <span asp-validation-for="Birthdate" class="text-danger"></span>
+
+                            <h6 class="w3-opacity"><label asp-for="Address"></label></h6>
+                            <input asp-for="Address" style="width:80%" class="w3-border w3-padding" value="Beirut">
+                            <span asp-validation-for="Address" class="text-danger"></span>
+                            <h6 class="w3-opacity"><label asp-for="Phonenumber"></label></h6>
+                            <input asp-for="Phonenumber" style="width:80%" class="w3-border w3-padding" value="03333333">
+                            <span asp-validation-for="Phonenumber" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-lg-4">
+                            <h4>Photo</h4>
+                            <hr style="width:200px;" />
+                            
+                            <div class="form-group">
+                                <div class="pt-img">
+                                    
+                                    <img id="blah" src="~/images/bmw1.jpg" width="100%" height="100%" style="border-radius:40px;" />
+
+                                    <br />
+
+                                    <br />
+                                    <div style="padding-left:25%">
+                                        <input type='file' onchange="readURL(this);" name="file" id="file" class="inputfile" />
+
+                                        <label for="file" style="display:initial">Choose a photo</label>
+                                    </div>
+                                </div>
+
+                            </div>
 
 
 
-        </form>
+
+                        </div>
+
+
+
+
+                        </div>
+                    </div>
+
+            </div>
+        </div>
+    </form>
 </div>
-</div>
-<br /><br />
+
+<br />
+<br />
+<script>
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#blah')
+                    .attr('src', e.target.result)
+                    ;
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
 
-<style>
-    html, body, h1, h2, h3, h4, h5 {
-        font-family: "Open Sans", sans-serif
-    }
 
-    body {
-        background: #ccc
-    }
 
-    .box {
-        text-align: left;
-        position: relative;
-        top: 40px;
-        padding: 10px 30px;
-    }
 
-    .box {
-        width: 60%;
-        padding-bottom:30px;
-        background: #FFF;
-      
-    }
 
-    .effect6 {
-        position: relative;
-        -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
-        -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
-        box-shadow: 0 1px 40px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
-    }
 
-        .effect6:before, .effect6:after {
-            content: "";
-            position: absolute;
-            z-index: -1;
-            -webkit-box-shadow: 0 0 20px rgba(0,0,0,0.8);
-            -moz-box-shadow: 0 0 20px rgba(0,0,0,0.8);
-            box-shadow: 0 0 50px rgba(0,0,0,0.8);
-            top: 50%;
-            bottom: 0;
-            left: 10px;
-            right: 10px;
-            -moz-border-radius: 100px / 10px;
-            border-radius: 100px / 10px;
-        }
 
-        .effect6:after {
-            right: 10px;
-            left: auto;
-            -webkit-transform: skew(8deg) rotate(3deg);
-            -moz-transform: skew(8deg) rotate(3deg);
-            -ms-transform: skew(8deg) rotate(3deg);
-            -o-transform: skew(8deg) rotate(3deg);
-            transform: skew(8deg) rotate(3deg);
-        }
-</style>
+
+

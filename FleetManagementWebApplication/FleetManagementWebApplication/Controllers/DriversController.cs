@@ -31,6 +31,9 @@ namespace FleetManagementWebApplication.Controllers
             ViewData["QueryPlaceHolder"] = "Drivers";
             return View(await _context.Drivers.Where(d => d.Company.Id == CompanyId).ToListAsync());
         }
+
+
+
         public async Task<IActionResult> Search(string Query = "")
         {
             if (!LogedIn())
@@ -146,22 +149,38 @@ namespace FleetManagementWebApplication.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditConfirmed(long id, [Bind("Id,Username,Password,Name,Birthdate,Address,Phonenumber")] Driver driver)
+        public async Task<IActionResult> EditConfirmed([Bind("Id,Username,Password,Name,Birthdate,Address,Phonenumber")] Driver driver,IFormFile file )
         {
             if (!LogedIn())
                 return RedirectToRoute("Home");
-        ViewData["QueryPlaceHolder"] = "Drivers";
+            Driver d = _context.Drivers.Find(driver.Id);
+            string image =d.Image;
 
-            if (id != driver.Id)
+            if (file != null)
             {
-                return NotFound();
+                var filePath = Path.GetTempFileName();
+               
+                using (FileStream filestream = System.IO.File.Create(_environment.WebRootPath + "\\images\\" + file.FileName))
+                {
+                    image = file.FileName;
+                    file.CopyTo(filestream);
+                    filestream.Flush();
+                }
             }
+            
+
+      
+            d.Name = driver.Name;
+            d.Address = driver.Address;
+            d.Birthdate = driver.Birthdate;
+            d.Phonenumber = driver.Phonenumber;
+            d.Image = image;
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(driver);
+                    _context.Update(d);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)

@@ -1,0 +1,126 @@
+﻿@model IEnumerable<Delivery>
+
+@{
+    ViewData["Title"] = "Drivers Deliveries";
+    Layout = "~/Views/Shared/LayoutManager.cshtml";
+    List<SelectListItem> drivers=(List<SelectListItem>)ViewData["drivers"];
+
+}
+    <div class="box-wrapper">
+        <div class="box effect6">
+            <h3>Drivers Deliveries</h3>
+            <div class="w3-container w3-padding">
+                <form asp-controller="Deliveries" asp-action="DriversDeliveries" >
+                    <div  style="padding:10px 20px;text-align:right;width:100%">
+                    <table cellspacing="15px" style="border:2px solid grey;border-radius:20px;background-color: rgb(250,250,250);" align="right" ><tr>
+                            <td class="td1" style="padding-left:20px;color:rgb(50,50,50);font-size:25px;text-align:right;"> Select a driver: </td>                      
+                            <td class="td1"><select  name="Id" style="height:50px;border:2px solid grey;border-radius:15px;padding-left:10px;padding-right:10px;"
+                                                               asp-items="@drivers"  onchange="this.form.submit();"></select> </td>                
+                        </tr></table>
+                        </div>
+                </form>
+                <center>
+                    <br /><br />
+                    <br /><br />
+                    <table width="90%" style="padding:10px 10px">
+                        <tr>
+                            <th>Date and Time</th>
+                            <th>Source City</th>
+                            <th>Destination City</th>
+                            <th>Vehicle</th>
+                            <th>Client</th>
+                            <th>Quantity</th>
+                            <th>Status</th>
+                        </tr>
+                        @foreach (var item in Model)
+                        {
+                        <tr>
+                            <td class="date">
+                                @item.Time
+                            </td>
+                            <td>
+                                @item.SourceCity
+                            </td>
+                            <td>
+                                @item.DestinationCity
+                            </td>
+                            <td>
+                                @item.Vehicle.Make @item.Vehicle.Model @item.Vehicle.LicensePlate
+                            </td>
+                            <td>
+                                @item.Client.Name
+                            </td>
+                            <td>
+                                @item.Quantity
+                            </td>
+                            @if(item.Finished)
+                        {
+                            <td style="color:white;background-color:red">Finished</td>
+                         }
+                        else
+                        {
+                             if(item.Started)
+                            {
+                            <td style="color:white;background-color:forestgreen">Started</td>
+                            }
+                            else{
+                            <td style="color:white;background-color:blue">Answered</td>
+                            }
+                        }
+
+
+                        </tr>
+                     }
+
+                    </table>
+
+                </center>
+            </div>
+        </div>
+    </div>
+        
+
+        <style>
+            tr, th {
+                text-align: left
+            }
+
+            th {
+                background-color: green;
+                color: white;
+              padding: 2px 10px;
+            }
+
+            .date {
+                background-color: cyan;
+                width: 200px;
+                color: black;
+            }
+
+            
+            td {
+            background-color:rgb(230,230,230);
+                padding-left: 10px;
+            }
+
+            .td1 {
+                text-align: center;
+                background-color:initial;
+                padding: 10px 10px;
+                color: white;
+                font-size: 18px;
+            }
+
+            .box {
+                text-align: left;
+                position: relative;
+                top: 12px;
+                padding: 10px 30px;
+                width: 95%;
+                padding-bottom: 200px;
+                background: #FFF;
+            }
+
+            
+              
+        </style>

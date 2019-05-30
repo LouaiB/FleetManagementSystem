@@ -20,9 +20,9 @@ namespace FleetManagementWebApplication.Models
                                                     "Map"));
             DateTime dateTime = DateTime.Now.AddDays(5);
             foreach (ScheduledActivity a in _context.ScheduledActivities.Where(a => a.CompanyId == CompanyId && a.DueDate <= dateTime)
-                                                                       .Include(a => a.Vehicle).Include(a => a.Activity).ToList<ScheduledActivity>())
+                                                                       .Include(a => a.Vehicle).Include(a => a.Activity).ThenInclude(a=>a.Service).ToList<ScheduledActivity>())
                 notifications.Add(new Notification(
-                                                    a.Vehicle.Make + " " + a.Vehicle.Model + " requires " + a.Activity.Type,
+                                                    a.Vehicle.Make + " " + a.Vehicle.Model + " requires " + a.Activity.Service.Name,
                                                     a.Vehicle.Id,
                                                     "VehiclesDetails"));
 

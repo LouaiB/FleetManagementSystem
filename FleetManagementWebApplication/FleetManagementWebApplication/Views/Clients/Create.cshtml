@@ -1,0 +1,61 @@
+﻿@model AddClient
+@{
+    ViewData["Title"] = "Add Client";
+    Layout = "LayoutManager";
+}
+    <style>
+
+        .box {
+            width: 70%;
+            top: 20px;
+            padding-bottom:15px;
+        }
+        .box-wrapper{
+            padding-bottom:50px;
+        }
+    </style>
+
+    <div class="box-wrapper">
+        <div class="box effect6">
+            <h3>Create Client Account</h3>
+            <div class="w3-container ">
+                <form asp-controller="Map" asp-action="AddClient">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <h6 class="w3-opacity"> Name :</h6>
+                    <input asp-for="Name" style="width:100%" class="w3-border w3-padding" value="Client Name">
+                    <span asp-validation-for="Name" class="text-danger"></span>
+
+                    <h6 class="w3-opacity"> Email :</h6>
+                    <input asp-for="Username" style="width:100%" class="w3-border w3-padding" value="client@web.com">
+                    <span asp-validation-for="Username" class="text-danger"></span>
+                    <span  class="text-danger">@ViewData["message"]</span>
+                    <h6 class="w3-opacity"> Password:</h6>
+                    <input asp-for="Password" style="width:100%" class="w3-border w3-padding" type="password" value="ChangeMe123">
+                    <span asp-validation-for="Password" class="text-danger"></span>
+
+                    <h6 class="w3-opacity">Phone :</h6>
+                    <input asp-for="Phone" style="width:100%" class="w3-border w3-padding" value="03 333 333">
+                    <span asp-validation-for="Phone" class="text-danger"></span>
+
+                    <h6 class="w3-opacity"> Client:</h6>
+                    <input asp-for="Address" style="width:100%" class="w3-border w3-padding" value="Beirut">
+                    <span asp-validation-for="Address" class="text-danger"></span>
+
+                    <button type="submit" class="  btn-save w3-right" style="margin-top:20px">
+                        Save
+                    </button>
+
+                </form>
+            </div>
+        </div>
+        
+    </div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+
+
+

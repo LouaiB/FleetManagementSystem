@@ -1,0 +1,158 @@
+﻿@model IEnumerable<FleetManagementWebApplication.Models.FuelLog>
+
+@{
+    ViewData["Title"] = "Fuel Log";
+    Layout = "LayoutManager";
+    List<SelectListItem> vehicles = (List<SelectListItem>)ViewData["vehicles"];
+}
+
+<style>
+
+    .box {
+        width: 95%;
+        top: 12px;
+    }
+
+</style>
+
+
+<div class="box-wrapper" width="100%">
+    <div class="box effect6">
+
+        <div id="create" width="100%">
+            <div style="display:inline-block"><h2>Fuel Log</h2></div>
+    
+                <button type="submit" class="btn-save" style="float:right;margin-top:5px;" onclick="ShowCreateNewLog();">
+                    New Log
+                </button>
+        </div>
+
+
+
+
+        <div class="w3-container w3-padding">
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.DateTime)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Vehicle)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Quantity) in Litres
+                        </th>
+                        <th>
+                       Fuel Type
+                        </th>
+                        <th>
+                           Price Per Litre in $
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Provider)
+                        </th>
+                        <th>
+                            Total Price in $
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DateTime)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Vehicle.Make)  @Html.DisplayFor(modelItem => item.Vehicle.Model) @Html.DisplayFor(modelItem => item.Vehicle.LicensePlate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Quantity)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FuelType)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PricePerLitre)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Provider)
+                        </td>
+                        <td >
+                        @(item.Quantity * item.PricePerLitre)
+                        </td>
+                        <td>
+                            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+
+
+        </div>
+    </div>
+</div>
+<div id="vehicles" style="display:none">
+    <select asp-items="@vehicles" name="Vehicle" class='form-control' style='width:90%;border-radius:20px;'></select>
+</div>
+<script type="text/javascript">
+   var prev = document.getElementById("create").innerHTML;
+    function ShowCreateNewLog() {
+        var innerHtml ="<form action='/FuelLogs/Create' method='post' >"
+           +  "<div style='display:inline-block'><h2>Fuel Log</h2></div>"
+            + " <button type='submit' class='btn-save' style='float:right;margin-top:5px;' >"
+            + "Save </button>"
+            +  "<a href='javascript:void(0);'  class='a-cancel'  style='float:right;margin-top:5px;margin-right:2%;' onclick='Cancel();'>Cancel</a>"   
+            + "<div  class='well' style='margin-top:5px;padding-top:10px'>"
+            + "  <div asp-validation-summary='ModelOnly' class='text-danger'></div>"
+            + "<h3 style='margin-left:20px;'>New Log</h3><br>"
+            + "<table width='90%' align='center'><tr>"
+            + "<td>"
+            + "<div class='form-group' > "
+            + "<label class='control-label'>Date</label>"
+            + "<input type='date' name='DateTime' class='form-control' style='width:90%;' />"
+            + "</div>"
+            + "<div class='form-group' > "
+            + " <label class='control-label'>Vehicle</label>"
+            + document.getElementById("vehicles").innerHTML           
+            + " </div>"
+               +"<div class='form-group' > "
+            + "<label class='control-label'>Provider</label>"
+            + "<input type='text' name='Provider' class='form-control' style='width:90%;' />"
+            + "</div></td>"
+             +"<td><div class='form-group' > "
+            + "<label class='control-label'>Quantity in Litres</label>"
+            + "<input type='text' name='Quantity' class='form-control' style='width:90%;' />"
+            + "</div>"
+            +"<div class='form-group' > "
+            + "<label class='control-label'>Fuel Type</label>"
+            + "<input type='text' name='FuelType' class='form-control' style='width:90%;' />"
+            + "</div>"
+               +"<div class='form-group' > "
+            + "<label class='control-label'>Price Per Litre in $</label>"
+            + "<input type='text' name='PricePerLitre' class='form-control' style='width:90%;' />"
+            + "</div></td></tr></table><br>"
+           +"</div ></form > ";
+
+        document.getElementById("create").innerHTML = innerHtml;
+        }
+    function Cancel() {
+        document.getElementById("create").innerHTML = prev;
+    }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+

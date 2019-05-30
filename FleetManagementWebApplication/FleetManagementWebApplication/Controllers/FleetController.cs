@@ -17,6 +17,7 @@ namespace FleetManagementWebApplication.Controllers
         protected string Name = " Account ";
         protected long CompanyId;
         protected string CompanyName = " Company ";
+        protected string OrderType = "Order";
         protected readonly NotificationManager NotificationManager;
         public FleetController(ApplicationDbContext context)
         {
@@ -29,14 +30,16 @@ namespace FleetManagementWebApplication.Controllers
         {
             if (HttpContext.Session.GetInt32("LoggedIn") == null)
                 return false;
+
             Id =(long) HttpContext.Session.GetInt32("Id");
             CompanyId = (long)HttpContext.Session.GetInt32("CompanyId");
             ViewData["Notifications"] = NotificationManager.GetNotifications(CompanyId, _context);
             Name = HttpContext.Session.GetString("Name");
             CompanyName = HttpContext.Session.GetString("CompanyName");
+            OrderType= HttpContext.Session.GetString("OrderType");
             ViewData["Name"] = Name;
             ViewData["CompanyName"] = CompanyName;
-            ViewData["QueryPlaceHolder"] = "Vehicles";
+            ViewData["OrderType"] = OrderType;
             return true;
 
         }

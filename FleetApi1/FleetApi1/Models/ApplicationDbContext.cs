@@ -1,4 +1,4 @@
-﻿using FleetManagementWebAplication.Models;
+﻿using FleetApi1.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

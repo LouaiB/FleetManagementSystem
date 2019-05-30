@@ -27,6 +27,8 @@ namespace FleetManagementWebApplication.Models
         public DbSet<DeliverySummary> DeliverySummaries { get; set; }
         public DbSet<Route> Routes { get; set; }
         public DbSet<MapLocation> MapLocations { get; set; }
+        public DbSet<Service> Service { get; set; }
+        public DbSet<FuelLog> FuelLogs { get; set; }
 
     }
 }

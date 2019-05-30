@@ -29,6 +29,7 @@ namespace FleetManagementWebApplication.Models
         public Manager Manager { get; set; }
         public List<Delivery> Deliveries { get; set; }
         public List<MapLocation> MapLocations { get; set; }
+        public List<Client> Clients { get; set; }
 
     }
 }

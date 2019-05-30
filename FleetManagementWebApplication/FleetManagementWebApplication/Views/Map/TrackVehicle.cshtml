@@ -1,0 +1,254 @@
+﻿@{
+    ViewData["Title"] = "Track Vehicle";
+    Layout = "LayoutManager";
+    List<SelectListItem> vehicles=(List<SelectListItem>)ViewData["vehicles"];
+Vehicle vehicle=(Vehicle)ViewData["vehicle"];
+
+}
+<head>
+    <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+    <link rel="stylesheet" type="text/css" href="https://js.api.here.com/v3/3.0/mapsjs-ui.css?dp-version=1549984893" />
+    <script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-core.js"></script>
+    <script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-service.js"></script>
+    <script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-ui.js"></script>
+    <script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-mapevents.js"></script>
+    <style>
+        .map-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        #navi {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        #info {
+            z-index: 10;
+            background-color: rgba(0,0,0,0.4);
+            width: 220px;
+            
+            position: absolute;
+            top: 20px;
+            left: 15px;
+            color: white;
+            padding: 10px 10px;
+        }
+        .stat-yellow {
+            color:rgb(255,255,0);
+        }
+       .stat-red {
+            color:rgb(255,0,0);
+        }
+       .stat-blue {
+            color:rgb(0,0,255);
+        }
+    </style>
+
+
+</head>
+
+
+<div class="fleet-container map-container">
+
+    <div id="navi" style="background-color:grey">
+        <div id="map" style="width: 100%; height: 700px; background: grey" />
+        <!--Testing
+            <button onclick="showSum()">Show</button>
+            <div  class="wordwrap" id="sum"></div>
+        </div>
+    -->
+        <div id="info">
+            <center><h4 id="time" style="color:yellow;border:1px solid white;padding:2px 5px;"> -- : -- :  --   -- </h4></center>
+            <h5>Select Vehicle : </h5>
+            <form asp-controller="Map" asp-action="TrackVehicle" >
+                <select id="selectedVehicle" name="Id" asp-items="@vehicles" style="border:none;padding:5px 10px;" onchange="this.form.submit()"></select>
+            </form>
+          
+
+            <hr />
+            <div id="status">
+                @if (vehicle.isCurrentlyActive)
+                {
+                    if (vehicle.isOnTheRoad)
+                    {
+                        <h5 class="stat-blue">
+                            On The Road
+                        </h5>
+                    }
+                    else
+                    {
+                        <h5 class="stat-yellow">
+                            Active
+                        </h5>
+                    }
+
+                }
+                else
+                { <h5 class="stat-red">
+                        Inactive
+                    </h5>
+                }
+            </div>
+            <hr>
+            @if (vehicle.CurrentDriver != null)
+            {
+                <h5>Current Driver : </h5>
+                <h5 id="driver" style="color:rgb(255,255,0)">@vehicle.CurrentDriver.Name </h5>
+            }
+            else
+            {
+                <h5>Driver : </h5>
+                <h5 id="driver" style="color:rgb(255,255,0)">No Driver </h5>
+            }
+            <hr />
+            <h5>Fuel Level :</h5>
+            <h5 id="fuel" style="color:rgb(255,255,0)">@vehicle.FuelLevel Litres</h5>
+            <hr />
+            <h5>Odometer :</h5>
+            <h5 id="odo" style="color:rgb(255,255,0)">@vehicle.Odometer Km</h5>
+            <hr />
+            <h5>Current Load :</h5>
+            <h5 id="load" style="color:rgb(255,255,0)">@vehicle.CurrentLoad  @ViewData["OrderType"]</h5>
+            <hr />
+            <h5>Refresh Rate :</h5>
+            <input type="number" id="refresh" style="border:none;border-radius:4px;text-align:center" value="1000"
+                   onchange="ChangeRate(this)" placeholder="rate in seconds" />
+        </div>
+    </div>
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script type="text/javascript">
+      var myVar = setInterval(infoTimer,500);
+    var vehicle =@vehicle.Id;
+    var rate = 500;
+    var lat = @vehicle.Latitude;
+    var log = @vehicle.Longtitude;
+    var marker; 
+    
+    var route = []; 
+    var route2 = [33.99069084, 35.64277842, 33.99068529, 35.64277842, 33.99067861, 35.64277573, 33.99066972, 35.64277305, 33.99066527, 35.64276903, 33.99066416, 35.64276903, 33.99066193, 35.64276903, 33.99065971, 35.64276769, 33.99065749, 35.64276769, 33.99065526, 35.64276635, 33.99064970, 35.64276366, 33.99064303, 35.64276098, 33.99063414, 35.64275428, 33.99062858, 35.64275025, 33.99062302, 35.64274757, 33.99061746, 35.64274489, 33.99061301, 35.64274221, 33.99060522, 35.64273818, 33.99060189, 35.64273818, 33.99059411, 35.64273550, 33.99058855, 35.64273282, 33.99058299, 35.64272880, 33.99057743, 35.64272477, 33.99057520, 35.64272343, 33.99057187, 35.64272075, 33.99056742, 35.64271673, 33.99056186, 35.64271136, 33.99054740, 35.64270868, 33.99053962, 35.64270734, 33.99053072, 35.64270331, 33.99051405, 35.64269661, 33.99050960, 35.64269393, 33.99050070, 35.64268454, 33.99049181, 35.64268186, 33.99048180, 35.64267917, 33.99046957, 35.64267247, 33.99046623, 35.64266845, 33.99046401, 35.64266711, 33.99045845, 35.64266174, 33.99044844, 35.64264967, 33.99043510, 35.64264833, 33.99042842, 35.64264431, 33.99041286, 35.64263760, 33.99039840, 35.64263224, 33.99038061, 35.64262151, 33.99036282, 35.64261212, 33.99034948, 35.64260541, 33.99033391, 35.64260005, 33.99032057, 35.64259334, 33.99030833, 35.64258932, 33.99029054, 35.64257457, 33.99028054, 35.64257055, 33.99026942, 35.64256384, 33.99026608, 35.64256250, 33.99026274, 35.64255982, 33.99025051, 35.64255445, 33.99024273, 35.64255177, 33.99023606, 35.64254775, 33.99022827, 35.64254104, 33.99022383, 35.64253702, 33.99022160, 35.64253568, 33.99020603, 35.64253031, 33.99020159, 35.64252361, 33.99019603, 35.64252227, 33.99018935, 35.64251958, 33.99018046, 35.64251690, 33.99017156, 35.64251556, 33.99016044, 35.64250885, 33.99015377, 35.64250617, 33.99014710, 35.64250215, 33.99014265, 35.64249947, 33.99013598, 35.64249678, 33.99013042, 35.64249410, 33.99012375, 35.64249142, 33.99011485, 35.64248337, 33.99010929, 35.64248203, 33.99010262, 35.64247667, 33.99009484, 35.64247264, 33.99008817, 35.64247130, 33.99008483, 35.64246862
+        , 33.99011374, 35.64248337, 33.99010262, 35.64248069, 33.99009039, 35.64247533, 33.99008594, 35.64247264, 33.99007705, 35.64246728, 33.99006815, 35.64246057, 33.99005370, 35.64245387, 33.99004925, 35.64245253, 33.99004146, 35.64244851, 33.99003146, 35.64244046, 33.99002034, 35.64243509, 33.99001033, 35.64242839, 33.99000811, 35.64242839, 33.99000477, 35.64242302, 33.98998142, 35.64240559, 33.98997475, 35.64240425, 33.98996474, 35.64239888, 33.98995807, 35.64239486, 33.98995473, 35.64238950, 33.98993916, 35.64238279, 33.98992693, 35.64237609];
+    var inc = 0;
+    var platform = new H.service.Platform({
+        app_id: 'devportal-demo-20180625',
+        app_code: '9v2BkviRwi9Ot26kp2IysQ',
+        useHTTPS: true
+    });
+    var pixelRatio = window.devicePixelRatio || 1;
+    var defaultLayers = platform.createDefaultLayers({
+        tileSize: pixelRatio === 1 ? 256 : 512,
+        ppi: pixelRatio === 1 ? undefined : 320
+    });
+
+    //Step 2: initialize a map
+    var map = new H.Map(document.getElementById('map'),
+        defaultLayers.normal.map, {
+            center: { lat: 33.977 , lng: 35.6200633 },
+            zoom: 22,
+            pixelRatio: pixelRatio
+        });
+
+    const mapEvents = new H.mapevents.MapEvents(map);
+    const behavior = new H.mapevents.Behavior(mapEvents);
+
+    const icon = new H.map.Icon('/images/@vehicle.Icon', { size: { w: 100, h: 100 } });
+    marker = new H.map.Marker({ lat: @vehicle.Latitude, lng:@vehicle.Longtitude}, { icon: icon });   
+    map.addObject(marker);
+
+
+    function setUpClickListener(map) {
+  map.addEventListener('tap', function (evt) {
+    var coord = map.screenToGeo(evt.currentPointer.viewportX,
+        evt.currentPointer.viewportY);
+      route.push(coord.lat.toFixed(8));
+      route.push(coord.lng.toFixed(8));
+   //  alert(coord.lat.toFixed(8)) ;
+      //alert(coord.lng.toFixed(8));
+  });
+    }
+
+    function showSum() {
+        document.getElementById("sum").innerHTML = route.join();
+    }
+
+
+    setUpClickListener(map);
+
+    function ChangeVehicle() {
+        clearTimeout(myVar);
+         document.getElementById("status").innerHTML = " ";
+         document.getElementById("driver").innerHTML = " ";
+         document.getElementById("fuel").innerHTML =" ";
+         document.getElementById("odo").innerHTML = " ";
+          document.getElementById("load").innerHTML = " ";
+        vehicle = $("#selectedVehicle").val();
+        myVar = setInterval(infoTimer, rate);
+    }
+    function ChangeRate(ele) {
+        rate = ele.value*100;
+        if (rate < 100)
+            rate = 100;
+        clearTimeout(myVar);
+         var d = new Date();
+         document.getElementById("time").innerHTML = d.toLocaleTimeString();
+        myVar = setInterval(infoTimer, rate);
+    }
+    function infoTimer() {
+    var d = new Date();
+    document.getElementById("time").innerHTML = d.toLocaleTimeString();
+     
+        $.ajax({
+            type: "GET",
+            url: '/Map/GetVehicleInfo',
+            data: { "id": vehicle },
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            beforeSend: function () {
+               // alert("before"); // Show loader icon
+            },
+            success: function (response) {
+                //alert("Hello");
+                var status = response.status;
+                if (status == "Active")
+                    document.getElementById("status").innerHTML = "<h5 class='stat-yellow'>Active</h5>";
+                    if (status == "Inactive")
+                    document.getElementById("status").innerHTML = "<h5 class='stat-red'>Inactive</h5>";
+                    if (status == "On The Road")
+                    document.getElementById("status").innerHTML = "<h5 class='stat-blue'>On The Road</h5>";
+                document.getElementById("driver").innerHTML = response.driver;
+                document.getElementById("fuel").innerHTML = response.fuelLevel + " Litres";
+                document.getElementById("odo").innerHTML = response.odometer + " Km";
+                document.getElementById("load").innerHTML = response.currentLoad + " @ViewData["OrderType"]";
+               
+                marker.setPosition({ lat: route2[inc], lng: route2[inc + 1] });
+                map.setCenter({ lat: route2[inc], lng: route2[inc + 1] });
+                 inc += 2;
+                if (inc > route2.length - 1)
+                    inc = 0;
+               
+                //marker.setPosition({ lat: response.latitude, lng: response.longtitude+0.00003});  
+                //map.setCenter({ lat: response.latitude, lng: response.longtitude });
+            
+            },
+            complete: function () {
+               // alert("Done");
+            },
+            failure: function (jqXHR, textStatus, errorThrown) {
+                alert("HTTP Status: " + jqXHR.status + "; Error Text: " + jqXHR.responseText); // Display error message
+            }
+        });
+
+} 
+
+
+   
+
+
+
+</script>
+

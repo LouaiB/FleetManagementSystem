@@ -1,52 +1,44 @@
-﻿@model FleetManagementWebApplication.Models.Bill
+﻿@model CreateBillModel
 
 @{
     ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/LayoutManager.cshtml";
-    SelectListItem[] Vehicles = (SelectListItem[])ViewData["Vehicles"];
-    string[] Services = (string[])ViewData["Services"];
+  
     }
+    <div class="box-wrapper">
+        <div class="box effect6">
+            <h3>Add Bill</h3>
+            <div class="w3-container w3-padding">
+                <form asp-action="Create" >
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <h6 class="w3-opacity">Service:</h6>
+                    <select asp-for="@Model.SelectedService" asp-items="Model.Services" style="width:100%" class="w3-border w3-padding" ></select>                  
 
-    <div class="box effect6">
-        <h3>Add Bill</h3>
-               <div class="w3-container w3-padding">
-            <form asp-action="Create" autocomplete="off">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <h6 class="w3-opacity">Service:</h6>
-                <input asp-for="Service" list="Services" style="width:100%" class="w3-border w3-padding" placeholder="Service type"/>
-                <datalist id="Services">
-                    @foreach (string s in Services)
-                    {
-                        <option value="@s" />
-                    }
+                    <h6 class="w3-opacity">Date:</h6>
+                    <input asp-for="DateTime" value="@DateTime.Now.Date.ToString("yyyy-MM-dd")" type="date" style="width:100%" class="w3-border w3-padding" />
+                    <span asp-validation-for="DateTime" class="text-danger"></span>
+                    <h6 class="w3-opacity">Vehicle:</h6>
+                    <select asp-for="@Model.SelectedVehicle" asp-items="Model.Vehicles" style="width:100%" class="w3-border w3-padding"></select>
 
-                </datalist>
-                <span asp-validation-for="Service" class="text-danger"></span>
-                <h6 class="w3-opacity">Date:</h6>
-                <input asp-for="DateTime" value="@DateTime.Now.Date.ToString("yyyy-MM-dd")" type="date"  style="width:100%" class="w3-border w3-padding" />
-                <span asp-validation-for="DateTime" class="text-danger"></span>
-                <h6 class="w3-opacity">Vehicle:</h6>
-                <select name="VehicleSelect" asp-items="@Vehicles" style="width:100%" class="w3-border w3-padding"></select>
+                    <h6 class="w3-opacity">Provider:</h6>
+                    <input asp-for="Provider" style="width:100%" class="w3-border w3-padding" placeholder="Provider's name" />
+                    <span asp-validation-for="Provider" class="text-danger"></span>
+                    <h6 class="w3-opacity">Cost:</h6>
+                    <input asp-for="Cost" style="width:100%" class="w3-border w3-padding" placeholder="Cost in dollars" />
+                    <span asp-validation-for="Cost" class="text-danger"></span>
+                    <br /> <br />
+                    <button type="submit" class="w3-button w3-theme w3-right">
+                        Done
+                        <!-- <i class='fas fa-angle-double-right'></i> -->
+                    </button>
+                </form>
 
-                <h6 class="w3-opacity">Provider:</h6>
-                <input asp-for="Provider" style="width:100%" class="w3-border w3-padding" placeholder="Provider's name" />
-                <span asp-validation-for="Provider" class="text-danger"></span>
-                <h6 class="w3-opacity">Cost:</h6>
-                <input asp-for="Cost" style="width:100%" class="w3-border w3-padding" placeholder="Cost in dollars" /> 
-                <span asp-validation-for="Cost" class="text-danger"></span>
-                <br /> <br />
-                <button type="submit" class="w3-button w3-theme w3-right">
-                    Done
-                    <!-- <i class='fas fa-angle-double-right'></i> -->
-                </button>
-            </form>
-
+            </div>
         </div>
+        <br>
+        <br />
+
     </div>
-<br>
-<br />
-
-
 <style>
     html, body, h1, h2, h3, h4, h5 {
         font-family: "Open Sans", sans-serif

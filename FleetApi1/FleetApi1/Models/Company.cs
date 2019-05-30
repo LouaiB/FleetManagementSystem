@@ -1,4 +1,4 @@
-﻿using FleetManagementWebAplication.Models;
+﻿using FleetApi1.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -28,6 +28,8 @@ namespace FleetApi1.Models
         public List<Driver> Drivers { get; set; }
         public Manager Manager { get; set; }
         public List<Delivery> Deliveries { get; set; }
+        public List<MapLocation> MapLocations { get; set; }
+        public List<Client> Clients { get; set; }
 
     }
 }

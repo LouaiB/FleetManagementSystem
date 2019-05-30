@@ -10,6 +10,7 @@ namespace FleetManagementWebApplication.Models
     {
         [Required]
         [StringLength(20)]
+        [EmailAddress]
         public string Username { get; set; }
         [Required]
         [MinLength(6), MaxLength(12)]
@@ -20,6 +21,8 @@ namespace FleetManagementWebApplication.Models
        
         [StringLength(20)]
         public string Phone { get; set; }
+
+        public string Address { get; set; }
 
 
 

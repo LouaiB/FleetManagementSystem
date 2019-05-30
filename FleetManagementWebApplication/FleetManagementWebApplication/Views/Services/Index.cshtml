@@ -1,0 +1,102 @@
+﻿@model IEnumerable<FleetManagementWebApplication.Models.Service>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "LayoutManager";
+}
+
+<style>
+   
+    .box {
+        width: 95%;
+        top: 12px;
+    }
+</style>
+
+
+<div class="box-wrapper" width="100%">
+    <div class="box effect6">
+
+        <div id="create"  width="100%">
+            <div style="display:inline-block"><h2>Services</h2></div>
+            <button type="submit" class="btn-save" style="float:right;margin-top:5px;" onclick="ShowCreateNewService();">
+                New Service
+            </button>
+            </div>
+       
+     
+      
+
+        <div class="w3-container w3-padding">
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Name)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Description)
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Description)
+                            </td>
+                            <td>  
+                                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+         
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+     var prev = document.getElementById("create").innerHTML;
+    function ShowCreateNewService() {
+        var innerHtml =  "<form action='/Services/Create' method='post' >"
+           + "<div style='display:inline-block'><h2>Services</h2></div>"          
+            + " <button type='submit' class='btn-save' style='float:right;margin-top:5px;' >"
+            + "Save </button>"
+            +  "<a href='javascript:void(0);'  class='a-cancel'  style='float:right;margin-top:5px;margin-right:2%;' onclick='Cancel();'>Cancel</a>"   
+            + "<div  class='well' style='margin-top:5px;'>"
+            + "  <div asp-validation-summary='ModelOnly' class='text-danger'></div>"
+            + "<div class='form-group'>"
+            + "<label class='control-label'>Name</label>"
+            + "<input type='text' name='Name' class='form-control' style='width:60%;' />"
+            + "</div><div class='form-group'>"
+            + " <label class='control-label'>Description</label>"
+            + "<textarea name='Description' class='form-control' rows='5' style='width:90%;border-radius:20px;'></textarea>"
+            + " </div></div></form>";
+
+        document.getElementById("create").innerHTML = innerHtml;
+        }
+     function Cancel() {
+        document.getElementById("create").innerHTML = prev;
+    }
+</script>
+
+
+
+
+
+
+
+
+
+
+                
+                    

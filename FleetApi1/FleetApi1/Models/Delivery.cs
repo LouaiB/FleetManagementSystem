@@ -1,4 +1,4 @@
-﻿using FleetManagementWebAplication.Models;
+﻿using FleetApi1.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -41,10 +41,6 @@ namespace FleetApi1.Models
         public float OptimalDistance { get; set; }
         public int OptimalTime { get; set; }
         public float OptimalFuelConsumption { get; set; }
-
-
-
-
 
     }
 }

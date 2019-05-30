@@ -9,6 +9,7 @@ using FleetManagementWebApplication.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
@@ -35,9 +36,7 @@ namespace FleetManagementWebApplication.Controllers
 
             }
             MapViewModel viewModel = new MapViewModel();
-
-            
-
+        
             Company company = _context.Companies.Find(CompanyId);
 
             viewModel.CompanyId = company.Id;
@@ -79,13 +78,6 @@ namespace FleetManagementWebApplication.Controllers
             return View(viewModel);
         }
 
-        
-       
-
-  
-
-
-
         public JsonResult CancelDelivery(string vehicleID, string deliveryID)
         {
             // Removes a delivery from the DB
@@ -112,15 +104,6 @@ namespace FleetManagementWebApplication.Controllers
 
         
 
-
-        [HttpPost]
-        public JsonResult GetValues(string x)
-        {
-            Result r = new Result();
-            r.vehicleID = x;
-            return Json(r);
-        }
-
         public JsonResult AddDeliveryBySupervisor(
           string vehicleID,
           string driverID,
@@ -135,7 +118,9 @@ namespace FleetManagementWebApplication.Controllers
           string destinationCity
           )
         {
-           
+            if (!LogedIn())
+                return Json(new { Result = 0});
+
             Delivery newDelivery = new Delivery
             {
                 Answered = true,
@@ -158,6 +143,45 @@ namespace FleetManagementWebApplication.Controllers
             _context.SaveChanges();
 
             return Json(new { Result = newDelivery.Id });
+        }
+
+
+
+        public IActionResult TrackVehicle(long Id=1)
+        {
+            if (!LogedIn())
+                return RedirectToRoute("Home");
+            
+            Vehicle V = _context.Vehicles.Include(v=>v.CurrentDriver).Where(v=>v.Id==Id).Single();
+            Vehicle[] vehicles = _context.Vehicles.Where(v => v.Company.Id == CompanyId).ToArray();
+            List<SelectListItem> Vehicles = new List<SelectListItem>();
+            foreach (Vehicle v in vehicles)
+            {
+                if(v.Id==Id)
+                    Vehicles.Add(new SelectListItem { Value = "" + v.Id, Text = v.Make + " " + v.Model + " " + v.LicensePlate,Selected=true });
+                else
+                Vehicles.Add(new SelectListItem { Value = "" + v.Id, Text = v.Make + " " + v.Model + " " + v.LicensePlate });
+            }
+            ViewData["vehicles"] = Vehicles;
+            ViewData["vehicle"] = V;
+            return View();
+        }
+        [HttpGet]
+        public JsonResult GetVehicleInfo(long Id)
+        {
+            if (!LogedIn())
+                return null;
+
+          Vehicle V = _context.Vehicles.Include(v => v.CurrentDriver).Where(v => v.Id == Id).Single();
+            string status = "Active";
+            if (V.isOnTheRoad)
+                status = "On The Road";
+            if (!V.isCurrentlyActive)
+                status = "Inactive";
+            string driver = "No Driver";
+            if (V.CurrentDriver != null)
+                driver = V.CurrentDriver.Name;
+            return Json(new { status,V.Longtitude,V.Latitude,V.FuelLevel,V.Odometer,driver,V.CurrentLoad });
         }
 
 
@@ -218,35 +242,10 @@ namespace FleetManagementWebApplication.Controllers
             return View(mapLocation);
         }
 
-        [HttpGet]
-        public IActionResult AddClient()
-        {
-            if (!LogedIn())
-                return RedirectToRoute("/home");
-            return View();
-        }
+        
+      
 
-        [HttpPost]
-        public IActionResult AddClient(AddClient model)
-        {
-            if (!LogedIn())
-                return RedirectToRoute("/home");
-
-            if (ModelState.IsValid)
-            {
-                Client c = new Client()
-                {Name=model.Name,
-                 Username=model.Username,
-                 Password=model.Password,
-                 Phonenumber=model.Phone
-                };
-                _context.Clients.Add(c);
-                _context.SaveChanges();
-
-                return RedirectToAction("Index");
-            }
-            return View();
-        }
+      
 
 
         [HttpPost]
@@ -352,17 +351,20 @@ namespace FleetManagementWebApplication.Controllers
             return View();
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SwitchMode(bool AutomaticResponse = false)
+  
+        public async Task<IActionResult> SwitchMode(string AutomaticResponse)
         {
             if (!LogedIn())
                 return RedirectToRoute("Home");
             Company company = _context.Companies.Find(CompanyId);
-            company.AutomaticResponse = AutomaticResponse;
+            if(AutomaticResponse=="on")
+            company.AutomaticResponse = true;
+            else
+                company.AutomaticResponse = false;
             _context.Update(company);
             _context.SaveChanges();
-            return RedirectToRoute("Home");
+
+            return RedirectToAction("AutomaticResponse");
         }
 
 

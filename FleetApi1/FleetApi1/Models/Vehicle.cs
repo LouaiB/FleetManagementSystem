@@ -27,6 +27,7 @@ namespace FleetApi1.Models
         public Company Company { get; set; }
         public Driver CurrentDriver { get; set; }
         public bool isCurrentlyActive { get; set; }
+        public bool isOnTheRoad { get; set; }
 
 
         [Column(TypeName = "Date")]
@@ -50,6 +51,9 @@ namespace FleetApi1.Models
         public List<Bill> Bills { get; set; }
         public List<ScheduledActivity> ScheduledActivities { get; set; }
         public List<Delivery> Deliveries { get; set; }
+        public List<FuelLog> fuelLogs { get; set; }
+        public string Image { get; set; }
+        public string Icon { get; set; }
 
     }
 }

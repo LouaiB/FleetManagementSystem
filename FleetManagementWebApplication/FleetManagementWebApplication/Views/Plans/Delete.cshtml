@@ -19,23 +19,25 @@
         margin: 40px auto;
     }
 </style>
-<div class="box effect6  ">
-    <div class="w3-container w3-padding">
-        <h1>Delete</h1>
+<div class="box-wrapper">
+    <div class="box effect6  ">
+        <div class="w3-container w3-padding">
+            <h1>Delete</h1>
 
-        <h5>Deleting this plan means deleting all the scheduled activities related to it</h5>
+            <h5>Deleting this plan means deleting all the scheduled activities related to it</h5>
 
-        <h4>Plan @Model.Name</h4>
-        <hr />
+            <h4>Plan @Model.Name</h4>
+            <hr />
 
 
 
-        <form asp-action="DeleteConfirmed">
-            <input type="hidden" asp-for="Id" />
-            <center>
-                <input type="submit" value="Delete" class="w3-button w3-theme " />
-            </center>
-            <a asp-action="Index">Back to List</a>
-        </form>
+            <form asp-action="DeleteConfirmed">
+                <input type="hidden" asp-for="Id" />
+                <center>
+                    <input type="submit" value="Delete" class="w3-button w3-theme " />
+                </center>
+                <a asp-action="Index">Back to List</a>
+            </form>
+        </div>
     </div>
-</div>
+    </div>

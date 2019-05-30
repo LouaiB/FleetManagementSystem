@@ -12,65 +12,70 @@
         <script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-mapevents.js"></script>
 
     </head>
+<style>
+    .box{
+        top:15px;
+        
+    }
+</style>
+    <div class="box-wrapper">
+        <div class="box effect6">
+            <div class="w3-container " style="padding-bottom:20px;padding-top:10px">
+                <form asp-controller="Map" asp-action="CreateMapLocation" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <table width="100%">
+                        <tr>
+                            <td style="width:25%">
+                                <h3>Create Map Location</h3>
+                            </td>
+                            <td rowspan="5" style="padding-left:20px;">
+                                <div id="map" style="width: 670px; height: 500px; background: grey" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
 
-<div class="box effect6">
+                                <h6 class="w3-opacity"> Name :</h6>
+                                <input asp-for="Name" style="width:100%" class="w3-border w3-padding" value="Center One">
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <h6 class="w3-opacity"> Type :</h6>
+                                <input asp-for="Type" style="width:100%" class="w3-border w3-padding" value="Warehouse">
+                                <span asp-validation-for="Type" class="text-danger"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <h6 class="w3-opacity"> Latitude:</h6>
+                                <input asp-for="Latitude" style="width:100%" class="w3-border w3-padding" value="Select from map">
+                                <span asp-validation-for="Latitude" class="text-danger"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <h6 class="w3-opacity"> Longtitude :</h6>
 
-    <div class="w3-container ">
-        <form asp-controller="Map" asp-action="CreateMapLocation" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <table width="100%">
-                <tr>
-                    <td style="width:25%">
-                        <h3>Create Map Location</h3>
-                    </td>
-                    <td rowspan="5" style="padding-left:20px;">
-                        <div id="map" style="width: 100%; height: 500px; background: grey" />
-                    </td>
-                </tr>
-                <tr>
-                    <td>
+                                <input asp-for="Longtitude" style="width:100%" class="w3-border w3-padding" value="Select from map">
+                                <span asp-validation-for="Longtitude" class="text-danger"></span>
 
-                        <h6 class="w3-opacity"> Name :</h6>
-                        <input asp-for="Name" style="width:100%" class="w3-border w3-padding" value="Center One">
-                        <span asp-validation-for="Name" class="text-danger"></span>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <h6 class="w3-opacity"> Type :</h6>
-                        <input asp-for="Type" style="width:100%" class="w3-border w3-padding" value="Warehouse">
-                        <span asp-validation-for="Type" class="text-danger"></span>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <h6 class="w3-opacity"> Latitude:</h6>
-                        <input  asp-for="Latitude" style="width:100%" class="w3-border w3-padding"value="Select from map" >
-                        <span asp-validation-for="Latitude" class="text-danger"></span>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <h6 class="w3-opacity"> Longtitude :</h6>
+                                <h6 class="w3-opacity"><label>Choose image</label></h6>
+                                <input type="file" name="file" class="button2 ">
 
-                        <input asp-for="Longtitude" style="width:100%" class="w3-border w3-padding" value="Select from map">
-                        <span asp-validation-for="Longtitude" class="text-danger"></span>
+                                <button type="submit" class="  button1 w3-left" style="margin-top:3px">
+                                    Save
+                                </button>
 
-                        <h6 class="w3-opacity"><label>Choose image</label></h6>
-                        <input type="file" name="file" class="button2 " >
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+        </div>
 
-                        <button type="submit" class="  button1 w3-left" style="margin-top:3px">
-                            Save
-                        </button>
-
-                    </td>
-                </tr>
-            </table>
-</form>
     </div>
-</div>
-
-
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
@@ -171,13 +176,7 @@ setUpClickListener(map);
             font-weight: bold;
         }
 
-    html, body, h1, h2, h3, h4, h5 {
-        font-family: "Open Sans", sans-serif
-    }
 
-    body {
-        background: #ccc
-    }
 
     .box {
         text-align: left;
@@ -187,35 +186,6 @@ setUpClickListener(map);
       background: #FFF;
     }
 
-    .effect6 {
-        position: relative;
-        -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
-        -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
-        box-shadow: 0 1px 40px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
-    }
-
-        .effect6:before, .effect6:after {
-            content: "";
-            position: absolute;
-            z-index: -1;
-            -webkit-box-shadow: 0 0 20px rgba(0,0,0,0.8);
-            -moz-box-shadow: 0 0 20px rgba(0,0,0,0.8);
-            box-shadow: 0 0 50px rgba(0,0,0,0.8);
-            top: 10%;
-            bottom: 0;
-            left: 10px;
-            right: 10px;
-            -moz-border-radius: 100px / 10px;
-            border-radius: 100px / 10px;
-        }
-
-        .effect6:after {
-            right: 10px;
-            left: auto;
-            -webkit-transform: skew(8deg) rotate(3deg);
-            -moz-transform: skew(8deg) rotate(3deg);
-            -ms-transform: skew(8deg) rotate(3deg);
-            -o-transform: skew(8deg) rotate(3deg);
-            transform: skew(8deg) rotate(3deg);
-        }
+   
+    
 </style>

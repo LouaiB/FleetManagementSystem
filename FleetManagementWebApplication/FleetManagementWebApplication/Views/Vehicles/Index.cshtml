@@ -1,204 +1,131 @@
-﻿@model IEnumerable<FleetManagementWebApplication.Models.Vehicle>
+﻿@model VehiclesIndexModel
 
 @{
     ViewData["Title"] = "Index";
     Layout = "LayoutManager";
-    Vehicle[] Vehicles=Model.ToArray();
-    int N = Vehicles.Count();
+  
 }
-    <style>
-        .box {
-            text-align: left;
-            position: relative;
-            top: 1px;
-            padding: 1px 1px;
-            width: 100%;
-            height: 100%;
-            background: #FFF;
-            margin: 6px 5px;
-        }
-    </style>
-      <center>
-          <table style="padding-left:7px" width="96%">
-              @for (int i = 0; i < N; i += 3)
-              {
-              <tr>
-                  <td width="33.333%">
-                      <div class="box effect6 w3-left">
+  
+<div  class="fleet-container" >
+    <div class="row" style="margin-top:3px;">
+        <div class="col-lg-2 col-md-3" >
+            <div class="search-box">
+                <div class="search-header w3-theme">
+                    Search Vehicles
+                </div>
+                <form asp-controller="Vehicles" asp-action="Search" method="get">
+                    <div class="search-body">
+                        <div class="form-group">
+                            <label asp-for="@Model.Make" class="control-label"></label>
+                            <input asp-for="@Model.Make" class="form-control" value="@Model.Make" />
+                            <span asp-validation-for="@Model.Make" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="@Model.Model" class="control-label"></label>
+                            <input asp-for="@Model.Model" class="form-control" value="@Model.Model" />
+                            <span asp-validation-for="@Model.Model" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="@Model.LicensePlate" class="control-label">License Plate</label>
+                            <input asp-for="@Model.LicensePlate" class="form-control" value="@Model.LicensePlate" />
+                            <span asp-validation-for="@Model.LicensePlate" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="@Model.SelectDriverId" class="control-label">Driver</label>
+                            <select asp-for="@Model.SelectDriverId" asp-items="@Model.Drivers" class="form-control"></select>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="@Model.Status" class="control-label"></label>
+                            <select asp-for="@Model.Status" asp-items="@Model.Statuses" class="form-control"></select>
+                        </div>
+                    </div>
 
-                          <div class="w3-container w3-padding">
-                              <form asp-controller="VehiclesDetails" method="get">
-                                  <h3>@Vehicles[i].Make    @Vehicles[i].Model</h3>
-                                  <h6 class="w3-opacity"><span style="background-color:silver">LicensePlate :@Vehicles[i].LicensePlate</span></h6>
-                                  <table width="100%">
-                                      <tr>
-                                          <td rowspan="3">
+                    <center>
+                        <input type="submit" value="Search" class="btn-search w3-theme" />
+                    </center>
+                </form>
+            </div>
+        </div>
+        <div class="col-lg-10 col-md-9" >
+            <div class=" vehicles-container">
+                <div class="row">
+                    @foreach (Vehicle v in Model.Vehicles)
+                    {
+                        <div class="col-lg-4 col-md-6">
+                            <div class="vehicle-entry">
+                                <div class="vehicle-entry-header">
+                                    <div class="row">
+                                        <div class="col-lg-4 col-md-4">
+                                            <img src="~/images/@v.Image" class="vehicle-img" />
+                                        </div>
+                                        <div class="col-lg-8 col-md-8  resize-padding" style="padding-top:15px;">
+                                            <h3 >&nbsp;@v.Make @v.Model</h3>
+                                            <h6>&nbsp; <span class="resize" style="background-color:grey;color:white;padding:0px 3px;">LicensePlate :@v.LicensePlate</span></h6>
+                                        </div>
+                                    </div>
+                                    <div  style="padding-top:4px;">
+                                        <table width="100%">
+                                            <tr>
+                                                <td>
+                                                    @if (v.isCurrentlyActive)
+                                                    {
+                                                        if (v.isOnTheRoad)
+                                                        {
+                                                            <h5 style="color:blue">
+                                                                On The Road
+                                                            </h5>
+                                                        }
+                                                        else
+                                                        {
+                                                            <h5 style="color:green">
+                                                                Active
+                                                            </h5>
+                                                        }
+                                                    }
+                                                    else
+                                                    { <h6 style="color:red">
+                                                            Inactive
+                                                        </h6>
 
-                                              @if (Vehicles[i].isCurrentlyActive)
-                                              {
-                                                  <h6  style="color:green">
-                                                      Active
-                                                  </h6>
-                                              }
-                                              else
-                                              { <h6 style="color:red">
-                                                      Inactive
-                                                  </h6>
+                                                    }
+                                                    @if (v.CurrentDriver != null)
+                                                    {
+                                                        <h6 class="w3-opacity resize">Driver : @v.CurrentDriver.Name </h6>
+                                                    }
+                                                    else
+                                                    {
+                                                        <h6 class="w3-opacity resize">Driver : No Driver</h6>
+                                                    }
 
-                                              }
-                                              @if (Vehicles[i].CurrentDriver != null)
-                                              {
-                                                  <h6 class="w3-opacity">Driver : @Vehicles[i].CurrentDriver.Name </h6>
-                                              }
-                                              else
-                                              {
-                                                  <h6 class="w3-opacity">Driver : No Driver</h6>
-                                              }
-
-                                              <h6 class="w3-opacity">Fuel Level : @Vehicles[i].FuelLevel Litres</h6>
-                                          </td>
-
-                                          <td>
-                                              <button type="submit" class="w3-button w3-theme w3-large sized" formaction="/VehiclesDetails/Index"> Maintenance</button>
-                                              <input type="hidden" name="id" value="@Vehicles[i].Id" />
-                                          </td>
-                                      </tr>
-                                      <tr><td><button type="submit" class="w3-button w3-theme w3-large sized" formaction="/Vehicles/GetEdit"> Edit </button></td></tr>
-                                      <tr><td><button type="submit" class="w3-button w3-theme w3-large sized" formaction="/Vehicles/GetDelete">Delete </button></td></tr>
-                                  </table>
-
-                              </form>
-
-                          </div>
-                      </div>
-
-                  </td>
-
-                  @if (i + 1 < N)
-                  {
-                      <td width="33.333%">
-                          <div class="box effect6">
-
-                              <div class="w3-container w3-padding">
-                                  <form asp-controller="VehiclesDetails" asp-action="Index">
-                                      <h3>@Vehicles[i + 1].Make @Vehicles[i + 1].Model</h3>
-                                      <h6 class="w3-opacity"><span style="background-color:silver">LicensePlate : @Vehicles[i + 1].LicensePlate</span></h6>
-                                      <table width="100%">
-                                          <tr>
-                                              <td rowspan="3">
-
-                                                  @if (Vehicles[i+1].isCurrentlyActive)
-                                                  {
-                                                      <h6 style="color:green">
-                                                          Active
-                                                      </h6>
-                                                  }
-                                                  else
-                                                  { <h6 style="color:red">
-                                                          Inactive
-                                                      </h6>
-
-                                                  }
-                                                  @if (Vehicles[i+1].CurrentDriver != null)
-                                                  {
-                                                      <h6 class="w3-opacity">Driver : @Vehicles[i+1].CurrentDriver.Name </h6>
-                                                  }
-                                                  else
-                                                  {
-                                                      <h6 class="w3-opacity">Driver : No Driver</h6>
-                                                  }
-
-                                                  <h6 class="w3-opacity">Fuel Level : @Vehicles[i+1].FuelLevel Litres</h6>
-                                              </td>
-                                              <td>
-                                                  <button type="submit" class="w3-button w3-theme w3-large sized" formaction="/VehiclesDetails/Index"> Maintenance  </button>
-                                                  <input type="hidden" name="id" value="@Vehicles[i+1].Id" />
-                                              </td>
-                                          </tr>
-                                          <tr><td><button type="submit" class="w3-button w3-theme w3-large sized" formaction="/Vehicles/GetEdit"> Edit </button></td></tr>
-                                          <tr><td><button type="submit" class="w3-button w3-theme w3-large sized" formaction="/Vehicles/GetDelete">Delete </button></td></tr>
-                                      </table>
-
-                                  </form>
-
-                              </div>
-                          </div>
-
-
-                      </td>
-                  }
-                  else
-                  {
-                      <td width="33.333%">
-                          &nbsp;
-                      </td>
-                  }
-
-                  @if (i + 2 < N)
-                  {
-                      <td width="33.3333%">
-                          <div class="box effect6">
-
-                              <div class="w3-container w3-padding">
-                                  <form asp-controller="VehiclesDetails" asp-action="Index">
-                                      <h3>@Vehicles[i + 2].Make @Vehicles[i + 2].Model</h3>
-                                      <h6 class="w3-opacity"><span style="background-color:silver">LicensePlate : @Vehicles[i + 2].LicensePlate</span></h6>
-                                      <table width="100%">
-                                          <tr>
-                                              <td rowspan="3">
-                                                  @if (Vehicles[i+2].isCurrentlyActive)
-                                                  {
-                                                      <h6 style="color:green">
-                                                          Active
-                                                      </h6>
-                                                  }
-                                                  else
-                                                  { <h6 style="color:red">
-                                                          Inactive
-                                                      </h6>
-
-                                                  }
-                                                  @if (Vehicles[i+2].CurrentDriver != null)
-                                                  {
-                                                      <h6 class="w3-opacity">Driver : @Vehicles[i+2].CurrentDriver.Name </h6>
-                                                  }
-                                                  else
-                                                  {
-                                                      <h6 class="w3-opacity">Driver : No Driver</h6>
-                                                  }
-
-                                                  <h6 class="w3-opacity">Fuel Level : @Vehicles[i+2].FuelLevel Litres</h6>
-                                              </td>
-                                              <td>
-                                                  <button type="submit" class="w3-button w3-theme w3-large sized" formaction="/VehiclesDetails/Index"> Maintenance  </button>
-                                                  <input type="hidden" name="id" value="@Vehicles[i+2].Id" />
-                                              </td>
-                                          </tr>
-                                          <tr><td><button type="submit" class="w3-button w3-theme w3-large sized" formaction="/Vehicles/GetEdit"> Edit </button></td></tr>
-                                          <tr><td><button type="submit" class="w3-button w3-theme w3-large sized" formaction="/Vehicles/GetDelete">Delete </button></td></tr>
-                                      </table>
-
-                                  </form>
-
-                              </div>
-                          </div>
-
-
-                      </td>
-                  }
-                  else
-                  {
-                      <td width="33.333%">
-                          &nbsp;
-                      </td>
-                  }
-
-
-              </tr>
+                                                    <h6 class="w3-opacity resize">Fuel Level : @v.FuelLevel Litres</h6>
+                                                </td>
+                                                <td>
+                                                    <form  method="get">
+                                                        <button type="submit" class="btn-green" formaction="/VehiclesDetails/Index"> Maintenance</button>
+                                                        <br /><button type="submit" class="btn-blue" formaction="/Map/TrackVehicle"> Live Tracking</button>
+                                                        <br /><button type="submit" class="btn-red" formaction="/Vehicles/GetEdit">Edit or Delete </button>
+                                                        <input type="hidden" name="id" value="@v.Id" />
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                            </table>   
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <script type="text/javascript">
+                                Resize();
+                            </script>
+                       
+                    }
 
 
 
-              }
-          </table>
-      </center>
-
+              
+                    
+                  
+                </div>
+        </div>
+    </div>
+</div>
+</div>

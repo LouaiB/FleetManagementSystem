@@ -546,13 +546,7 @@ pre code {
   overflow-y: scroll;
 }
 
-.container {
-  width: 100%;
-  padding-right: 15px;
-  padding-left: 15px;
-  margin-right: auto;
-  margin-left: auto;
-}
+
 
 @media (min-width: 576px) {
   .container {
@@ -570,12 +564,17 @@ pre code {
   .container {
     max-width: 960px;
   }
+  
+
 }
 
 @media (min-width: 1200px) {
-  .container {
-    max-width: 1140px;
-  }
+    .container {
+        max-width: 1140px;
+     
+    }
+  
+    
 }
 
 .container-fluid {
@@ -614,8 +613,7 @@ pre code {
 .col-xl-auto {
   position: relative;
   width: 100%;
-  padding-right: 15px;
-  padding-left: 15px;
+
 }
 
 .col {

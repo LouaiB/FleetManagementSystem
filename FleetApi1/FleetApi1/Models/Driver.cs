@@ -31,6 +31,7 @@ namespace FleetApi1.Models
         public string Phonenumber { get; set; }
         public int Rank { get; set; }
         public float Score { get; set; }
+        public string Image { get; set; }
         public Company Company { get; set; }
         public List<Delivery> Deliveries { get; set; }
 

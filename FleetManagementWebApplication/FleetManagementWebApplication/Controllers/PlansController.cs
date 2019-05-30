@@ -23,20 +23,9 @@ namespace FleetManagementWebApplication.Controllers
         {
             if (!LogedIn())
                 return RedirectToRoute("Home");
-            long[] PlanIds;
-            try
-            {
-                 PlanIds = (from v in _context.Vehicles
-                                  where v.Company.Id == CompanyId && v.Plan!=null
-                                  select v.Plan.Id).Distinct().ToArray<long>();
-            }
-            catch (Exception)
-            {
-                PlanIds = new long[] { };
-            }
+          
 
             return View(await _context.Plan
-                .Where(p=>PlanIds.Contains(p.Id))
                 .Include(p=>p.Vehicles)
                 .Include(p=>p.Activities)
                 .ToListAsync());
@@ -57,7 +46,7 @@ namespace FleetManagementWebApplication.Controllers
             try
             {
                  plan = _context.Plan.Where(m => m.Id == id).Include(p => p.Vehicles).
-                                                        Include(p => p.Activities).Single<Plan>();
+                                                        Include(p => p.Activities).ThenInclude(p=>p.Service).Single<Plan>();
             }catch(Exception)
             {
                 return NotFound();
@@ -71,26 +60,27 @@ namespace FleetManagementWebApplication.Controllers
         {
             if (!LogedIn())
                 return RedirectToRoute("Home");
-           
-            return View();
+            CreatePlanModel model = new CreatePlanModel();
+            model.FillServices(_context, CompanyId);
+            return View(model);
         }
-        public IActionResult AddPlanToVehicles(string PlanName,string[] ActivityType,int[] ActivityPeriod)
+        public IActionResult AddPlanToVehicles(CreatePlanModel model)
         {
             if (!LogedIn())
                 return RedirectToRoute("Home");
             Plan plan = new Plan();
-            plan.Name = PlanName;
+            plan.Name = model.Title;
             plan.Company = _context.Companies.Find(CompanyId);
             _context.Add(plan);
             _context.SaveChanges();
             plan.Activities = new List<Activity>();
-            for(int i = 0; i < ActivityType.Length; i++)
+            for(int i = 0; i < model.SelectedServices.Length; i++)
             {
-                if (ActivityType[i] == null || ActivityPeriod[i] == 0)
+                if (model.SelectedServices[i] == 0 || model.ActivityPeriod[i] == 0)
                     continue;
                 Activity A = new Activity();
-                A.Type = ActivityType[i];
-                A.Period = ActivityPeriod[i];
+                A.Service = _context.Service.Find(model.SelectedServices[i]);
+                A.Period = model.ActivityPeriod[i];
                 
                 plan.Activities.Add(A);
                 _context.Add(A);

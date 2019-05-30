@@ -1,13 +1,112 @@
 ﻿@model IEnumerable<FleetManagementWebApplication.Models.Driver>
-
-
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Drivers";
     Layout = "~/Views/Shared/LayoutManager.cshtml";
 }
+<br />
+
+<form asp-controller="Drivers" asp-action="Search">
+  
+        <table cellspacing="15px"  align="right" style="background-color: rgb(220,220,220);border:1px grey solid;margin-bottom:20px;">
+            <tr>
+                <td class="td1" style="padding-left:20px;color:rgb(50,50,50);font-size:25px;text-align:right;"> Search drivers: </td>
+                <td class="td1">
+                    <input name="Query" type="text"  placeholder="Search by name or username" value="@ViewData["Query"]"
+                           style="height:50px;border:2px solid grey;border-radius:15px;
+                                        padding:10px 20px;min-width:450px;
+                                        font-size:22px;"/>           
+                </td>
+            </tr>
+        </table>
+ 
+</form>
+
+<div class="box-wrapper">
+    <div class="box vehicles-container">
+        <div class="row">
+
+            @foreach (var item in Model)
+            {
+                int x = (int)item.Score;
+                string img = "/images/star" + x + ".png";
+                <div class="col-lg-3 col-md-4">
+                    <div class="vehicle-entry effect6 ">
+                        <img src="~/images/@item.Image" style="width:100% ; height:220px;" />
+                        <h3>@item.Name   </h3>
+                        <img src="@img" height="40" width="90%" />
+                        <table width="100%">
+                            <tr>
+                                <td>
+                                    <h6 class="w3-opacity">@item.Username</h6>
+                                    <h6 class="w3-opacity">Address: @item.Address</h6>
+                                    <h6 class="w3-opacity">Phone: @item.Phonenumber </h6>
+                                </td>
+                                <td align="right" style="width:100px">
+                                    <form asp-controller="Deliveries" asp-action="DriversDeliveries">
+                                        <button class="btn-blue" style="width:100%">Deliveries</button>
+                                        <input type="hidden" value="@item.Id" name="Id" />
+                                    </form>
+                                    <form asp-controller="Drivers" asp-action="Edit" method="get">
+                                        <button class="btn-green" style="width:100%">Edit</button>
+                                        <input type="hidden" value="@item.Id" name="Id" />
+                                    </form>
+                                    <button class="btn-red" style="width:100%" onclick="showDelete('@item.Name','@item.Username',@item.Id);">Delete</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="DeleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle" style="font-size:25px">Confirm Delete</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="padding-top:40px;">
+                <h4>Are you sure you want to delete this driver?</h4>
+
+                <h5>Name: <span id="DriverName" style="color: rgba(50,250, 50, 0.9);">Elio</span> </h5>
+                <h5>Username: <span id="DriverUserName" style="color: rgba(50,250, 50, 0.9);"> Elio@gmail.com</span></h5>
+            </div>
+            <div class="modal-footer">
+                <div style="width:80%" id="response"></div>
+                <form asp-controller="Drivers" asp-action="Delete" method="post">
+                    <table>
+                        <tr>
+                            <td>  <a class="btn btn-danger" data-dismiss="modal" style="cursor:pointer">Cancel</a></td>
+                            <td><button type="submit" class="btn btn-primary">Delete</button></td>
+                        </tr>
+                    </table>
+                    <input type="hidden" id="DriverId" />
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script type="text/javascript">
+    function showDelete(name, username, id) {
+        // alert("Hello");
+        document.getElementById("DriverName").innerHTML = name;
+        document.getElementById("DriverUserName").innerHTML = username;
+        document.getElementById("DriverId").value = id;
+        $("#DeleteModal").modal();
+    }
+
+</script>
 
 <style>
-
     .btn1 {
         text-align: right;
     }
@@ -16,65 +115,44 @@
         text-align: left;
         position: relative;
         padding: 1px 1px;
-        width: 800px;
-        background: #FFF;
+        width: 95%;
+        background: inherit;
         margin: 6px 5px;
     }
-</style>
-<br />
-<table align="center">
 
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>
-                <div class="box effect6 effect6 ">
-                    <div class="w3-container w3-padding">
-
-
-                        <table width="100%">
-                            <tr>
-                                <td rowspan="3" >
-                                    <img src="~/images/@item.Image" style="width:200px ; height:200px;"/>
-                                    </td>
-                                <td rowspan="3">
-                                    <h3>@item.Name   </h3>
-                                    <h6 class="w3-opacity">Username : @item.Username</h6>
-                                    <h6 class="w3-opacity">Birthdate :@item.Birthdate</h6>
-                                    <h6 class="w3-opacity">Address :@item.Address</h6>
-                                    <h6 class="w3-opacity">Phone :@item.Phonenumber </h6>
-                                </td>
-
-                                <td class="btn1">
-                                    &nbsp;
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="btn1">
-                                    <form asp-controller="Drivers">
-                                        <input type="hidden" name="id" value="@item.Id" />
-
-
-                                        <button type="submit" class=" w3-button w3-theme w3-large sized" formaction="/Drivers/Edit"> Edit</button>
-                                    </form>
-                                </td>
-                            <tr>
-                                <td class="btn1">
-                                    <form asp-controller="Drivers">
-                                        <input type="hidden" name="id" value="@item.Id" />
-                                        <button type="submit" class=" w3-button w3-theme w3-large sized" formaction="/Drivers/Delete"> Delete</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        </table>
-
-
-                    </div>
-                </div>
-
-            </td>
-        </tr>
-
+    .modal-header {
+        background-color: rgba(50,250, 50, 0.7);
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        color: rgb(10,10, 10);
     }
-</table>
+
+    .modal-footer {
+        background-color: rgba(50,250, 50, 0.7);
+        color: white;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+        text-align: left;
+        float: left;
+        clear: both;
+    }
+
+    .modal-content {
+        background-color: rgba(0,0, 0, 0.5);
+        border-radius: 20px;
+        color: white;
+        height: 350px;
+    }
+
+     
+
+            .td1 {
+                text-align: center;
+                padding: 10px 10px;
+                color: white;
+                font-size: 18px;
+            }
+
+</style>
+
 

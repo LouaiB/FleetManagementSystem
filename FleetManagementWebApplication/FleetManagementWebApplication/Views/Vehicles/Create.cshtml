@@ -5,72 +5,140 @@
     Layout = "LayoutManager";
 }
 <style>
+
     .box {
-        text-align: left;
-        position: relative;
-        top: 40px;
-        padding: 10px 30px;
-        width: 60%;
-     padding-bottom:40px;
-        background: #FFF;
-        
+        width: 95%;
+        top: 12px;
     }
 </style>
-<div class="box effect6">
-    <h3>Registeration</h3>
-
-    <div class="w3-container w3-padding">
-        <form asp-controller="Vehicles" asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-            <h6 class="w3-opacity">LicensePlate :</h6>
-            <input asp-for="LicensePlate" style="width:100%" class="w3-border w3-padding" value="A45fHT8">
-            <span asp-validation-for="LicensePlate" class="text-danger"></span>
-            <h6 class="w3-opacity"><label asp-for="Make"></label></h6>
-            <input asp-for="Make" style="width:100%" class="w3-border w3-padding" value="BMW">
-            <span asp-validation-for="Make" class="text-danger"></span>
-            <span asp-validation-for="Make" class="text-danger"></span>
-
-            <h6 class="w3-opacity"><label asp-for="Model"></label></h6>
-            <input asp-for="Model" style="width:100%" class="w3-border w3-padding" value="2018">
-            <span asp-validation-for="Model" class="text-danger"></span>
-
-            <h6 class="w3-opacity">Purchase Date :</h6>
-            <input asp-for="purchaseDate" style="width:100%" class="w3-border w3-padding" 
-                   value="@DateTime.Now.Date.ToString("yyyy-MM-dd")" type="date" >
-            <span asp-validation-for="purchaseDate" class="text-danger"></span>
-            <hr>
-            <h3>Specifications</h3>
-            <h6 class="w3-opacity"><label asp-for="Odometer"></label></h6>
-            <input asp-for="Odometer" style="width:85%" class="w3-border w3-padding" value="100">&nbsp;&nbsp;&nbsp;&nbsp;Km
-            <span asp-validation-for="Odometer" class="text-danger"></span>
-
-            <h6 class="w3-opacity"><label asp-for="PayLoad"></label></h6>
-            <input asp-for="PayLoad" style="width:85%" class="w3-border w3-padding" value="100">&nbsp;&nbsp;&nbsp;&nbsp;@ViewData["type"]
-
-            <h6 class="w3-opacity"><label asp-for="EmissionsCO2"></label></h6>
-            <input asp-for="EmissionsCO2" style="width:85%" class="w3-border w3-padding" value="10">&nbsp;&nbsp;&nbsp;&nbsp;G/Km
-            <span asp-validation-for="EmissionsCO2" class="text-danger"></span>
-
-            <h6 class="w3-opacity"><label asp-for="FuelConsumption"></label></h6>
-            <input asp-for="FuelConsumption" style="width:85%" class="w3-border w3-padding" value="5">&nbsp;&nbsp;&nbsp;&nbsp;Litres/Km
-            <span asp-validation-for="FuelConsumption" class="text-danger"></span>
-
-            <br /><br /><br />
-
-            <center>
-                <button type="submit" class="w3-button w3-theme w3-large">
-                    Done
+<form asp-controller="Vehicles" asp-action="Create" enctype="multipart/form-data">
+    <div class="box-wrapper" width="100%">
+        <div class="box effect6">
+            <div width="100%">
+                <div style="display:inline-block"><h2>New Vehicle</h2></div>
+                
+                <button type="submit" class="btn-save" style="float:right;margin-top:5px;">
+                    Save
                     <!-- <i class='fas fa-angle-double-right'></i> -->
                 </button>
-            </center>
+            </div>
 
-        </form>
+
+            <div class="w3-container w3-padding">
+
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="row" style="padding-top:10px;">
+                    <div class="col-lg-4">
+                        <h4>General Properties</h4>
+                        <hr style="width:200px;" />
+                      
+                        <h6 class="w3-opacity"><label>License Plate </label></h6>
+                        <input asp-for="LicensePlate" style="width:70%" class="w3-border w3-padding" value="A45fHT8">
+                        <span asp-validation-for="LicensePlate" class="text-danger"></span>
+                        <h6 class="w3-opacity"><label asp-for="Make"></label></h6>
+                        <input asp-for="Make" style="width:70%" class="w3-border w3-padding" value="BMW">
+                        <span asp-validation-for="Make" class="text-danger"></span>
+                        <span asp-validation-for="Make" class="text-danger"></span>
+
+                        <h6 class="w3-opacity"><label asp-for="Model"></label></h6>
+                        <input asp-for="Model" style="width:70%" class="w3-border w3-padding" value="2018">
+                        <span asp-validation-for="Model" class="text-danger"></span>
+
+                        <h6 class="w3-opacity"><label>Purchase Date</label> </h6>
+                        <input asp-for="purchaseDate" style="width:70%" class="w3-border w3-padding"
+                               value="@DateTime.Now.Date.ToString("yyyy-MM-dd")" type="date">
+                        <span asp-validation-for="purchaseDate" class="text-danger"></span>
+
+                    </div>
+                    <div class="col-lg-4">
+                        <h4>Specifications </h4>
+                        <hr style="width:200px;" />
+                       
+                        <h6 class="w3-opacity"><label>Last Odometer </label></h6>
+                        <input asp-for="Odometer" style="width:70%" class="w3-border w3-padding" type="number" value="10"><span style="padding-left:5%;">Km</span>
+                        <span asp-validation-for="Odometer" class="text-danger"></span>
+                        <h6 class="w3-opacity"><label asp-for="PayLoad"></label></h6>
+                        <input asp-for="PayLoad" style="width:70%" class="w3-border w3-padding" value="100"><span style="padding-left:5%;">@ViewData["type"]</span>
+                        <h6 class="w3-opacity"><label asp-for="EmissionsCO2"></label></h6>
+                        <input asp-for="EmissionsCO2" style="width:70%" class="w3-border w3-padding" value="10"><span style="padding-left:5%;">G/Km</span>
+                        <span asp-validation-for="EmissionsCO2" class="text-danger"></span>
+                        <h6 class="w3-opacity"><label asp-for="FuelConsumption"></label></h6>
+                        <input asp-for="FuelConsumption" style="width:70%" class="w3-border w3-padding" value="5"><span style="padding-left:5%;">Litres/KM</span>
+                        <span asp-validation-for="FuelConsumption" class="text-danger"></span>
+
+
+                    </div>
+
+
+
+                    <div class="col-lg-4">
+                        <h4>Photo </h4>
+                        <hr style="width:200px;" />
+                       
+                        <div class="form-group">
+                            <div class="pt-img" style="height:190px;padding-bottom:10px;">
+                                <img id="blah" src="~/images/bmw1.jpg" width="100%" height="100%" style="border-radius:40px;" />
+                            </div>
+                            
+                            <center>                                
+                                <input type='file' onchange="readURL(this);" name="file" id="file" class="inputfile" />
+                                <label for="file">Choose a Photo</label>
+                            </center>
+
+                        </div>
+                        <table width="100%"  style="margin-top:2px;">
+                            <tr>
+                                <td style="padding-left:10%">
+                                    <h6 class="w3-opacity"><label>Map Icon </label></h6>
+                                    <select asp-for="Icon" style="width:90%" class="w3-border w3-padding" onchange="changeIcon(this);">
+                                        <option value="truck1.png">Truck</option>
+                                        <option value="bus.png">Bus</option>
+                                        <option value="car.png">Car</option>
+                                        <option value="bike.png">Motorcycle</option>
+                                    </select>
+                                </td>
+                                <td style="width:140px;">
+                                    <div style="text-align:center ; border:2px solid grey;width:120px;border-radius:20px;">
+                                        <img id="icon" src="~/images/truck1.png" height="100" width="100" />
+                                    </div>
+                                  
+                                </td>
+                            </tr>
+                        </table>
+
+
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
 
     </div>
-</div>
+
+</form>
+
+
 <br />
 <br />
+<script>
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#blah')
+                    .attr('src', e.target.result)
+                    ;
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+        }
+
+    function changeIcon(ele) {
+        document.getElementById("icon").src = "/images/"+ele.value;
+    }
+</script>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

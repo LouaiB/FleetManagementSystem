@@ -54,7 +54,7 @@ namespace FleetManagementWebApplication.Controllers
            
             HttpContext.Session.SetInt32("VehicleId", id);
                        ScheduledActivity[] scheduledActivities = _context.ScheduledActivities
-             .Where(s => s.Vehicle.Id == id).Include(s => s.Activity).OrderBy(s => s.DueDate).ToArray<ScheduledActivity>();
+             .Where(s => s.Vehicle.Id == id).Include(s => s.Activity).ThenInclude(s=>s.Service).OrderBy(s => s.DueDate).ToArray<ScheduledActivity>();
 
             ViewData["Id"] = id;
             ViewData["two"] = " v-btn-selected ";
@@ -70,13 +70,13 @@ namespace FleetManagementWebApplication.Controllers
             foreach (int ServiceId in Checked)
             {
                 ScheduledActivity S = _context.ScheduledActivities.Where(s=>s.Id==ServiceId )
-                                                            .Include(s=>s.Activity).Single();
+                                                            .Include(s=>s.Activity).ThenInclude(s=>s.Service).Single();
                 S.DueDate = DateTime.Now.AddDays(S.Activity.Period);
                 _context.Update(S);
             }
             _context.SaveChanges();
             ScheduledActivity[] scheduledActivities = _context.ScheduledActivities
-             .Where(s => s.Vehicle.Id == VehicleId).Include(s => s.Activity).OrderBy(s => s.DueDate).ToArray<ScheduledActivity>();
+             .Where(s => s.Vehicle.Id == VehicleId).Include(s => s.Activity).ThenInclude(s => s.Service).OrderBy(s => s.DueDate).ToArray<ScheduledActivity>();
             ViewData["Id"] = VehicleId;
             return View("/Views/VehiclesDetails/ScheduledServices.cshtml", scheduledActivities);
         }
@@ -91,6 +91,16 @@ namespace FleetManagementWebApplication.Controllers
             ViewData["three"] = " v-btn-selected ";
            ViewData["total"]=""+ _context.Bills.Where(b=>b.Vehicle.Id==id).Sum(b => b.Cost);
             return View(bills);
+        }
+        public async Task<IActionResult> FuelLogs(int id = 0)
+        {
+            if (!LogedIn())
+                return RedirectToRoute("Home");
+            FuelLog[] logs = _context.FuelLogs.Where(b => b.Vehicle.Id == id).ToArray();
+            ViewData["Id"] = id;
+            ViewData["five"] = " v-btn-selected ";
+            ViewData["total"] = "" + _context.FuelLogs.Where(b => b.Vehicle.Id == id).Sum(b => b.Quantity*b.PricePerLitre);
+            return View(logs);
         }
 
 

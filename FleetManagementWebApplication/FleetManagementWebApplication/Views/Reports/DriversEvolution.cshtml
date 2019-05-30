@@ -44,29 +44,33 @@
     input[type='date'] {
         width: 80%
     }
+    .box {
+        top: 10px;
+    }
 </style>
 
 <body>
-    <div class="box effect6" style="width:80%">
-        <form asp-controller="Reports" asp-action="DriversEvolution" method="get">
-            <table width="90%">
-                <tr>
-                    <td><h3>Drivers Evolution</h3></td>
-                    <td align="right">
-                        <input type="date" name="d1" value="@d1" />
-                    </td>
-                    <td align="right"><input type="date" name="d2" value="@d2" /></td>
-                    <td>
-                        <input type="submit" value="GO" />
-                    </td>
-                </tr>
-            </table>
-        </form>
-        <div class="w3-container w3-padding">
+    <div class="box-wrapper">
+        <div class="box effect6" style="width:80%">
+            <form asp-controller="Reports" asp-action="DriversEvolution" method="get">
+                <table width="90%">
+                    <tr>
+                        <td><h3>Drivers Evolution</h3></td>
+                        <td align="right">
+                            <input type="date" name="d1" value="@d1" />
+                        </td>
+                        <td align="right"><input type="date" name="d2" value="@d2" /></td>
+                        <td>
+                            <input type="submit" value="GO" />
+                        </td>
+                    </tr>
+                </table>
+            </form>
+            <div class="w3-container w3-padding">
 
-            <canvas id="chartCanvas"></canvas>
+                <canvas id="chartCanvas"></canvas>
 
-            <script>
+                <script>
                 var Days =@XDays;
                 var Months =@XMonths;
                 var Years =@XYears;
@@ -138,11 +142,12 @@
 
 
 
-            </script>
+                </script>
 
 
+            </div>
         </div>
-    </div>
-    <br />
-    <br />
+        <br />
+        <br />
+        </div>
 </body>

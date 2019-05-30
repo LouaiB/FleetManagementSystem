@@ -1,0 +1,44 @@
+﻿@model IEnumerable<FleetManagementWebApplication.Models.FuelLog>
+    <style>
+        .td1 {
+            padding-left: 10px;
+            padding-bottom: 5px;
+            padding-top: 5px;
+        }
+    </style>
+@{
+    FuelLog[] logs=Model.ToArray();
+    ViewData["Title"] = "Fuel Logs";
+    Layout = "LayoutVehicle";
+}
+<h1>Fuel Logs</h1>
+
+    <table width="100%">
+        <tr>
+            <td class="td1" style="background-color:cyan">Time</td>
+            <td class="td1" style="background-color:silver">Quantity in Litres</td>
+            <td class="td1" style="background-color:silver">Fuel Type</td>
+            <td class="td1" style="background-color:silver">Price Per Litre in $</td>
+            <td class="td1" style="background-color:silver">Provider</td>
+            <td class="td1" style="background-color:red">Total Price in $</td>
+
+        </tr>
+        @foreach (FuelLog b in logs)
+        {
+    <tr>
+        <td class="td1">@b.DateTime</td>
+        <td class="td1">@b.Quantity</td>
+        <td class="td1">@b.FuelType</td>
+        <td class="td1">@b.PricePerLitre</td>
+        <td class="td1">@b.Provider</td>
+        <td class="td1">@(b.Quantity * b.PricePerLitre)</td>
+
+
+    </tr>
+        }
+    </table>
+    <hr />
+<br />
+<h3> total : @ViewData["total"] $</h3>   
+    
+

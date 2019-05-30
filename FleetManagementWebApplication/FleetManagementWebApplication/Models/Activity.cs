@@ -10,9 +10,8 @@ namespace FleetManagementWebApplication.Models
     {
         [Required]
         public int Id { get; set; }
-        [Required]
-        [StringLength(100)]
-        public string Type { get; set; }
+        
+        public Service Service { get; set; }
         [Required]
         public int Period  { get; set; }
 

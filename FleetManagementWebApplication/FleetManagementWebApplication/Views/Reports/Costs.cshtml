@@ -16,6 +16,9 @@ var YCosts = Newtonsoft.Json.JsonConvert.SerializeObject(costs);
     input[type='date'] {
         width: 80%
     }
+    .box {
+        top: 10px;
+    }
 </style>
 
 <!-- Resources -->
@@ -27,30 +30,31 @@ var YCosts = Newtonsoft.Json.JsonConvert.SerializeObject(costs);
 
 
 <body>
-    <div class="box effect6" style="width:80%">
-        <form asp-controller="Reports" asp-action="Costs" method="get">
-            <table width="90%">
-                <tr>
-                    <td><h3>Costs Evalution </h3></td>
-                    <td align="right">
-                        <input type="date" name="d1" />
-                    </td>
-                    <td align="right"><input type="date" name="d2" /></td>
-                    <td>
-                        <input type="submit" value="GO" />
-                    </td>
-                </tr>
-            </table>
-        </form>
-        <div class="w3-container w3-padding">
+    <div class="box-wrapper">
+        <div class="box effect6" style="width:80%">
+            <form asp-controller="Reports" asp-action="Costs" method="get">
+                <table width="90%">
+                    <tr>
+                        <td><h3>Costs Evalution </h3></td>
+                        <td align="right">
+                            <input type="date" name="d1" />
+                        </td>
+                        <td align="right"><input type="date" name="d2" /></td>
+                        <td>
+                            <input type="submit" value="GO" />
+                        </td>
+                    </tr>
+                </table>
+            </form>
+            <div class="w3-container w3-padding">
 
-            @if(costs.Length==0)
-            {
-            <center><h4 style="color:darkcyan">Nothing to show</h4></center>
-            }
-            <!-- Chart code -->
-            <script>
-                
+                @if (costs.Length == 0)
+                {
+                    <center><h4 style="color:darkcyan">Nothing to show</h4></center>
+                }
+                <!-- Chart code -->
+                <script>
+
                 am4core.ready(function () {
 
                     // Themes begin
@@ -64,7 +68,7 @@ var YCosts = Newtonsoft.Json.JsonConvert.SerializeObject(costs);
                     chart.legend = new am4charts.Legend();
                     var services = @Html.Raw(XServices);
                     var costs =@YCosts;
-                    
+
                     chart.data = Array(services.length);
                     for (var i = 0; i < services.length; i++) {
                         chart.data[i] =
@@ -77,15 +81,16 @@ var YCosts = Newtonsoft.Json.JsonConvert.SerializeObject(costs);
                     var series = chart.series.push(new am4charts.PieSeries3D());
                     series.dataFields.value = "cost";
                     series.dataFields.category = "service";
-         
+
                 }); // end am4core.ready()
-            </script>
+                </script>
 
-            <!-- HTML -->
-            <div id="chartdiv"></div>
+                <!-- HTML -->
+                <div id="chartdiv"></div>
 
+            </div>
         </div>
-    </div>
-    <br />
-    <br />
+        <br />
+        <br />
+        </div>
 </body>

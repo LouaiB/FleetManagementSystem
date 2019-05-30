@@ -91,43 +91,38 @@ namespace FleetManagementWebApplication.Controllers
         {
             if (!LogedIn())
                 return RedirectToRoute("Home");
-           
-            Vehicle[] V = _context.Vehicles.Where(v => v.Company.Id == CompanyId).ToArray();
-            string[] B = _context.Bills.Select(e => e.Service).Distinct().ToArray();
-            SelectListItem[] X = new SelectListItem[V.Length];
-            for(int i=0;i< V.Length;i++) 
-            X[i]=new SelectListItem { Value =""+V[i].Id, Text = V[i].Make+" "+ V[i].Model+" "+ V[i].LicensePlate};
-            ViewData["Vehicles"] = X;
-            ViewData["Services"] = B;
-            return View();
+            CreateBillModel model = new CreateBillModel();
+           model.FillVehiclesAndServices (_context,CompanyId); 
+            return View(model);
         }
 
-        // POST: Bills/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Service,DateTime,Cost,Provider")] Bill bill,long VehicleSelect)
+        public async Task<IActionResult> Create(CreateBillModel model)
         {
             if (!LogedIn())
                 return RedirectToRoute("Home");
-            
-            Vehicle[] V = _context.Vehicles.Where(v => v.Company.Id == CompanyId).ToArray();
-            string[] B = _context.Bills.Select(e => e.Service).Distinct().ToArray();
-            SelectListItem[] X = new SelectListItem[V.Length];
-            for (int i = 0; i < V.Length; i++)
-                X[i] = new SelectListItem { Value = "" + V[i].Id, Text = V[i].Make + " " + V[i].Model + " " + V[i].LicensePlate };
-            ViewData["Vehicles"] = X;
-            ViewData["Services"] = B;
+
             if (ModelState.IsValid)
             {
-                Vehicle v = _context.Vehicles.Find(VehicleSelect);
-                bill.Vehicle = v;
+                Vehicle v = _context.Vehicles.Find(model.SelectedVehicle);
+                Service s = _context.Service.Find(model.SelectedService);
+                Bill bill = new Bill
+                {
+                    Service = s.Name,
+                    Vehicle = v,
+                    DateTime = model.DateTime,
+                    Provider = model.Provider,
+                    Cost = model.Cost
+                };
+               
                 _context.Add(bill);
                 await _context.SaveChangesAsync();                
                 return RedirectToAction(nameof(Index));
             }
-            return View(bill);
+            model.FillVehiclesAndServices(_context, CompanyId);
+            return View(model);
         }
 
         // GET: Bills/Edit/5

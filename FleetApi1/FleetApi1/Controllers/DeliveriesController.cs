@@ -24,10 +24,14 @@ namespace FleetApi1.Controllers
         {
             _context = context;
         }
-        [HttpGet]
+
+
+  
         public Vehicle getNearestVehicle (double startLatitude,double startLongitude,long company)
         {
              int distance;
+            string url = "";
+            JObject rss;
             using (var webClient = new WebClient())
             {
            
@@ -36,25 +40,67 @@ namespace FleetApi1.Controllers
                                                                                         v.Latitude > 0 && v.Longtitude > 0
                                                                                         &&v.Company.Id==company)
                                                                                         .ToArray();
-              
-                string url = "https://matrix.route.api.here.com/routing/7.2/calculatematrix.json"
+
+                Dictionary<long, Point> Destinations = new Dictionary<long, Point>();
+                foreach(Vehicle v in vehicles)
+                {
+                    try
+                    {
+                        Delivery d = _context.Deliveries.Where( e =>e.Vehicle==v && e.Started && !e.Finished).Last();
+                        Destinations.Add(v.Id, new Point(d.DestinationLongtitude,d.DestinationLatitude));
+                    }
+                    catch (Exception)
+                    {
+                        Destinations.Add(v.Id, new Point(v.Longtitude, v.Latitude));
+                    }
+                   
+                }
+                //get matrix
+                url = "https://matrix.route.api.here.com/routing/7.2/calculatematrix.json"
+                                  + "?app_id=ORWs1MBbnXAyzlgdPGpw"
+                                   + "&app_code=ftEQwIdOxSdxiRv6pd1Rvw";
+
+                for (int i = 0; i < vehicles.Length; i++)
+                    url += "&start" + i + "=" + vehicles[i].Latitude + "," + vehicles[i].Longtitude;
+                for (int i = 0; i < vehicles.Length; i++)
+                    url += "&destination" + i + "=" + Destinations[vehicles[i].Id].Latitude + "," + Destinations[vehicles[i].Id].Longitude;
+                url += "&summaryAttributes=distance,traveltime&mode=fastest;car;traffic:disabled";
+
+                var rawJSON = webClient.DownloadStringTaskAsync(url).Result;
+                rss = JObject.Parse(rawJSON);
+                //get distance left
+                Dictionary<long, int> Distances = new Dictionary<long, int>();
+                for(int i=0;i<vehicles.Length;i++)
+                {
+                 
+                    Distances.Add(vehicles[i].Id, (int)rss["response"]["matrixEntry"][i*(vehicles.Length+1)]["summary"]["distance"]);
+                }
+
+                url = "https://matrix.route.api.here.com/routing/7.2/calculatematrix.json"
                                    + "?app_id=ORWs1MBbnXAyzlgdPGpw"
                                     + "&app_code=ftEQwIdOxSdxiRv6pd1Rvw";
 
                                  url += "&start0"+"="+startLatitude+","+startLongitude;
                                   for(int i=0;i<vehicles.Length;i++)
-                                       url += "&destination"+i+"="+vehicles[i].Latitude+","+vehicles[i].Longtitude;
+                                       url += "&destination"+i+"="+Destinations[vehicles[i].Id].Latitude+","+ Destinations[vehicles[i].Id].Longitude;
                                   url+= "&summaryAttributes=distance,traveltime&mode=fastest;car;traffic:disabled";
 
-               var rawJSON = webClient.DownloadStringTaskAsync(url).Result;
+             rawJSON = webClient.DownloadStringTaskAsync(url).Result;
                 
-               JObject rss = JObject.Parse(rawJSON);
-                int min = (int)rss["response"]["matrixEntry"][0]["summary"]["distance"]; 
+               rss = JObject.Parse(rawJSON);
+
+                for(int i = 0; i < vehicles.Length;i++)
+                {
+                    Distances[vehicles[i].Id]+= (int)rss["response"]["matrixEntry"][i]["summary"]["distance"];
+                }
+
+
+                int min = Distances.First().Value;
                 distance=min;
                 int index=0;
                 for (int i = 1; i < vehicles.Length; i++)
                 {
-                   distance = (int)rss["response"]["matrixEntry"][i]["summary"]["distance"];
+                   distance =Distances[vehicles[i].Id];
                     if (distance >= min) continue;
                     
                     min = distance;
@@ -189,26 +235,11 @@ namespace FleetApi1.Controllers
                 Vehicle v=getNearestVehicle(order.SourceLatitude, order.SourceLongtitude,company.Id);
                 delivery.Vehicle = v;
                 delivery.Driver = _context.Vehicles.Include(v1 => v1.CurrentDriver).Where(v1 => v1.Id == v.Id).First().CurrentDriver;
-
-                using (var webClient = new WebClient())
-                {
-                    string url = "https://matrix.route.api.here.com/routing/7.2/calculatematrix.json"
-                                       + "?app_id=ORWs1MBbnXAyzlgdPGpw"
-                                        + "&app_code=ftEQwIdOxSdxiRv6pd1Rvw";
-                    url += "&start0" + "=" + order.SourceLatitude + "," + order.SourceLongtitude;
-                    url += "&destination0=" + order.DestinationLatitude + "," + order.DestinationLongtitude;
-                    url += "&summaryAttributes=distance,traveltime&mode=fastest;car;traffic:disabled";
-                    var rawJSON = webClient.DownloadStringTaskAsync(url).Result;
-                    JObject rss = JObject.Parse(rawJSON);              
-                    delivery.OptimalDistance = (float)rss["response"]["matrixEntry"][0]["summary"]["distance"]/1000 ;
-                   delivery.OptimalTime = (int)rss["response"]["matrixEntry"][0]["summary"]["travelTime"]/60;
-                }
-                delivery.OptimalFuelConsumption = delivery.OptimalDistance * v.FuelConsumption;
+               
                 delivery.Answered = true;
                 delivery.Vehicle.isCurrentlyActive = true;
                 _context.Vehicles.Update(delivery.Vehicle);
                 _context.Deliveries.Add(delivery);
-
                 await _context.SaveChangesAsync();
                 delivery.Company = null;
                 delivery.Client = null;
@@ -244,10 +275,7 @@ namespace FleetApi1.Controllers
 
         public async Task<ActionResult<Result>> AddDeliveryBySupervisor(AddDeliveryModel Model)
         {
-            // Add new delivery to DB
-            // This action MUST return this new delivery's ID
-            // This parameters are the main ones. Extra ones can be added later if needed (eg quantity, etc.)
-            // Below code is my attempt. Delete it all if you want
+            
 
         
             Driver driver = _context.Drivers.Find(Model.driverID);
@@ -349,6 +377,17 @@ namespace FleetApi1.Controllers
         {
             public string Vehicles { get; set; }
             public Result3(string x) { Vehicles = x; }
+        }
+        public class Point
+        {
+            public double Longitude { get; set; }
+            public double Latitude { get; set; }
+            public Point(double longitude, double latitude)
+            {
+                Longitude = longitude;
+                Latitude = latitude;
+            }
+
         }
     }
 }

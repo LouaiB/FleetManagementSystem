@@ -37,33 +37,37 @@
             -webkit-user-select: none;
             -ms-user-select: none;
         }
+        .box{
+            top:10px;
+        }
     </style>
 </head>
 
 
 <body>
-< <div class="box effect6" style="width:80%">
-    <form asp-controller="Reports" asp-action="FuelConsumption" method="get">
-        <table width="90%">
-            <tr>
-                <td><h3>Fuel Consumption </h3></td>
-                <td align="right">
-                    <input type="number" name="year" />
-                </td>
-                
-                <td>
-                    <input type="submit" value="GO" />
-                </td>
-            </tr>
-        </table>
-    </form>
-    <div class="w3-container w3-padding">
+    <div class="box-wrapper">
+        <div class="box effect6" style="width:80%">
+            <form asp-controller="Reports" asp-action="FuelConsumption" method="get">
+                <table width="90%">
+                    <tr>
+                        <td><h3>Fuel Consumption </h3></td>
+                        <td align="right">
+                            <input type="number" name="year" />
+                        </td>
 
-        <div>
-            <canvas id="canvas"></canvas>
-        </div>
+                        <td>
+                            <input type="submit" value="GO" />
+                        </td>
+                    </tr>
+                </table>
+            </form>
+            <div class="w3-container w3-padding">
 
-        <script>
+                <div>
+                    <canvas id="canvas"></canvas>
+                </div>
+
+                <script>
                 var MonthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'November', 'December'];
                 var Months =@XMonths;
                 var Labels = Array(Months.length);
@@ -128,13 +132,14 @@
                 };
 
 
-        </script>
+                </script>
 
 
 
 
-    </div>
-</div>
-<br />
-<br />
+            </div>
+        </div>
+        <br />
+        <br />
+        </div>
 </body>
