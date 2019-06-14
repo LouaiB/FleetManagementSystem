@@ -242,11 +242,6 @@ namespace FleetManagementWebApplication.Controllers
             return View(mapLocation);
         }
 
-        
-      
-
-      
-
 
         [HttpPost]
         public JsonResult UpdateDeliveryBySupervisor(string deliveryId,string vehicleId, string driverId)
@@ -269,7 +264,6 @@ namespace FleetManagementWebApplication.Controllers
 
             return Json(new { Result = id });
         }
-
 
 
 
@@ -311,6 +305,7 @@ namespace FleetManagementWebApplication.Controllers
                 json += "\"CurrentDriverName\": \"" + v.CurrentDriver.Name + "\",";
                 json += "\"CurrentDriverPhonenumber\": \"" + v.CurrentDriver.Phonenumber + "\",";
                 json += "\"CurrentDriverBirthdate\": \"" + v.CurrentDriver.Birthdate + "\",";
+                json += "\"CurrentDriverImage\": \"" + v.CurrentDriver.Image+ "\",";
 
                 json += "\"Deliveries\": [";
                 v.Deliveries?.ForEach(d => {

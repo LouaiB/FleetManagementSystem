@@ -19,42 +19,6 @@ namespace FleetManagementWebApplication.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("FleetManagementWebAplication.Models.Client", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Address")
-                        .HasMaxLength(100);
-
-                    b.Property<string>("Birthdate")
-                        .HasMaxLength(20);
-
-                    b.Property<long?>("CompanyId");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50);
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasMaxLength(12);
-
-                    b.Property<string>("Phonenumber")
-                        .HasMaxLength(20);
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasMaxLength(20);
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CompanyId");
-
-                    b.ToTable("Clients");
-                });
-
             modelBuilder.Entity("FleetManagementWebApplication.Models.Activity", b =>
                 {
                     b.Property<int>("Id")
@@ -101,6 +65,42 @@ namespace FleetManagementWebApplication.Migrations
                     b.HasIndex("VehicleId");
 
                     b.ToTable("Bills");
+                });
+
+            modelBuilder.Entity("FleetManagementWebApplication.Models.Client", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Address")
+                        .HasMaxLength(100);
+
+                    b.Property<string>("Birthdate")
+                        .HasMaxLength(20);
+
+                    b.Property<long?>("CompanyId");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50);
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasMaxLength(12);
+
+                    b.Property<string>("Phonenumber")
+                        .HasMaxLength(20);
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasMaxLength(20);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("Clients");
                 });
 
             modelBuilder.Entity("FleetManagementWebApplication.Models.Company", b =>
@@ -513,13 +513,6 @@ namespace FleetManagementWebApplication.Migrations
                     b.ToTable("Vehicles");
                 });
 
-            modelBuilder.Entity("FleetManagementWebAplication.Models.Client", b =>
-                {
-                    b.HasOne("FleetManagementWebApplication.Models.Company", "Company")
-                        .WithMany("Clients")
-                        .HasForeignKey("CompanyId");
-                });
-
             modelBuilder.Entity("FleetManagementWebApplication.Models.Activity", b =>
                 {
                     b.HasOne("FleetManagementWebApplication.Models.Plan", "Plan")
@@ -538,6 +531,13 @@ namespace FleetManagementWebApplication.Migrations
                         .HasForeignKey("VehicleId");
                 });
 
+            modelBuilder.Entity("FleetManagementWebApplication.Models.Client", b =>
+                {
+                    b.HasOne("FleetManagementWebApplication.Models.Company", "Company")
+                        .WithMany("Clients")
+                        .HasForeignKey("CompanyId");
+                });
+
             modelBuilder.Entity("FleetManagementWebApplication.Models.Company", b =>
                 {
                     b.HasOne("FleetManagementWebApplication.Models.Manager", "Manager")
@@ -547,7 +547,7 @@ namespace FleetManagementWebApplication.Migrations
 
             modelBuilder.Entity("FleetManagementWebApplication.Models.Delivery", b =>
                 {
-                    b.HasOne("FleetManagementWebAplication.Models.Client", "Client")
+                    b.HasOne("FleetManagementWebApplication.Models.Client", "Client")
                         .WithMany("Deliveries")
                         .HasForeignKey("ClientId");
 

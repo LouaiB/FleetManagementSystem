@@ -11,7 +11,7 @@
                     <td><h3>Assign Plan to Vehicles </h3></td>
                     <td align="right">
                         <form asp-controller="Plans" asp-action="SearchAddPlanToVehicles">
-                            <input type="text" placeholder="filter vehicles" onkeyup="search(event);"
+                            <input type="text" placeholder="filter vehicles" onkeyup="search(event);" style="padding-left:5px;"
                                    value="@ViewData["Query1"]" name="Query1" />
                         </form>
                     </td>
@@ -25,7 +25,7 @@
                         {
                             <tr>
                                 <td class="td1">
-                                    <div>
+                                    <div style=" background-color: #E8E8E8;padding-bottom:5px;padding-top:5px;padding-left:5px">
                                         <label class="container1">
                                             @Vehicles[i].Make   @Vehicles[i].Model<br />
                                             &nbsp;@Vehicles[i].LicensePlate
@@ -38,42 +38,42 @@
 
                                 @if (i + 1 < Vehicles.Length)
                                 {
-                                    <td class="td1">
-                                        <div>
-                                            <label class="container1">
-                                                @Vehicles[i + 1].Make @Vehicles[i + 1].Model<br />
-                                                &nbsp;@Vehicles[i + 1].LicensePlate
-                                                <input type="checkbox" name="SelectedVehicles" value="@Vehicles[i+1].Id">
-                                                <span class="checkmark"></span>
-                                            </label>
-                                        </div>
-                                    </td>
+                            <td class="td1">
+                                <div style=" background-color: #E8E8E8;padding-bottom:5px;padding-top:5px;padding-left:5px">
+                                    <label class="container1">
+                                        @Vehicles[i + 1].Make @Vehicles[i + 1].Model<br />
+                                        &nbsp;@Vehicles[i + 1].LicensePlate
+                                        <input type="checkbox" name="SelectedVehicles" value="@Vehicles[i+1].Id">
+                                        <span class="checkmark"></span>
+                                    </label>
+                                </div>
+                            </td>
                                 }
                                 @if (i + 2 < Vehicles.Length)
                                 {
-                                    <td class="td1">
-                                        <div>
-                                            <label class="container1">
-                                                @Vehicles[i + 2].Make @Vehicles[i + 2].Model<br />
-                                                &nbsp; @Vehicles[i + 2].LicensePlate
-                                                <input type="checkbox" name="SelectedVehicles" value="@Vehicles[i+2].Id">
-                                                <span class="checkmark"></span>
-                                            </label>
-                                        </div>
-                                    </td>
+                            <td class="td1">
+                                <div style=" background-color: #E8E8E8;padding-bottom:5px;padding-top:5px;padding-left:5px">
+                                    <label class="container1">
+                                        @Vehicles[i + 2].Make @Vehicles[i + 2].Model<br />
+                                        &nbsp; @Vehicles[i + 2].LicensePlate
+                                        <input type="checkbox" name="SelectedVehicles" value="@Vehicles[i+2].Id">
+                                        <span class="checkmark"></span>
+                                    </label>
+                                </div>
+                            </td>
                                 }
                                 @if (i + 3 < Vehicles.Length)
                                 {
-                                    <td class="td1">
-                                        <div>
-                                            <label class="container1">
-                                                @Vehicles[i + 3].Make @Vehicles[i + 3].Model<br />
-                                                &nbsp; @Vehicles[i + 3].LicensePlate
-                                                <input type="checkbox" name="SelectedVehicles" value="@Vehicles[i+3].Id">
-                                                <span class="checkmark"></span>
-                                            </label>
-                                        </div>
-                                    </td>
+                            <td class="td1">
+                                <div style=" background-color: #E8E8E8;padding-bottom:5px;padding-top:5px;padding-left:5px">
+                                    <label class="container1">
+                                        @Vehicles[i + 3].Make @Vehicles[i + 3].Model<br />
+                                        &nbsp; @Vehicles[i + 3].LicensePlate
+                                        <input type="checkbox" name="SelectedVehicles" value="@Vehicles[i+3].Id">
+                                        <span class="checkmark"></span>
+                                    </label>
+                                </div>
+                            </td>
                                 }
                             </tr>
                         }
@@ -116,7 +116,7 @@
             .td1 {
                 width: 180px;
                 height: 50px;
-                background-color: #E8E8E8;
+               
                 padding: 10px 10px
             }
 
@@ -167,7 +167,7 @@
                 left: 0;
                 height: 25px;
                 width: 25px;
-                background-color: white;
+                   background-color: rgba(9, 226, 233, 0.30);
             }
 
             /* On mouse-over, add a grey background color */

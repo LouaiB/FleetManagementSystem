@@ -119,7 +119,7 @@ async function addVehicleToMap(vehicleID, latitude, longitude, vehicleInfo, curr
 
         flag = await addRouteToMap(vehicleID, currentRoute);
         let flag2 = await getDeliveryTimeLeft(vehicleID);
-
+     
         return new Promise(resolve => {
             console.log("-------------------- OUT ADD VEHICLE --------------------");
             resolve(flag || true);
@@ -462,8 +462,8 @@ function setStart(coord) {
         if (data.address.hasOwnProperty('city'))
             startCity = data.address.city;
         else
-            startCity = data.address.state.split(" ")[0];
-        alert(startCity);
+            startCity = data.address.state;
+        alert(startCity + " \n " + coord.lat + "," + coord.lng);
     });
     jsonPromise1.fail(function (reason) {
         alert("Error");
@@ -499,8 +499,8 @@ function setEnd(coord) {
         if (data.address.hasOwnProperty('city'))
             endCity=data.address.city;
         else
-            endCity = data.address.state.split(" ")[0];
-        alert(endCity);
+            endCity = data.address.state;
+        alert(endCity + " \n " + coord.lat + "," + coord.lng);
     });
     jsonPromise1.fail(function (reason) {
         alert("Failed1");
@@ -682,7 +682,7 @@ async function addDeliveryToDB(ajaxPostRequestJSON, vehicleID, startLatitude, st
                     return;
                 }
             })
-
+           
             const delivery = {
                 "deliveryID": result.result,
                 "startLatitude": startLatitude,
@@ -695,13 +695,14 @@ async function addDeliveryToDB(ajaxPostRequestJSON, vehicleID, startLatitude, st
                     "customerName": client.Name,
                     "customerEmail": client.Email,
                     "deliveryQuantity": deliveryQuantity,
-                    "orderTime": date
+                    "orderTime": Date.now
                 }
             }
-
+           
             let flag = await addDeliveryToVehicle(vehicleID, delivery);
-
+           
             if (flag) {
+             
                 showVehicleDetails(vehicleID);
                 unsetSelectors();
             }
@@ -715,8 +716,10 @@ async function addDeliveryToDB(ajaxPostRequestJSON, vehicleID, startLatitude, st
 }
 
 async function cancelDelivery(vehicleID, deliveryID) {
+   
     console.log("--------------------- IN CANCEL DELIVERY --------------------");
     deliveries = displayedVehicles[vehicleID].deliveries;
+ 
     let newDeliveries = [];
     deliveries.forEach(d => {
         if (d.deliveryID != deliveryID) {
@@ -889,7 +892,7 @@ function showVehicleDetails(vehicleID) {
     inner2 += '</li>';
 
     inner2 += '<li class="list-group-item">';
-    inner2 += '<img width="100px" src="' + driver.avatar + '" />';
+    inner2 += '<img width="300px" height="250px"  src="' + driver.avatar + '" />';
     inner2 += '</li>';
 
     inner2 += '<li class="list-group-item">';
@@ -910,6 +913,7 @@ function showVehicleDetails(vehicleID) {
 }
 
 function fillVehicleList(vehicles) {
+
     const list = document.querySelector("#vehicles-list");
     list.innerHTML = "";
 
@@ -922,7 +926,7 @@ function fillVehicleList(vehicles) {
         inner += '<div class="row">';
 
         inner += '<div class="col-lg-3">';
-        inner += '<img width="70px" src="' + veh.currentDriver.avatar + '" />';
+        inner += '<img width="70px" height="90" src="' + veh.currentDriver.avatar + '" />';
         inner += '</div>';
 
         inner += '<div class="col-lg-9">';
@@ -969,6 +973,10 @@ function createNameTag(id, text) {
     span.style.fontSize = "12px";
     span.style.fontWeight = "bold";
     span.style.color = "#000";
+    span.style.backgroundColor = "#fff";
+    span.style.border = "1px solid black";
+    span.style.padding = "2px 5px";
+    span.style.borderRadius = "5px";
     span.style.visibility = "hidden";
     document.querySelector("body").appendChild(span);
     console.log(span);
@@ -979,14 +987,14 @@ function fixNameTagPositions() {
         let veh = displayedVehicles[vehicle];
         let pos = map.geoToScreen({ lat: veh.latitude, lng: veh.longitude });
 
-        updateNameTagPosition('tag' + veh.vehicleID, pos.x, pos.y);
+        updateNameTagPosition('tag' + veh.vehicleID, pos.x, pos.y-15);
     }
 
     for (center in displayedCenters) {
         let cen = displayedCenters[center];
         let pos = map.geoToScreen({ lat: cen.latitude, lng: cen.longitude });
 
-        updateNameTagPosition('ctag' + cen.centerID, pos.x, pos.y);
+        updateNameTagPosition('ctag' + cen.centerID, pos.x, pos.y-5);
     }
 }
 
@@ -1023,7 +1031,7 @@ function isInsideMap(x, y) {
     }
 
 async function refetchAndRefresh() {
-    
+   
     //TODO
     ///////////// AJAX get vehicles from DB /////////////
     const ajaxPostRequestJSON = {
@@ -1083,7 +1091,7 @@ async function refetchAndRefresh() {
                         {
                             "driverID": `${v.CurrentDriverId}`,
                             "name": `${v.CurrentDriverName}`,
-                            "avatar": "/images/avatar1.jpg",
+                            "avatar": "/images/"+v.CurrentDriverImage,
                             "phone": `${v.CurrentDriverPhonenumber}`,
                             "email": "In DB but not attributed to Driver table",
                             "birthdate": `${v.CurrentDriverBirthdate}`
@@ -1171,9 +1179,7 @@ function updateVehicleDeliveries(vehicleID, deliveries) {
     }
 }
 
-
     const shift = 0.0002;
-
 
 
 function setStart1(latitude,longitude) {
@@ -1254,7 +1260,6 @@ function showCentersSidepane() {
 
     centersListDOM.innerHTML = inner;
 }
-
 
 function addRouteToMap1() {
     

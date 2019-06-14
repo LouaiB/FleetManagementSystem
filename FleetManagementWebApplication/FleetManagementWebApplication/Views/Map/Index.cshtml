@@ -40,17 +40,6 @@
     <link rel="stylesheet" type="text/css" href="/css/content.css" />
     <script src="/js/modernizr.custom.js"></script>
 
-
-
-
-
-
-
-
-
-
-
-
     <meta name="viewport" content="initial-scale=1.0, width=device-width" />
     <script src="https://js.api.here.com/v3/3.0/mapsjs-core.js"
             type="text/javascript" charset="utf-8"></script>
@@ -268,7 +257,6 @@
 
 <body>
 
-
     <div id="map" class="row">
 
         <div class="col-lg-9" id="map-and-underbar-col">
@@ -446,7 +434,8 @@
 
     <script src="/js/map_init.js"></script>
     <script type="text/javascript">
-        let vehicleDeliveriesList = [];
+    let vehicleDeliveriesList = [];
+   
     </script>
 
     <button onclick="addRouteToMap1();">Test</button>
@@ -468,11 +457,14 @@
             "startLongitude": "@d.SourceLongtitude",
             "endLatitude": "@d.DestinationLatitude",
             "endLongitude": "@d.DestinationLongtitude",
+            "sourceCity": "@d.SourceCity",
+            "destinationCity":"@d.DestinationCity",
             "info": {
                 "customerName": "@d.Client.Name",
                 "customerEmail": "@d.Client.Username",
                 "deliveryType": "@d.Company.OrderType",
-                "orderTime": "@d.Time"
+                "orderTime": "@d.Time",
+                "quantity":"@d.Quantity"
             }
         });
                 </script>
@@ -588,7 +580,7 @@
             {
                 "driverID": "@v.CurrentDriver.Id",
                 "name": "@v.CurrentDriver.Name",
-                "avatar": "/images/avatar1.jpg",
+                "avatar": "/images/"+"@v.CurrentDriver.Image",
                 "phone": "@v.CurrentDriver.Phonenumber",
                 "email": "In DB but not attributed to Driver table",
                 "birthdate": "@v.CurrentDriver.Birthdate"
@@ -598,6 +590,7 @@
         </script>
 
     }
+    
 
     <script type="text/javascript">
         console.log("VEHHHHHHHHHHHHH");
@@ -718,6 +711,9 @@
         </script>
     }
 
+    <script>
+    setInterval(refetchAndRefresh, 5000);
+    </script>
 </body>
 </html>
 
