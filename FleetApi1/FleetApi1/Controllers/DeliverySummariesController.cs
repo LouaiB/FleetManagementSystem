@@ -8,12 +8,23 @@ using Microsoft.EntityFrameworkCore;
 using FleetApi1.Models;
 using System.Net;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+
+using System.IO;
+
+
+
+
+using Microsoft.AspNetCore.Hosting;
+
+using Microsoft.AspNetCore.Mvc.Rendering;
+
 
 namespace FleetApi1.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class DeliverySummariesController : ControllerBase
+    public class DeliverySummariesController : Controller
     {
         private readonly ApplicationDbContext _context;
 
@@ -22,25 +33,51 @@ namespace FleetApi1.Controllers
             _context = context;
         }
         [HttpPost]
-        public async Task<ActionResult<Result>> StartDeliverySummary(StartDeliveryModel Start)
+        public  JsonResult StartDeliverySummary(StartDeliveryModel Start)
         {
-            Delivery delivery = _context.Deliveries.Where(d=>d.Id==Start.DeliveryId)
-                                                            .Include(d=>d.Vehicle).First();
-            delivery.Started = true;
-
-            using (var webClient = new WebClient())
+            string error = "";
+            Delivery delivery;
+            try
             {
-                string url = "https://matrix.route.api.here.com/routing/7.2/calculatematrix.json"
-                                   + "?app_id=ORWs1MBbnXAyzlgdPGpw"
-                                    + "&app_code=ftEQwIdOxSdxiRv6pd1Rvw";
-                url += "&start0" + "=" + delivery.SourceLatitude + "," + delivery.SourceLongtitude;
-                url += "&destination0=" + delivery.DestinationLatitude + "," + delivery.DestinationLongtitude;
-                url += "&summaryAttributes=distance,traveltime&mode=fastest;car;traffic:disabled";
-                var rawJSON = webClient.DownloadStringTaskAsync(url).Result;
-                JObject rss = JObject.Parse(rawJSON);
-                delivery.OptimalDistance = (float)rss["response"]["matrixEntry"][0]["summary"]["distance"] / 1000;
-                delivery.OptimalTime = (int)rss["response"]["matrixEntry"][0]["summary"]["travelTime"] / 60;
+                delivery = _context.Deliveries.Where(d => d.Id == Start.DeliveryId)
+                                                                           .Include(d => d.Vehicle).First();
             }
+            catch (Exception)
+            {
+                error = "Delivery Not Found";
+                return new JsonResult(error);
+            }
+
+            if (delivery == null)
+            {
+                error = "Delivery Not Found";
+                return new JsonResult(error);
+            }
+            delivery.Started = true;
+            try
+            {
+                using (var webClient = new WebClient())
+                {
+                    string url = "https://matrix.route.api.here.com/routing/7.2/calculatematrix.json"
+                                       + "?app_id=ORWs1MBbnXAyzlgdPGpw"
+                                        + "&app_code=ftEQwIdOxSdxiRv6pd1Rvw";
+                    url += "&start0" + "=" + delivery.SourceLatitude + "," + delivery.SourceLongtitude;
+                    url += "&destination0=" + delivery.DestinationLatitude + "," + delivery.DestinationLongtitude;
+                    url += "&summaryAttributes=distance,traveltime&mode=fastest;car;traffic:disabled";
+                    var rawJSON = webClient.DownloadStringTaskAsync(url).Result;
+                    JObject rss = JObject.Parse(rawJSON);
+                    delivery.OptimalDistance = (float)rss["response"]["matrixEntry"][0]["summary"]["distance"] / 1000;
+                    delivery.OptimalTime = (int)rss["response"]["matrixEntry"][0]["summary"]["travelTime"] / 60;
+                }
+
+            }
+            catch (Exception)
+            {
+              //  error = "Optimal Distance Error";
+                //return new JsonResult(error);
+
+            }
+           
             delivery.OptimalFuelConsumption = delivery.OptimalDistance * delivery.Vehicle.FuelConsumption;
 
 
@@ -64,18 +101,25 @@ namespace FleetApi1.Controllers
                 SeatBeltRate=5
             };
             Vehicle V = delivery.Vehicle;
+
             if (V != null)
             {
                 V.Latitude = Start.Latitude;
                 V.Longtitude = Start.Longtitude;
                 V.isCurrentlyActive = true;
             }
+            else
+            {
+                error = "Vehicle Error";
+                return new JsonResult(error);
+            }
             _context.Deliveries.Update(delivery);
             _context.DeliverySummaries.Add(summary);
             _context.Vehicles.Update(V);
-            await _context.SaveChangesAsync();
+             _context.SaveChanges();
 
-            return new Result(summary.Id);
+            long DeliverySummaryId = summary.Id;
+            return Json(new {DeliverySummaryId });
         }
 
         [HttpPost]
@@ -148,86 +192,102 @@ namespace FleetApi1.Controllers
         [HttpPost]
         public async Task<ActionResult<Result2>> FinishDeliverySummary(FinishDeliveryModel finish)
         {
-           
-            DeliverySummary summary = _context.DeliverySummaries
-                                                                        .Where(d=>d.Id==finish.DeliverySummaryId).Include(d => d.Delivery).Single();
-            summary.Delivery.Finished = true;
-            Driver driver = _context.Deliveries.Where(d => d.Id == summary.Delivery.Id)
-                                                                           .Include(d=>d.Driver).First().Driver;
-            Company company = _context.Drivers.Where(d => d.Id == driver.Id).Include(d => d.Company).First().Company;
-
-            summary.EndFuelLevel = finish.EndFuelLevel;
-            summary.EndOdometer = finish.EndOdometer;
-            summary.EndTime = finish.EndTime;
-
-               
-                 
-            summary.FuelConsumptionRate = (summary.Delivery.OptimalFuelConsumption /
-                                                                        (summary.StartFuelLevel - summary.EndFuelLevel)) * 5;
-            summary.OnTimeDeliveryRate = (summary.Delivery.OptimalTime /
-                                                                        (summary.EndTime- summary.StartTime).Minutes) * 5;
-                                   float DistanceRate = (summary.Delivery.OptimalDistance /
-                                                                        (summary.EndOdometer - summary.StartOdometer)) * 5;
-            //Remove later
-            summary.FuelConsumptionRate = 5;
-            summary.OnTimeDeliveryRate = 5;
-            DistanceRate = 5;
-            //
-
-            summary.PerformanceScore =( summary.OverRevving
-                                                      + summary.HardCorneringRate
-                                                      + summary.HarshAccelerationAndDeceleration
-                                                      + summary.HarshBreakingsRate
-                                                      + summary.Idling
-                                                      + summary.FuelConsumptionRate)/6;
-
-            summary.ComplianceScore =( summary.OnTimeDeliveryRate
-                                                        + summary.SpeedingsRate
-                                                        + DistanceRate)/3;
-
-                    summary.SafetyScore = (summary.SeatBeltRate
-                                                       + summary.SpeedingsRate
-                                                       + summary.HarshBreakingsRate
-                                                       +summary.HarshAccelerationAndDeceleration)/ 4;
-
-            float DeliveryScore = (summary.PerformanceScore + summary.ComplianceScore + summary.SafetyScore) / 3;
-
-            driver.Score=(   _context.DeliverySummaries.Where(d=>d.Delivery.Driver==driver)
-                                                                .Average(d=>d.PerformanceScore)
-                                        +_context.DeliverySummaries.Where(d => d.Delivery.Driver == driver)
-                                                                .Average(d => d.ComplianceScore)
-                                        +_context.DeliverySummaries.Where(d => d.Delivery.Driver == driver)
-                                                                .Average(d => d.SafetyScore))/3;
-
-
-            _context.DeliverySummaries.Update(summary);
-            //_context.Deliveries.Update(summary.Delivery);
-            _context.Drivers.Update(driver);
-            _context.SaveChanges();
-
-            Driver[]  drivers= _context.Drivers.Where(d=>d.Company==company)
-                                             .OrderByDescending(d=>d.Score).ToArray();
-            for(int i = 0; i < drivers.Length; i++)
+            try
             {
-                drivers[i].Rank = i + 1;
-            }
-            _context.UpdateRange(drivers);
-            _context.SaveChanges();
-            
+                DeliverySummary summary = _context.DeliverySummaries
+                                                                       .Where(d => d.Id == finish.DeliverySummaryId).Include(d => d.Delivery).Single();
+                summary.Delivery.Finished = true;
+                Driver driver = _context.Deliveries.Where(d => d.Id == summary.Delivery.Id)
+                                                                               .Include(d => d.Driver).First().Driver;
+                Company company = _context.Drivers.Where(d => d.Id == driver.Id).Include(d => d.Company).First().Company;
+
+                summary.EndFuelLevel = finish.EndFuelLevel;
+                summary.EndOdometer = finish.EndOdometer;
+                summary.EndTime = finish.EndTime;
+
+
+
+                summary.FuelConsumptionRate = (summary.Delivery.OptimalFuelConsumption /
+                                                                            (summary.StartFuelLevel - summary.EndFuelLevel)) * 5;
+                summary.OnTimeDeliveryRate = (summary.Delivery.OptimalTime /
+                                                                            (summary.EndTime - summary.StartTime).Minutes) * 5;
+                float DistanceRate = (summary.Delivery.OptimalDistance /
+                                                     (summary.EndOdometer - summary.StartOdometer)) * 5;
+                //Remove later
+                summary.FuelConsumptionRate = 5;
+                summary.OnTimeDeliveryRate = 5;
+                DistanceRate = 5;
+                //
+
+                summary.PerformanceScore = (summary.OverRevving
+                                                          + summary.HardCorneringRate
+                                                          + summary.HarshAccelerationAndDeceleration
+                                                          + summary.HarshBreakingsRate
+                                                          + summary.Idling
+                                                          + summary.FuelConsumptionRate) / 6;
+
+                summary.ComplianceScore = (summary.OnTimeDeliveryRate
+                                                            + summary.SpeedingsRate
+                                                            + DistanceRate) / 3;
+
+                summary.SafetyScore = (summary.SeatBeltRate
+                                                   + summary.SpeedingsRate
+                                                   + summary.HarshBreakingsRate
+                                                   + summary.HarshAccelerationAndDeceleration) / 4;
+
+                float DeliveryScore = (summary.PerformanceScore + summary.ComplianceScore + summary.SafetyScore) / 3;
+
+                driver.Score = (_context.DeliverySummaries.Where(d => d.Delivery.Driver == driver)
+                                                                    .Average(d => d.PerformanceScore)
+                                            + _context.DeliverySummaries.Where(d => d.Delivery.Driver == driver)
+                                                                    .Average(d => d.ComplianceScore)
+                                            + _context.DeliverySummaries.Where(d => d.Delivery.Driver == driver)
+                                                                    .Average(d => d.SafetyScore)) / 3;
+
+
+                _context.DeliverySummaries.Update(summary);
+                //_context.Deliveries.Update(summary.Delivery);
+                _context.Drivers.Update(driver);
+                _context.SaveChanges();
+
+                Driver[] drivers = _context.Drivers.Where(d => d.Company == company)
+                                                 .OrderByDescending(d => d.Score).ToArray();
+                for (int i = 0; i < drivers.Length; i++)
+                {
+                    drivers[i].Rank = i + 1;
+                }
+                _context.UpdateRange(drivers);
+                _context.SaveChanges();
+
 
                 await _context.SaveChangesAsync();
-            return new Result2()
-            {
-                DeliveryScore = DeliveryScore,
-                OverallScore = driver.Score,
-                Rank=driver.Rank,
-                PerformanceScore = summary.PerformanceScore,
-                ComplianceScore = summary.ComplianceScore,
-                SafetyScore = summary.SafetyScore,
-                NbOfDrivers=drivers.Length
+                return new Result2()
+                {
+                    DeliveryScore = DeliveryScore,
+                    OverallScore = driver.Score,
+                    Rank = driver.Rank,
+                    PerformanceScore = summary.PerformanceScore,
+                    ComplianceScore = summary.ComplianceScore,
+                    SafetyScore = summary.SafetyScore,
+                    NbOfDrivers = drivers.Length
                 };
 
-          
+            }
+            catch (Exception)
+            {
+                return new Result2()
+                {
+                    DeliveryScore = 0,
+                    OverallScore = 0,
+                    Rank =0,
+                    PerformanceScore = 0,
+                    ComplianceScore = 0,
+                    SafetyScore = 0,
+                    NbOfDrivers =0
+                };
+            }
+
+
         }
 
         public class Result

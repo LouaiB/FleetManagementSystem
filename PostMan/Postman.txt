@@ -1,0 +1,113 @@
+----------------------------------------------------------------------------------------------------------
+http://abdullahhaidar92-001-site1.etempurl.com
+password:VoomBoom777Gg
+
+
+----------------------------------------------Get Client Delivery-------------------------------------------------
+api/Deliveries/GetClientDelivery
+{
+	"Id":32,        <== Delivery Id
+    "Username": "ahmad@client.com",
+    "Password": "Aa12345$"
+  
+}
+----------------------------------------------Create Client-------------------------------------------------
+  /api/Clients/PostClient
+  {
+    "Username": "ahmad@client.com",
+    "Password": "Aa12345$",
+    "Name": "Ahmad",
+    "Birthdate": "1/1/2003",
+    "Address": "Beirut",
+    "Phonenumber": "03127648"
+}
+
+----------------------------------------------Get Client-------------------------------------------------
+api/Clients/GetClient
+
+{
+    "Username": "ahmad@client.com",
+    "Password": "Aa12345$"
+  
+}
+----------------------------------------------Get Driver-------------------------------------------------
+api/Drivers/GetDriver
+{
+    "Username": "kamal@gmail.com",
+    "Password": "Aa12345$"
+  
+}
+-----------------------------------------Client Makes An Order-------------------------------------------
+api/Deliveries/MakeAnOrder
+{
+    "Time": "2019/2/2",
+    "CompanyName": "Furniture Company",
+    "ClientId": 1,
+    "SourceLongtitude": 33.8452,
+    "SourceLatitude": 35.08743,
+    "SourceCity": "Beirut",
+    "DestinationLongtitude": 33.787,
+    "DestinationLatitude": "35.4809",
+    "DestinationCity":"Khalde" ,
+    "Quantity": 5
+}
+-------------------------------------------Get Delivery-------------------------------------------------
+api/Deliveries/GetDelivery
+{
+	"id":2,
+    "Username": "kamal@gmail.com",
+    "Password": "Aa12345$"
+  
+}
+-------------------------------------------Get Answered Deliveries--------------------------------
+/api/Deliveries/AnsweredDeliveries
+{
+	
+    "Username": "kamal@gmail.com",
+    "Password": "Aa12345$"
+  
+}
+-------------------------------------------Get Started Deliveries-----------------------------------
+/api/Deliveries/StartedDeliveries
+{
+	
+    "Username": "kamal@gmail.com",
+    "Password": "Aa12345$"
+  
+}
+-------------------------------------------Get Finished Deliveries------------------------------------
+api/Deliveries/FinishedDeliveries
+{
+	
+    "Username": "kamal@gmail.com",
+    "Password": "Aa12345$"
+  
+}
+-------------------------------------------Add Delivery By Supervisor--------------------------------
+  /api/Deliveries/AddDeliveryBySupervisor
+
+  {
+    "vehicleID": 2,
+    "driverID": 1,
+    "startLatitude": "5",
+    "startLongitude": "5",
+    "endLatitude": "5",
+    "endLongitude": "5"
+}
+------------------------------------------- Cancel Delivery--------------------------------------------
+   /api/Deliveries/CancelDelivery
+   
+{
+    "vehicleID": 27,
+    "deliveryId": 7
+}
+--------------------------------------------Get Vehicles--------------------------------------------
+   /api/Deliveries/GetVehicles
+
+{
+   
+   "CompanyID":1
+    
+}
+---------------------------------------------------------------------------------------------------------------
+   

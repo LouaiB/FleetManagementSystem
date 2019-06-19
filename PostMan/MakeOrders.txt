@@ -1,0 +1,44 @@
+api/Deliveries/MakeAnOrder
+
+{
+    "Time": "2019/2/2",
+    "CompanyName": "Taxi Company",
+    "ClientId": 9,
+    "SourceLongtitude": 35.589894796875,
+    "SourceLatitude": 33.80672895624442,
+    "SourceCity": "Aleyh",
+    "DestinationLongtitude": 35.59195473339844,
+    "DestinationLatitude": "33.346208737432754",
+    "DestinationCity":"Marjayoun" ,
+    "Quantity": 5
+}
+
+{
+    "Time": "2019/2/2",
+    "CompanyName": "Taxi Company",
+    "ClientId": 9,
+    "SourceLongtitude": 35.305623556640626,
+    "SourceLatitude": 33.20020122477919,
+    "SourceCity": "Qana",
+    "DestinationLongtitude": 35.41068031933594,
+    "DestinationLatitude": "33.17472539249251",
+    "DestinationCity":"Tebnine" ,
+    "Quantity": 5
+}
+
+{
+    "Time": "2019/2/2",
+    "CompanyName": "Furniture Company",
+    "ClientId": 1,
+    "SourceLongtitude": 36.35116027113111,
+    "SourceLatitude": 33.55975772930384,
+    "SourceCity": "Damascus",
+    "DestinationLongtitude": 36.81258605238111,
+    "DestinationLatitude": "34.81686003854053",
+    "DestinationCity":"Homs" ,
+    "Quantity": 5
+}
+
+
+
+

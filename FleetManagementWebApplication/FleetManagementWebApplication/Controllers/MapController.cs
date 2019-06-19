@@ -55,12 +55,17 @@ namespace FleetManagementWebApplication.Controllers
 
             activeVehicles.ForEach(v =>
             {
-                v.CurrentDriver.Deliveries = _context.Deliveries
-                    .Include(d => d.Client)
-                    .Include(d => d.Company)
-                    .Where(d => (d.Driver == v.CurrentDriver && d.Company == company))
-                    .Where(d => d.Finished == false && d.Started== true)
-                    .ToList();
+                try
+                {
+                    v.CurrentDriver.Deliveries = _context.Deliveries
+                   .Include(d => d.Client)
+                   .Include(d => d.Company)
+                   .Where(d => (d.Driver == v.CurrentDriver && d.Company == company))
+                   .Where(d => d.Finished == false && d.Started == true)
+                   .ToList();
+
+                }
+                catch (Exception) { }
 
             });
 

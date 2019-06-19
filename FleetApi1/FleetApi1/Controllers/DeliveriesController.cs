@@ -149,10 +149,14 @@ namespace FleetApi1.Controllers
                                                                                        && d.Client.Username == B.username
                                                                                        && d.Client.Password == B.password
                                                                                       ).Include(d=>d.Vehicle).SingleAsync();
-                D.Vehicle.Deliveries = null;
-              
-                D.Vehicle.ScheduledActivities = null;
-                D.Vehicle.Bills = null;
+                if (D.Vehicle != null)
+                {
+                    D.Vehicle.Deliveries = null;
+
+                    D.Vehicle.ScheduledActivities = null;
+                    D.Vehicle.Bills = null;
+                }
+               
             }
             catch (Exception)
             {

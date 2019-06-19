@@ -1,0 +1,79 @@
+////////////////////////////////////////////////////////////Start Delivery  ////////////////////////////////////////
+
+/api/DeliverySummaries/StartDeliverySummary
+input:
+
+{
+    "DeliveryId": 170,
+    "StartTime": "2019/2/3T00:00:00",
+    "StartFuelLevel": 4,
+    "StartOdometer": 2,
+     "Latitude":33.547484303646414,
+    "Longtitude":35.420248437499993
+    
+   
+}
+output:
+
+{"deliverySummaryId":25}
+
+////////////////////////////////////////////////////////////Send Delivery Info  ////////////////////////////////////////
+
+/api/DeliverySummaries/UpdateDeliveryInfo
+
+input:
+
+{
+    "DeliverySummaryId": 25,
+    "HarshAccelerationAndDeceleration": 1,
+    "HarshBreakings": 1,
+    "HardCornering": 1,
+    "Speedings": 1,
+    "SeatBelt": 1,
+    "OverRevving": 1,
+    "Odometer": 1,
+    "EngineRunning": 1,
+    "Latitude":33.56,
+    "Longtitude":35.677
+}
+
+output:
+
+{"success":true}
+
+////////////////////////////////////////////////////////////Finish Delivery   ////////////////////////////////////////
+api/DeliverySummaries/FinishDeliverySummary
+
+input:
+{
+    "DeliverySummaryId": 4,
+
+     "EndTime": "2019/2/3T00:50:00",
+  
+     "EndFuelLevel": 2,
+ 
+     "EndOdometer": 120
+
+}
+
+output:
+{
+    "performanceScore": 4.16666651,
+  
+     "complianceScore": 5,
+    
+     "safetyScore": 4.25,
+  
+    "deliveryScore": 4.472222,
+    
+   "overallScore": 4.472222,
+    
+   "rank": 1,
+  
+   "nbOfDrivers": 3
+
+}
+
+nb of drivers we say rank=7/30
+ 
+ ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
