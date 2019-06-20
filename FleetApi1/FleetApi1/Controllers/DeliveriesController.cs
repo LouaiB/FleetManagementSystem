@@ -173,17 +173,6 @@ namespace FleetApi1.Controllers
 
 
 
-        [HttpGet]
-        public async Task<ActionResult<Result>>  GetTest(Result X)
-        {
-
-            return new Result(X.DeliveryId);
-        }
-
-
-
-
-
         [HttpPost]
         public async Task<ActionResult<IEnumerable<Delivery>>> AnsweredDeliveries(Login L)
         {
@@ -218,61 +207,81 @@ namespace FleetApi1.Controllers
         [HttpPost]
         public async Task<ActionResult<Delivery>> MakeAnOrder(Order order)
         {
-            Company company = _context.Companies.Where(c=>c.Name==order.CompanyName).Single();
+            Delivery delivery = new Delivery();
+            Company company;
 
-            Delivery delivery = new Delivery
+            try
             {
-                Time = order.Time,
-                Client = _context.Clients.Find(order.ClientId),
-                Company = company,
-                Quantity = order.Quantity,
-                SourceCity = order.SourceCity,
-                SourceLatitude = order.SourceLatitude,
-                SourceLongtitude = order.SourceLongtitude,
-                DestinationCity = order.DestinationCity,
-                DestinationLatitude = order.DestinationLatitude,
-                DestinationLongtitude = order.DestinationLongtitude
-            };
+                try
+                {
+                    company = _context.Companies.Where(c => c.Name == order.CompanyName).Single();
+                }
+                catch (Exception)
+                {
+                    return delivery;
+                }
+                if (company == null)
+                {
+                    return delivery;
+                }
+                delivery = new Delivery
+                {
+                    Time = order.Time,
+                    Client = _context.Clients.Find(order.ClientId),
+                    Company = company,
+                    Quantity = order.Quantity,
+                    SourceCity = order.SourceCity,
+                    SourceLatitude = order.SourceLatitude,
+                    SourceLongtitude = order.SourceLongtitude,
+                    DestinationCity = order.DestinationCity,
+                    DestinationLatitude = order.DestinationLatitude,
+                    DestinationLongtitude = order.DestinationLongtitude
+                };
 
-            if (company.AutomaticResponse)
-            {
-                Vehicle v=getNearestVehicle(order.SourceLatitude, order.SourceLongtitude,company.Id);
-                delivery.Vehicle = v;
-                delivery.Driver = _context.Vehicles.Include(v1 => v1.CurrentDriver).Where(v1 => v1.Id == v.Id).First().CurrentDriver;
-               
-                delivery.Answered = true;
-                delivery.Vehicle.isCurrentlyActive = true;
-                _context.Vehicles.Update(delivery.Vehicle);
-                _context.Deliveries.Add(delivery);
-                await _context.SaveChangesAsync();
-                delivery.Company = null;
-                delivery.Client = null;
-                delivery.Vehicle.Company = null;
-                delivery.Vehicle.ScheduledActivities = null;
-                delivery.Vehicle.Plan = null;
-                delivery.Vehicle.Bills = null;
-                delivery.Vehicle.CurrentDriver = null;
-                delivery.Vehicle.Deliveries = null;
-                delivery.Driver.Deliveries = null;
-                delivery.Driver.Company = null;
+                if (company.AutomaticResponse)
+                {
+                    Vehicle v = _context.Vehicles.Where(e => e.Company == company && e.isCurrentlyActive).First();
+                    try
+                    {
+                        v = getNearestVehicle(order.SourceLatitude, order.SourceLongtitude, company.Id);
+                    }
+                    catch (Exception) { }
 
+                    delivery.Vehicle = v;
+                    delivery.Driver = _context.Vehicles.Include(v1 => v1.CurrentDriver).Where(v1 => v1.Id == v.Id).First().CurrentDriver;
+
+                    delivery.Answered = true;
+                    delivery.Vehicle.isCurrentlyActive = true;
+                    _context.Vehicles.Update(delivery.Vehicle);
+                    _context.Deliveries.Add(delivery);
+                    await _context.SaveChangesAsync();
+                    delivery.Company = null;
+                    delivery.Client = null;
+                    delivery.Vehicle.Company = null;
+                    delivery.Vehicle.ScheduledActivities = null;
+                    delivery.Vehicle.Plan = null;
+                    delivery.Vehicle.Bills = null;
+                    delivery.Vehicle.CurrentDriver = null;
+                    delivery.Vehicle.Deliveries = null;
+                    delivery.Driver.Deliveries = null;
+                    delivery.Driver.Company = null;
+
+                }
+                else
+                {
+                    // Add delivery to table 
+                    // Manager can later select unanswered deliveries
+                    delivery.Driver = null; //not known yet
+                    delivery.Vehicle = null; //not known yet
+                    _context.Deliveries.Add(delivery);
+                    await _context.SaveChangesAsync();
+                    delivery.Company = null;
+                    delivery.Client = null;
+
+                }
             }
-            else
-            {
-                // Add delivery to table 
-                // Manager can later select unanswered deliveries
-                delivery.Driver = null; //not known yet
-                delivery.Vehicle = null; //not known yet
-                _context.Deliveries.Add(delivery);
-                await _context.SaveChangesAsync();
-                delivery.Company = null;
-                delivery.Client = null;
-              
 
-            }
-           
-            
-          
+            catch (Exception) { }
 
             return delivery;
         }

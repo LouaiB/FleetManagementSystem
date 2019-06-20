@@ -9,14 +9,8 @@ using FleetApi1.Models;
 using System.Net;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
-
 using System.IO;
-
-
-
-
 using Microsoft.AspNetCore.Hosting;
-
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 
